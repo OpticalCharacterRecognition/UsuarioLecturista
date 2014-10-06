@@ -19,6 +19,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.android.Facebook;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphObjectList;
 import com.facebook.model.GraphUser;
@@ -106,7 +107,7 @@ public class LoginFragment extends Fragment {
 
             Log.i(TAG, "Logged in...");
 
-            userInfoTextView.setVisibility(View.VISIBLE);
+            //userInfoTextView.setVisibility(View.VISIBLE);
             // Request user data and show the results
             Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
@@ -114,13 +115,23 @@ public class LoginFragment extends Fragment {
                 public void onCompleted(GraphUser user, Response response) {
                     if (user != null) {
                         // Display the parsed user info
-                        userInfoTextView.setText(buildUserInfoDisplay(user));
+                        //userInfoTextView.setText(buildUserInfoDisplay(user));
+
+                        // If it wasn't called from the logout button
+                        Intent intent = getActivity().getIntent();
+                        boolean comesFromLogoutButton = intent.getBooleanExtra(IntermediateActivity.COMES_FROM_LOGOUT, false);
+                        intent.removeExtra(IntermediateActivity.COMES_FROM_LOGOUT);
+                        if (!comesFromLogoutButton) {
+                            Log.i(TAG, "opening next activity");
+                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
+                            startActivity(intentNewActivity);
+                        }
                     }
                 }
             });
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
-            userInfoTextView.setVisibility(View.INVISIBLE);
+            //userInfoTextView.setVisibility(View.INVISIBLE);
         }
     }
 
