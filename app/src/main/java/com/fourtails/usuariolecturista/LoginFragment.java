@@ -28,6 +28,7 @@ import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.WebDialog;
+import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -123,7 +124,9 @@ public class LoginFragment extends Fragment {
                         intent.removeExtra(IntermediateActivity.COMES_FROM_LOGOUT);
                         if (!comesFromLogoutButton) {
                             Log.i(TAG, "opening next activity");
-                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
+//                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
+//                            startActivity(intentNewActivity);
+                            Intent intentNewActivity = new Intent(getActivity(), CaptureActivity.class);
                             startActivity(intentNewActivity);
                         }
                     }
