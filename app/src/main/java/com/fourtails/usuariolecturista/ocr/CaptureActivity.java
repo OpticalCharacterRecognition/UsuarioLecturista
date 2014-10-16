@@ -852,6 +852,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             int lastReadingValue = prefs.getInt(BalanceFragment.PREF_LAST_READING, 0);
             int totalLitersThisCycle = prefs.getInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0);
             int zeroValue;
+
+            // this means that its the first time
             if (lastReadingValue == 0) {
                 zeroValue = currentReadingValue;
             } else {
@@ -859,20 +861,22 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
 
 
+            // you cant have a lower reading value than your last one
             if (currentReadingValue < lastReadingValue) {
                 Toast.makeText(this, "Debe de haber un error, el valor es menor al de su ultima lectura", Toast.LENGTH_LONG).show();
                 return true;
             } else {
                 totalLitersThisCycle = totalLitersThisCycle + currentReadingValue - zeroValue;
 
+                // date thingy
                 Calendar c = Calendar.getInstance();
                 System.out.println("Current time => " + c.getTime());
-
                 SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                 formattedDate = df.format(c.getTime());
 
             }
 
+            // save the preferences
             editor.putInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, zeroValue).commit(); // the first reading, used as a 0 for the total of liters
             editor.putInt(BalanceFragment.PREF_LAST_READING, currentReadingValue).commit(); // last reading value (the one we just scanned)
             editor.putString(BalanceFragment.PREF_LAST_READING_DATE, formattedDate).commit(); // last reading date

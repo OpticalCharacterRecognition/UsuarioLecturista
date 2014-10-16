@@ -13,21 +13,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphObject;
+import com.facebook.model.OpenGraphAction;
+import com.facebook.model.OpenGraphObject;
+import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.WebDialog;
 
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BalanceFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BalanceFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This is the balance fragment where it shows your metrics for the last reading, this month etc,
+ * also calls for a facebook publish
  */
 public class BalanceFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private final String TAG = "BalanceFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -44,6 +53,15 @@ public class BalanceFragment extends Fragment {
     public static final String PREF_LAST_READING_DATE = "lastReadingDatePref";
     public static final String PREF_TOTAL_LITERS_FOR_CYCLE = "totalLitersForCyclePref";
     public static final String PREF_FIRST_READING_FOR_CYCLE = "firstReadingZeroValue";
+
+    private int lastReadingValue;
+    private int totalLitersForCycleValue;
+
+    private String lastReadingDateValue;
+
+    private UiLifecycleHelper uiHelper;
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -68,12 +86,44 @@ public class BalanceFragment extends Fragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        uiHelper.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        uiHelper = new UiLifecycleHelper(getActivity(), null);
+        uiHelper.onCreate(savedInstanceState);
     }
 
     @Override
@@ -82,19 +132,40 @@ public class BalanceFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_balance, container, false);
 
+        // View components
         TextView lastReading = (TextView) view.findViewById(R.id.textViewLastReading);
         TextView lastReadingDate = (TextView) view.findViewById(R.id.textViewLastReadingDate);
         TextView totalLitersForCycle = (TextView) view.findViewById(R.id.textViewTotalLitersForCycle);
 
         Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
 
+        //facebook open graph
+        Button facebookOpenGraph = (Button) view.findViewById(R.id.buttonFBOpenGraph);
+        facebookOpenGraph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGraphClicked();
+            }
+        });
 
+
+        //facebook share
+//        Button facebookShareButton = (Button) view.findViewById(R.id.buttonFB);
+//        facebookShareButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                shareLinkClicked();
+//            }
+//        });
+
+
+        // setting the texts
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int lastReadingValue = sharedPreferences.getInt(PREF_LAST_READING, 0);
+        lastReadingValue = sharedPreferences.getInt(PREF_LAST_READING, 0);
 
-        String lastReadingDateValue = sharedPreferences.getString(PREF_LAST_READING_DATE, "No cycle");
+        lastReadingDateValue = sharedPreferences.getString(PREF_LAST_READING_DATE, "No cycle");
 
-        int totalLitersForCycleValue = sharedPreferences.getInt(PREF_TOTAL_LITERS_FOR_CYCLE, 0);
+        totalLitersForCycleValue = sharedPreferences.getInt(PREF_TOTAL_LITERS_FOR_CYCLE, 0);
 
         lastReading.setText(String.valueOf(lastReadingValue));
 
@@ -199,6 +270,101 @@ public class BalanceFragment extends Fragment {
 
     }
 
+    /**
+     * Used to create a Facebook shareDialog
+     */
+    public void shareLinkClicked() {
+        // If facebook App is installed calls to that app and handles the post from there
+        if (FacebookDialog.canPresentShareDialog(getActivity().getApplicationContext(),
+                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
+            // Publish the post using the Share Dialog
+            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
+                    .setLink("https://developers.facebook.com/android")
+                    .build();
+            uiHelper.trackPendingDialogCall(shareDialog.present());
+
+        } else { //If the app is not installed then creates a really cool dialog which might be a better choice
+            // Fallback. For example, publish the post using the Feed Dialog
+            publishFeedDialog();
+        }
+    }
+
+    private void publishFeedDialog() {
+        Bundle params = new Bundle();
+        params.putString("name", "Facebook SDK for Android");
+        params.putString("caption", "Build great social apps and get more installs.");
+        params.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+        params.putString("link", "https://developers.facebook.com/android");
+        params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+
+        WebDialog feedDialog = (
+                new WebDialog.FeedDialogBuilder(getActivity(),
+                        Session.getActiveSession(),
+                        params))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+
+                    @Override
+                    public void onComplete(Bundle values,
+                                           FacebookException error) {
+                        if (error == null) {
+                            // When the story is posted, echo the success
+                            // and the post Id.
+                            final String postId = values.getString("post_id");
+                            if (postId != null) {
+                                Toast.makeText(getActivity(),
+                                        "Posted story, id: " + postId,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                // User clicked the Cancel button
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Publish cancelled",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (error instanceof FacebookOperationCanceledException) {
+                            // User clicked the "x" button
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Publish cancelled",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Generic, ex: network error
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Error posting story",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                })
+                .build();
+        feedDialog.show();
+    }
+
+    /**
+     * This kind of "sharing" is more customized
+     */
+    public void openGraphClicked() {
+/*        OpenGraphAction action = GraphObject.Factory.create(OpenGraphAction.class);
+        action.setProperty("lectura", "https://example.com/book/Snow-Crash.html");
+
+        FacebookDialog shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(getActivity(), action, "lectura.realizar", "lectura")
+                .build();
+        uiHelper.trackPendingDialogCall(shareDialog.present());*/
+
+
+        OpenGraphObject lectura = OpenGraphObject.Factory.createForPost("lecturista:lectura");
+        lectura.setProperty("title", "Lectura Realizada de " + lastReadingValue + "!");
+        lectura.setProperty("image", "http://upload.wikimedia.org/wikipedia/en/8/82/Water_meter_register.jpg");
+        lectura.setProperty("url", "http://www.google.com");
+        lectura.setProperty("description", "Realize una lectura de " + lastReadingValue + " litros el " + lastReadingDateValue + ". Mi consumo total este mes es de " + totalLitersForCycleValue);
+
+        OpenGraphAction action = GraphObject.Factory.create(OpenGraphAction.class);
+        action.setProperty("lectura", lectura);
+
+        FacebookDialog shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(getActivity(), action, "lecturista:realizar", "lectura")
+                .build();
+        uiHelper.trackPendingDialogCall(shareDialog.present());
+    }
+
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -238,4 +404,20 @@ public class BalanceFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
+//            @Override
+//            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+//                Log.e("Activity", String.format("Error: %s", error.toString()));
+//            }
+//
+//            @Override
+//            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+//                Log.i("Activity", "Success!");
+//            }
+//        });
+//    }
 }

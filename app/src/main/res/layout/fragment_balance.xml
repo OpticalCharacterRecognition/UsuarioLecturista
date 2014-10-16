@@ -83,4 +83,20 @@
         android:id="@+id/buttonResetValuesForCycle"
         android:layout_gravity="center_horizontal" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share on Facebook"
+        android:id="@+id/buttonFBOpenGraph"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/com_facebook_button_blue"
+        android:layout_marginTop="20dp" />
+
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Share Facebook"-->
+    <!--android:id="@+id/buttonFB"-->
+    <!--android:layout_gravity="center_horizontal" />-->
+
 </LinearLayout>
