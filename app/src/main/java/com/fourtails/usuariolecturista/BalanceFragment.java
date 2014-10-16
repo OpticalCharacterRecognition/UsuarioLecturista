@@ -2,11 +2,15 @@ package com.fourtails.usuariolecturista;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,6 +39,11 @@ public class BalanceFragment extends Fragment {
     private ProgressBar progressBar;
 
     private OnFragmentInteractionListener mListener;
+
+    public static final String PREF_LAST_READING = "lastReadingPref";
+    public static final String PREF_LAST_READING_DATE = "lastReadingDatePref";
+    public static final String PREF_TOTAL_LITERS_FOR_CYCLE = "totalLitersForCyclePref";
+    public static final String PREF_FIRST_READING_FOR_CYCLE = "firstReadingZeroValue";
 
     /**
      * Use this factory method to create a new instance of
@@ -72,6 +81,34 @@ public class BalanceFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_balance, container, false);
+
+        TextView lastReading = (TextView) view.findViewById(R.id.textViewLastReading);
+        TextView lastReadingDate = (TextView) view.findViewById(R.id.textViewLastReadingDate);
+        TextView totalLitersForCycle = (TextView) view.findViewById(R.id.textViewTotalLitersForCycle);
+
+        Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
+
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int lastReadingValue = sharedPreferences.getInt(PREF_LAST_READING, 0);
+
+        String lastReadingDateValue = sharedPreferences.getString(PREF_LAST_READING_DATE, "No cycle");
+
+        int totalLitersForCycleValue = sharedPreferences.getInt(PREF_TOTAL_LITERS_FOR_CYCLE, 0);
+
+        lastReading.setText(String.valueOf(lastReadingValue));
+
+        lastReadingDate.setText(lastReadingDateValue);
+
+        totalLitersForCycle.setText(String.valueOf(totalLitersForCycleValue));
+
+
+        resetValues.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetPreferencesValuesForReadings();
+            }
+        });
 
 //        Button button = (Button) view.findViewById(R.id.buttonPaypalTest);
 //        button.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +178,25 @@ public class BalanceFragment extends Fragment {
 //        }.execute();
 
         return view;
+    }
+
+    /**
+     * Resets the preferences to 0 and then refreshes the fragment
+     */
+    private void resetPreferencesValuesForReadings() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt(BalanceFragment.PREF_LAST_READING, 0).commit(); // last reading value (the one we just scanned)
+        editor.putString(BalanceFragment.PREF_LAST_READING_DATE, "default").commit(); // last reading date
+        editor.putInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0).commit(); // total liters for this cycle
+
+        // Refresh the fragment
+        Fragment fragment = new BalanceFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment).commit();
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

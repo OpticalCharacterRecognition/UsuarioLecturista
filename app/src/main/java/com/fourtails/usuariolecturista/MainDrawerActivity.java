@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
+import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 
 import java.util.ArrayList;
 
@@ -53,6 +55,8 @@ public class MainDrawerActivity extends Activity implements
     private NavDrawerListAdapter adapter;
 
     private TextView mTopBarTitle;
+
+    public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
 
     @SuppressWarnings("ConstantConditions")
@@ -125,7 +129,7 @@ public class MainDrawerActivity extends Activity implements
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(1);
+            displayView(0);
         }
     }
 
@@ -161,12 +165,16 @@ public class MainDrawerActivity extends Activity implements
         switch (position) {
             // we will start from case 0 is mascot, so we break
             case 0:
+                fragment = new BalanceFragment();
                 break;
             case 1:
-                fragment = new HomeFragment();
+                Intent ocrCaptureActivity = new Intent(this, CaptureActivity.class);
+                startActivityForResult(ocrCaptureActivity, GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
+                //fragment = new HomeFragment();
                 break;
             case 2:
-                fragment = new BalanceFragment();
+                finish();
+                //fragment = new BalanceFragment();
                 break;
             default:
                 break;
@@ -257,21 +265,21 @@ public class MainDrawerActivity extends Activity implements
         return super.onPrepareOptionsMenu(menu);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == GoLocky.REQUEST_ACTIVITY_FROM_QR_CODE) {
-//
-//            startHomeFragment();
-//
-//        }
-//    }
-//
-//    private void startHomeFragment() {
-//        Fragment fragment = new HomeFragment();
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.frame_container, fragment).commit();
-//
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE) {
+            startBalanceFragment();
+        }
+    }
+
+    private void startBalanceFragment() {
+        Fragment fragment = new BalanceFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment).commit();
+
+        mDrawerLayout.closeDrawer(mDrawerList);
+
+    }
 }

@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +18,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.android.Facebook;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphObjectList;
 import com.facebook.model.GraphUser;
@@ -28,10 +26,8 @@ import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.WebDialog;
-import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +42,8 @@ public class LoginFragment extends Fragment {
     private UiLifecycleHelper uiHelper;
 
     private TextView userInfoTextView;
+
+    public static final String COMES_FROM_LOGOUT = "COMES_FROM_LOGOUT";
 
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -126,7 +124,9 @@ public class LoginFragment extends Fragment {
                             Log.i(TAG, "opening next activity");
 //                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
 //                            startActivity(intentNewActivity);
-                            Intent intentNewActivity = new Intent(getActivity(), CaptureActivity.class);
+                            //Starts Main Drawer Activity After login
+                            Intent intentNewActivity = new Intent(getActivity(), MainDrawerActivity.class);
+                            intent.putExtra(COMES_FROM_LOGOUT, true);
                             startActivity(intentNewActivity);
                         }
                     }

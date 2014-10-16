@@ -57,16 +57,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.BalanceFragment;
+import com.fourtails.usuariolecturista.MainDrawerActivity;
 import com.fourtails.usuariolecturista.R;
-import com.googlecode.tesseract.android.TessBaseAPI;
-
-import java.io.File;
-import java.io.IOException;
-
 import com.fourtails.usuariolecturista.ocr.camera.CameraManager;
 import com.fourtails.usuariolecturista.ocr.camera.ShutterButton;
 import com.fourtails.usuariolecturista.ocr.language.LanguageCodeHelper;
 import com.fourtails.usuariolecturista.ocr.language.TranslateAsyncTask;
+import com.googlecode.tesseract.android.TessBaseAPI;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
@@ -837,6 +840,48 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             progressView.setVisibility(View.GONE);
             setProgressBarVisibility(false);
         }
+        // if we are capturing a number
+        if (isNumeric(ocrResult.getText())) {
+            int currentReadingValue = Integer.parseInt(ocrResult.getText());
+            SharedPreferences.Editor editor = prefs.edit();
+
+
+            String formattedDate;
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            int lastReadingValue = prefs.getInt(BalanceFragment.PREF_LAST_READING, 0);
+            int totalLitersThisCycle = prefs.getInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0);
+            int zeroValue;
+            if (lastReadingValue == 0) {
+                zeroValue = currentReadingValue;
+            } else {
+                zeroValue = prefs.getInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, 0);
+            }
+
+
+            if (currentReadingValue < lastReadingValue) {
+                Toast.makeText(this, "Debe de haber un error, el valor es menor al de su ultima lectura", Toast.LENGTH_LONG).show();
+                return true;
+            } else {
+                totalLitersThisCycle = totalLitersThisCycle + currentReadingValue - zeroValue;
+
+                Calendar c = Calendar.getInstance();
+                System.out.println("Current time => " + c.getTime());
+
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                formattedDate = df.format(c.getTime());
+
+            }
+
+            editor.putInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, zeroValue).commit(); // the first reading, used as a 0 for the total of liters
+            editor.putInt(BalanceFragment.PREF_LAST_READING, currentReadingValue).commit(); // last reading value (the one we just scanned)
+            editor.putString(BalanceFragment.PREF_LAST_READING_DATE, formattedDate).commit(); // last reading date
+            editor.putInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, totalLitersThisCycle).commit(); // total liters for this cycle
+
+            // we go back to the drawer and go to balance
+            setResult(MainDrawerActivity.GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
+            finish();
+        }
         return true;
     }
 
@@ -1281,5 +1326,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 .setOnCancelListener(new FinishListener(this))
                 .setPositiveButton("Done", new FinishListener(this))
                 .show();
+    }
+
+    public static boolean isNumeric(String str) {
+        try {
+            int i = Integer.parseInt(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
