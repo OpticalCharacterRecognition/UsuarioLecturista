@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navDrawerContainer"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="60dp">
+
+    <!--this part is in case we want a "fixed" image first-->
+    <!--<ImageView-->
+    <!--android:id="@+id/imageButtonDrawerIconLogo"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="100dp"-->
+    <!--android:background="@null"-->
+    <!--android:src="@drawable/nav_mascotti"-->
+    <!--android:layout_marginLeft="20dp"-->
+    <!--android:layout_marginRight="20dp" />-->
+
+    <!--<com.vazh.android.golocky.app.custom.GoLockyTextView-->
+    <!--android:id="@+id/textViewDrawerLogo"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Home"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:textColor="@color/grey_locky"-->
+    <!--android:textSize="20sp"-->
+    <!--app:typeface="montserratBold" />-->
+
+    <ImageView
+        android:id="@+id/imageButtonDrawerIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:src="@drawable/shutter"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <TextView
+        android:id="@+id/textViewDrawer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:layout_gravity="center"
+        android:textColor="@color/grey_locky"
+        android:textSize="15sp" />
+
+    <!--We might want to add counters to the menu in the future, we leave this commented-->
+
+    <!--    <TextView android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/counter_bg"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/counter_text_color"/>-->
+
+</LinearLayout>

@@ -25,49 +25,48 @@
             android:name=".SplashActivity"
             android:label="@string/app_name">
 
-            <!-- <intent-filter> -->
+        <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
+
+        </activity>
+        <activity android:name="com.facebook.LoginActivity" />
+        <activity
+            android:name=".IntermediateActivity"
+            android:label="@string/title_activity_intermediate"
+            android:launchMode="singleInstance" />
+
+        <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
+        <activity
+            android:name=".ocr.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".ocr.HelpActivity"
+            android:screenOrientation="user">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ocr.PreferencesActivity" />
+        <activity
+            android:name=".MainDrawerActivity"
+            android:label="@string/title_activity_main_drawer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.facebook.LoginActivity" />
-
-        <activity
-            android:name=".IntermediateActivity"
-            android:label="@string/title_activity_intermediate"
-            android:launchMode="singleInstance"/>
-
-        <!--android:theme="@android:style/Theme.NoTitleBar.Fullscreen"-->
-        <activity
-            android:name=".ocr.CaptureActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-
-            android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <activity
-            android:name=".ocr.HelpActivity"
-            android:screenOrientation="user">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".ocr.PreferencesActivity" />
-
     </application>
 
 </manifest>
