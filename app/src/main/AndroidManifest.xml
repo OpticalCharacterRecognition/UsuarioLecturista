@@ -51,6 +51,7 @@
         <activity
             android:name=".ocr.CaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".ocr.HelpActivity"

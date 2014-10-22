@@ -17,6 +17,10 @@
 package com.fourtails.usuariolecturista.ocr;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,
@@ -140,7 +144,50 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        bitmap = ConvertToNegative(bitmap);
+        bitmap = changeBitmapContrastBrightness(bitmap, CaptureActivity.contrast, CaptureActivity.brightness);
         return bitmap;
+    }
+
+    //TODO merge these 2 methods
+
+    public Bitmap ConvertToNegative(Bitmap sampleBitmap) {
+        ColorMatrix negativeMatrix = new ColorMatrix();
+        float[] negMat = {-1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0};
+        negativeMatrix.set(negMat);
+        final ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(negativeMatrix);
+        Bitmap rBitmap = sampleBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Paint paint = new Paint();
+        paint.setColorFilter(colorFilter);
+        Canvas myCanvas = new Canvas(rBitmap);
+        myCanvas.drawBitmap(rBitmap, 0, 0, paint);
+        return rBitmap;
+    }
+
+    /**
+     * @param bmp        input bitmap
+     * @param contrast   0..10 1 is default
+     * @param brightness -255..255 0 is default
+     * @return new bitmap
+     */
+    public static Bitmap changeBitmapContrastBrightness(Bitmap bmp, float contrast, float brightness) {
+        ColorMatrix cm = new ColorMatrix(new float[]
+                {
+                        contrast, 0, 0, 0, brightness,
+                        0, contrast, 0, 0, brightness,
+                        0, 0, contrast, 0, brightness,
+                        0, 0, 0, 1, 0
+                });
+
+        Bitmap ret = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
+
+        Canvas canvas = new Canvas(ret);
+
+        Paint paint = new Paint();
+        paint.setColorFilter(new ColorMatrixColorFilter(cm));
+        canvas.drawBitmap(bmp, 0, 0, paint);
+
+        return ret;
     }
 
     private void reverseHorizontal(int width, int height) {

@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Litros gastados del: \n20 de septiembre al 20 de Octubre: "
+            android:text="Litros gastados del \n20 de septiembre al 20 de Octubre: "
             android:id="@+id/textView3" />
 
     </LinearLayout>
@@ -90,7 +90,9 @@
         android:id="@+id/buttonFBOpenGraph"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/com_facebook_button_blue"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" />
 
     <!--<Button-->
     <!--android:layout_width="wrap_content"-->

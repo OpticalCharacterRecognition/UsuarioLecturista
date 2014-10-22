@@ -28,10 +28,10 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import java.util.List;
-
 import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.ocr.camera.CameraManager;
+
+import java.util.List;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder rectangle and partial
@@ -121,6 +121,9 @@ public final class ViewfinderView extends View {
     @SuppressWarnings("unused")
     @Override
     public void onDraw(Canvas canvas) {
+        if (isInEditMode()) {
+            return;
+        }
         Rect frame = cameraManager.getFramingRect();
         if (frame == null) {
             return;

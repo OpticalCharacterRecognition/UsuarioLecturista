@@ -53,6 +53,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -244,6 +246,16 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private boolean isPaused;
     private static boolean isFirstLaunch; // True if this is the first time the app is being run
 
+
+    public static int contrast = 0;
+
+    public static int brightness = 0;
+
+    private Button changes;
+
+    private EditText contrastTV;
+    private EditText brightnessTV;
+
     Handler getHandler() {
         return handler;
     }
@@ -273,6 +285,20 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
         cameraButtonView = findViewById(R.id.camera_button_view);
         resultView = findViewById(R.id.result_view);
+
+        // temporal for brightness adjustment
+        brightnessTV = (EditText) findViewById(R.id.editTextBrightness);
+        contrastTV = (EditText) findViewById(R.id.editTextContrast);
+
+        changes = (Button) findViewById(R.id.buttonCB);
+
+        changes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                brightness = Integer.parseInt(brightnessTV.getText().toString());
+                contrast = Integer.parseInt(contrastTV.getText().toString());
+            }
+        });
 
         statusViewBottom = (TextView) findViewById(R.id.status_view_bottom);
         registerForContextMenu(statusViewBottom);
