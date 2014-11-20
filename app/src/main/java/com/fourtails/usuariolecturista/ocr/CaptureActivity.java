@@ -300,6 +300,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         });
 
+        // settings button (remove this? )
+        Button settingsBtn = (Button) findViewById(R.id.buttonSettings);
+        settingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingsActivity();
+            }
+        });
+
         statusViewBottom = (TextView) findViewById(R.id.status_view_bottom);
         registerForContextMenu(statusViewBottom);
         statusViewTop = (TextView) findViewById(R.id.status_view_top);
@@ -647,6 +656,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openSettingsActivity() {
+        Intent intent = new Intent().setClass(this, PreferencesActivity.class);
+        startActivity(intent);
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {

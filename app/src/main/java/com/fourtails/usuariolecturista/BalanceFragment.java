@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,12 @@ import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
+
+import java.util.Date;
+import java.util.Random;
 
 
 /**
@@ -133,9 +141,9 @@ public class BalanceFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_balance, container, false);
 
         // View components
-        TextView lastReading = (TextView) view.findViewById(R.id.textViewLastReading);
+        TextView lastReading = (TextView) view.findViewById(R.id.textViewLastReadingDate);
         TextView lastReadingDate = (TextView) view.findViewById(R.id.textViewLastReadingDate);
-        TextView totalLitersForCycle = (TextView) view.findViewById(R.id.textViewTotalLitersForCycle);
+        TextView totalLitersForCycle = (TextView) view.findViewById(R.id.textViewTotalBalance);
 
         Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
 
@@ -180,6 +188,110 @@ public class BalanceFragment extends Fragment {
                 resetPreferencesValuesForReadings();
             }
         });
+
+        // Normal Graph
+/*
+        GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
+                new GraphView.GraphViewData(1, 2)
+                , new GraphView.GraphViewData(10, 20)
+                , new GraphView.GraphViewData(15, 46)
+                , new GraphView.GraphViewData(30, 30)
+        });
+
+        GraphView graphView = new LineGraphView(
+                this.getActivity() // context
+                , "Consumo" // heading
+        );
+        graphView.getGraphViewStyle().setGridStyle(GraphViewStyle.GridStyle.NONE);
+        graphView.addSeries(exampleSeries); // data
+
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.layoutBalanceContainer);
+        layout.addView(graphView);
+*/
+
+        /*
+         * Custom Label graph
+		 * use Date as x axis label
+		 */
+        Random rand = new Random();
+        int size = 15;
+
+        GraphView.GraphViewData[] data = new GraphView.GraphViewData[size];
+        long now = new Date().getTime();
+        data = new GraphView.GraphViewData[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = new GraphView.GraphViewData(now + (i * 60 * 60 * 24 * 1000), rand.nextInt(20)); // next day
+        }
+
+
+        GraphViewSeries currentSpend = new GraphViewSeries("consumo actual", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(132, 215, 138), 6), new GraphView.GraphViewData[]{
+                new GraphView.GraphViewData(1, 2)
+                , new GraphView.GraphViewData(10, 15)
+                , new GraphView.GraphViewData(15, 20)
+                , new GraphView.GraphViewData(20, 27)
+                , new GraphView.GraphViewData(30, 30)
+        });
+
+        GraphViewSeries proyectedSpend = new GraphViewSeries("consumo proyectado", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(187, 202, 204), 6), new GraphView.GraphViewData[]{
+                new GraphView.GraphViewData(1, 2)
+                , new GraphView.GraphViewData(10, 15)
+                , new GraphView.GraphViewData(15, 20)
+                , new GraphView.GraphViewData(20, 32)
+                , new GraphView.GraphViewData(30, 60)
+        });
+
+
+        GraphViewSeries prepaidBar = new GraphViewSeries("Prepago", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), new GraphView.GraphViewData[]{
+                new GraphView.GraphViewData(0, 40)
+                , new GraphView.GraphViewData(30, 40)
+        });
+
+        GraphViewSeries paymentLimit = new GraphViewSeries("Fecha de corte", null, new GraphView.GraphViewData[]{
+                new GraphView.GraphViewData(25, 60)
+                , new GraphView.GraphViewData(25, 0)
+        });
+
+
+        /** determine if line of bar **/
+        GraphView graphView = new LineGraphView(
+                this.getActivity()
+                , "Consumo"
+        );
+        //((LineGraphView) graphView).setDrawBackground(true);
+        ((LineGraphView) graphView).setDrawDataPoints(true);
+        ((LineGraphView) graphView).setDataPointsRadius(7f);
+
+        graphView.addSeries(proyectedSpend); // data
+        graphView.addSeries(currentSpend); // data
+        graphView.addSeries(prepaidBar); // data
+        graphView.addSeries(paymentLimit); // data
+        // set legend
+        graphView.setShowLegend(true);
+        graphView.setLegendAlign(GraphView.LegendAlign.BOTTOM);
+        graphView.getGraphViewStyle().setLegendBorder(10);
+        graphView.getGraphViewStyle().setLegendSpacing(10);
+        graphView.getGraphViewStyle().setLegendWidth(350);
+        graphView.setHorizontalLabels(new String[]{"1", "10", "15", "20", "25", "30"});
+        // set view port, start=2, size=40
+
+		/*
+         * date as label formatter
+		 */
+       /* final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d");
+        graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    Date d = new Date((long) value);
+                    return dateFormat.format(d);
+                }
+                return null; // let graphview generate Y-axis label for us
+            }
+        });*/
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.layoutBalanceContainer);
+        layout.addView(graphView);
+
+
 
 //        Button button = (Button) view.findViewById(R.id.buttonPaypalTest);
 //        button.setOnClickListener(new View.OnClickListener() {

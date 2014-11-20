@@ -1,8 +1,6 @@
 package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -12,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +27,7 @@ import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 import java.util.ArrayList;
 
 
-public class MainDrawerActivity extends Activity implements
+public class MainDrawerActivity extends ActionBarActivity implements
         HomeFragment.OnFragmentInteractionListener,
         BalanceFragment.OnFragmentInteractionListener {
     /**
@@ -65,13 +65,20 @@ public class MainDrawerActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
-        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getActionBar().setCustomView(R.layout.action_bar_custom);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //getSupportActionBar().setCustomView(R.layout.action_bar_custom);
+//        getActionBar().setCustomView(R.layout.action_bar_custom);
+        }
+
 
         mDrawerTitle = getTitle();
 
         // we use a custom bar so we must set the title this way
-        mTopBarTitle = (TextView) findViewById(R.id.titleActionBarTitle);
+        //mTopBarTitle = (TextView) findViewById(R.id.titleActionBarTitle);
 
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -104,8 +111,8 @@ public class MainDrawerActivity extends Activity implements
         mDrawerList.setAdapter(adapter);
 
         // enabling action bar app icon and behaving it as toggle button
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 //TODO change for the ic_drawer (we have to make it white)
@@ -132,6 +139,7 @@ public class MainDrawerActivity extends Activity implements
             displayView(0);
         }
     }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -201,7 +209,7 @@ public class MainDrawerActivity extends Activity implements
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        mTopBarTitle.setText(mTitle);
+        //mTopBarTitle.setText(mTitle);
     }
 
 

@@ -57,4 +57,7 @@
     <color name="list_divider">#272727</color>
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
+
+    <color name="colorPrimary">#488FE9</color>
+
 </resources>

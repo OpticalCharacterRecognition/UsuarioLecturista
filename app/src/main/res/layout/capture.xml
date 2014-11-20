@@ -150,7 +150,7 @@
                         android:layout_height="wrap_content">
 
                         <ProgressBar
-                            android:id="@+android:id/progress_small"
+                            android:id="@+id/progress_small"
                             style="?android:attr/progressBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -241,6 +241,15 @@
             android:layout_below="@+id/editTextContrast"
             android:layout_toRightOf="@+id/shutter_button"
             android:text="Contrast / Brightness" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:id="@+id/buttonSettings"
+            android:layout_toEndOf="@+id/status_view_bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/status_view_bottom" />
 
         <!--
         <ToggleButton android:id="@+id/torch_button"

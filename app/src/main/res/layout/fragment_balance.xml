@@ -16,39 +16,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Ultima Lectura:"
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal" />
+            android:text="Ciclo: "
+            android:id="@+id/textView4" />
 
-        <TextView
+        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="000000"
-            android:id="@+id/textViewLastReading"
-            android:paddingLeft="30dp" />
+            android:id="@+id/spinnerCycleSelector"
+            android:entries="@array/drop_down_example"
+            android:prompt="@string/label_select_cycle" />
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:id="@+id/layoutBalanceContainer"></LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Realizada el dia:"
-            android:id="@+id/textView2" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/textViewLastReadingDate"
+            android:text="Fecha Limite:"
+            android:id="@+id/textView"
             android:layout_gravity="center_horizontal"
-            android:paddingLeft="30dp" />
+            android:textIsSelectable="false"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="6 de Nov 2014"
+            android:id="@+id/textViewBillingDate"
+            android:textIsSelectable="false"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp" />
 
     </LinearLayout>
 
@@ -57,24 +66,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayout"
-        android:paddingTop="30dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Litros gastados del \n20 de septiembre al 20 de Octubre: "
-            android:id="@+id/textView3" />
+            android:text="Consumo Total:"
+            android:id="@+id/textView3"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="$100.00"
+            android:id="@+id/textViewTotalBalance"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp" />
 
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textViewTotalLitersForCycle"
-        android:layout_gravity="center_horizontal"
-        android:textSize="60sp" />
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Realizada el dia:"
+            android:id="@+id/textView2"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="2 de Nov 2014"
+            android:id="@+id/textViewLastReadingDate"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp" />
+
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"

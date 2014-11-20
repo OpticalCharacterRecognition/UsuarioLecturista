@@ -14,6 +14,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="label_select_cycle">Seleccione un Ciclo</string>
 
     <!--GOLOCKY STUFF FOR TESTING MODIFY THIS-->
     <!-- Nav Drawer Menu Items -->
@@ -29,7 +30,12 @@
         <item>@drawable/shutter</item>
         <item>@drawable/shutter</item>
         <item>@drawable/shutter</item>
-
     </array>
+
+    <string-array name="drop_down_example">
+        <item>1 Nov - 30 Nov 2014</item>
+        <item>1 Oct - 31 Oct 2014</item>
+        <item>1 Sep - 30 Sep 2014</item>
+    </string-array>
 
 </resources>

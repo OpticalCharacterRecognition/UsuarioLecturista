@@ -25,7 +25,7 @@
             android:name=".SplashActivity"
             android:label="@string/app_name">
 
-        <!-- <intent-filter> -->
+            <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
@@ -51,7 +51,6 @@
         <activity
             android:name=".ocr.CaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".ocr.HelpActivity"
@@ -65,8 +64,7 @@
         <activity android:name=".ocr.PreferencesActivity" />
         <activity
             android:name=".MainDrawerActivity"
-            android:label="@string/title_activity_main_drawer">
-        </activity>
+            android:label="@string/title_activity_main_drawer"></activity>
     </application>
 
 </manifest>
