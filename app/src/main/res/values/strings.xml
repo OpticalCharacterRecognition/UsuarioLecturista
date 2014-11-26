@@ -15,8 +15,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="label_select_cycle">Seleccione un Ciclo</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
 
-    <!--GOLOCKY STUFF FOR TESTING MODIFY THIS-->
+    <!-- GOLOCKY STUFF FOR TESTING MODIFY THIS -->
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item>Balance</item>
@@ -32,10 +35,34 @@
         <item>@drawable/shutter</item>
     </array>
 
+    <!--Balance-->
     <string-array name="drop_down_example">
         <item>1 Nov - 30 Nov 2014</item>
         <item>1 Oct - 31 Oct 2014</item>
         <item>1 Sep - 30 Sep 2014</item>
     </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--PayOptions-->
+    <string name="textAddCreditCard">Agregar tarjeta</string>
+    <string name="labelPayInOxxo">Pague en el Oxxo con este codigo de barras</string>
+    <string name="labelPaymentOptionDesc">Seleccione una opcion para pagar:</string>
+
+    <!--Add Credit Card -->
+    <string name="labelCreditCardType">Tipo de Tarjeta</string>
+    <string name="labelCreditCardNumber">Numero de Tarjeta</string>
+    <string name="labelNameOnCreditCard">Nombre que aparece en la Tarjeta</string>
+    <string name="labelSecurityCode">CCV</string>
+    <string name="labelExpirationDate">Fecha de Expiracion</string>
+    <string name="labelButtonAddCard">Agregar</string>
+    <string name="labelCheckBoxAgreedWithCCTAC">Estoy de acuerdo con los terminos y condiciones</string>
+
+    <string-array name="drop_down_credit_card_type">
+        <item>VISA</item>
+        <item>Master Card</item>
+        <item>AMEX</item>
+    </string-array>
+
 
 </resources>

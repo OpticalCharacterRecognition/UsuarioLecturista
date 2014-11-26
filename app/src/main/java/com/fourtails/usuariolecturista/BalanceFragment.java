@@ -145,7 +145,15 @@ public class BalanceFragment extends Fragment {
         TextView lastReadingDate = (TextView) view.findViewById(R.id.textViewLastReadingDate);
         TextView totalLitersForCycle = (TextView) view.findViewById(R.id.textViewTotalBalance);
 
-        Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
+        //Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
+
+        Button payButton = (Button) view.findViewById(R.id.buttonPay);
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                payButtonClicked();
+            }
+        });
 
         //facebook open graph
         Button facebookOpenGraph = (Button) view.findViewById(R.id.buttonFBOpenGraph);
@@ -182,12 +190,12 @@ public class BalanceFragment extends Fragment {
         totalLitersForCycle.setText(String.valueOf(totalLitersForCycleValue));
 
 
-        resetValues.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetPreferencesValuesForReadings();
-            }
-        });
+//        resetValues.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                resetPreferencesValuesForReadings();
+//            }
+//        });
 
         // Normal Graph
 /*
@@ -361,6 +369,18 @@ public class BalanceFragment extends Fragment {
 //        }.execute();
 
         return view;
+    }
+
+    private void payButtonClicked() {
+        FragmentManager fragmentManager = getFragmentManager();
+        assert fragmentManager != null;
+
+        Fragment payOptionsFragment = new PayOptionsFragment();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, payOptionsFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     /**

@@ -31,7 +31,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:id="@+id/layoutBalanceContainer"></LinearLayout>
+        android:id="@+id/layoutBalanceContainer" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="6 de Nov 2014"
+            android:text="26 de Nov 2014"
             android:id="@+id/textViewBillingDate"
             android:textIsSelectable="false"
             android:textSize="20sp"
@@ -111,12 +111,18 @@
             android:layout_marginLeft="10dp" />
 
     </LinearLayout>
-
+    <!--Debug purposes only borrar ciclo-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Borrar Ciclo"-->
+    <!--android:id="@+id/buttonResetValuesForCycle"-->
+    <!--android:layout_gravity="center_horizontal" />-->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Borrar Ciclo"
-        android:id="@+id/buttonResetValuesForCycle"
+        android:text="Pagar"
+        android:id="@+id/buttonPay"
         android:layout_gravity="center_horizontal" />
 
     <Button

@@ -1,6 +1,7 @@
 package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -10,8 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,9 +26,11 @@ import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 import java.util.ArrayList;
 
 
-public class MainDrawerActivity extends ActionBarActivity implements
+public class MainDrawerActivity extends Activity implements
         HomeFragment.OnFragmentInteractionListener,
-        BalanceFragment.OnFragmentInteractionListener {
+        BalanceFragment.OnFragmentInteractionListener,
+        PayOptionsFragment.OnFragmentInteractionListener,
+        AddCreditCardFragment.OnFragmentInteractionListener {
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -65,14 +66,10 @@ public class MainDrawerActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            //getSupportActionBar().setCustomView(R.layout.action_bar_custom);
-//        getActionBar().setCustomView(R.layout.action_bar_custom);
-        }
+
+        //getActionBar().setCustomView(R.layout.action_bar_custom);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
 
         mDrawerTitle = getTitle();
@@ -114,19 +111,22 @@ public class MainDrawerActivity extends ActionBarActivity implements
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 //        getActionBar().setHomeButtonEnabled(true);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
                 //TODO change for the ic_drawer (we have to make it white)
                 R.drawable.ic_drawer, //nav menu toggle icon
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                //getActionBar().setTitle(mTitle);
+                getActionBar().setTitle(mTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mTitle);
                 //getActionBar().setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
