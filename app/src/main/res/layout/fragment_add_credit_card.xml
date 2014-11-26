@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.fourtails.usuariolecturista.AddCreditCardFragment"
+    android:orientation="vertical"
+    android:padding="35dp">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelCreditCardType"
+        android:id="@+id/textView7"
+        style="@style/Base.TextAppearance.AppCompat.Medium" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/drop_down_credit_card_type"
+        android:id="@+id/spinnerCreditCardSelector" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelCreditCardNumber"
+        android:id="@+id/textView8"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editTextCreditCardNumber" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelNameOnCreditCard"
+        android:layout_marginTop="10dp"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/textView9" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/editTextCreditCardName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelSecurityCode"
+        android:layout_marginTop="10dp"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/textView10" />
+
+    <EditText
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editTextCCV" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelExpirationDate"
+        android:layout_marginTop="10dp"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:id="@+id/textView11" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:editable="false"
+        android:focusable="false"
+        android:id="@+id/editTextCreditCardExpirationDate" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelCheckBoxAgreedWithCCTAC"
+        android:id="@+id/checkBox"
+        android:checked="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labelButtonAddCard"
+        android:id="@+id/button"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
