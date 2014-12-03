@@ -14,7 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
@@ -23,6 +23,10 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerInParent="true" />
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <com.fourtails.usuariolecturista.ocr.ViewfinderView
         android:id="@+id/viewfinder_view"
@@ -190,7 +194,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dip"
-            android:layout_marginTop="8dip"
+            android:layout_marginTop="50dp"
             android:background="@drawable/shutter_button"
             android:clickable="true"
             android:focusable="true"
@@ -210,46 +214,55 @@
             android:textColor="@color/status_text"
             android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/editTextContrast"
-            android:layout_width="30dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:numeric="integer|signed"
-            android:text="1" />
+            android:layout_above="@+id/buttonSettings"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/editTextBrightness"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_toRightOf="@+id/editTextContrast"
-            android:numeric="integer|signed"
-            android:text="-150" />
+            <EditText
+                android:id="@+id/editTextContrast"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:numeric="integer|signed"
+                android:text="1" />
+
+            <EditText
+                android:id="@+id/editTextBrightness"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="false"
+                android:layout_toRightOf="@+id/editTextContrast"
+                android:numeric="integer|signed"
+                android:text="-150" />
+
+            <Button
+                android:id="@+id/buttonCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/editTextBrightness"
+                android:text="Change" />
+
+            <TextView
+                android:id="@+id/textViewcb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextContrast"
+                android:layout_toRightOf="@+id/shutter_button"
+                android:text="Contrast / Brightness" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/buttonCB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/editTextBrightness"
-            android:text="Change" />
-
-        <TextView
-            android:id="@+id/textViewcb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editTextContrast"
-            android:layout_toRightOf="@+id/shutter_button"
-            android:text="Contrast / Brightness" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Settings"
             android:id="@+id/buttonSettings"
-            android:layout_toEndOf="@+id/status_view_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/status_view_bottom" />
+            android:layout_toEndOf="@+id/status_view_bottom"
+            android:layout_toRightOf="@+id/status_view_bottom"
+            android:text="Settings" />
 
         <!--
         <ToggleButton android:id="@+id/torch_button"
@@ -269,4 +282,4 @@
 
     </RelativeLayout>
 
-</FrameLayout>
+</RelativeLayout>

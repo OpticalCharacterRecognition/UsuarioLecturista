@@ -17,7 +17,6 @@
 
 package com.fourtails.usuariolecturista.ocr;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,6 +34,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.SpannableStringBuilder;
 import android.text.style.CharacterStyle;
@@ -80,7 +81,7 @@ import java.util.Calendar;
  * <p/>
  * The code for this class was adapted from the ZXing project: http://code.google.com/p/zxing/
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback,
+public final class CaptureActivity extends ActionBarActivity implements SurfaceHolder.Callback,
         ShutterButton.OnShutterButtonListener {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
@@ -256,6 +257,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private EditText contrastTV;
     private EditText brightnessTV;
 
+    private Toolbar toolbar;
+
     Handler getHandler() {
         return handler;
     }
@@ -280,12 +283,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.capture);
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
         cameraButtonView = findViewById(R.id.camera_button_view);
         resultView = findViewById(R.id.result_view);
 
+        /**toolbar**/
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         // temporal for brightness adjustment
         brightnessTV = (EditText) findViewById(R.id.editTextBrightness);
         contrastTV = (EditText) findViewById(R.id.editTextContrast);
@@ -634,6 +640,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         //    MenuInflater inflater = getMenuInflater();
         //    inflater.inflate(R.menu.options_menu, menu);
         super.onCreateOptionsMenu(menu);
+        toolbar.inflateMenu(R.menu.global);
         menu.add(0, SETTINGS_ID, 0, "Settings").setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, ABOUT_ID, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
         return true;

@@ -1,7 +1,6 @@
 package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -11,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +27,7 @@ import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 import java.util.ArrayList;
 
 
-public class MainDrawerActivity extends Activity implements
+public class MainDrawerActivity extends ActionBarActivity implements
         HomeFragment.OnFragmentInteractionListener,
         BalanceFragment.OnFragmentInteractionListener,
         PayOptionsFragment.OnFragmentInteractionListener,
@@ -68,8 +69,11 @@ public class MainDrawerActivity extends Activity implements
         setContentView(R.layout.activity_main_drawer);
 
         //getActionBar().setCustomView(R.layout.action_bar_custom);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
 
         mDrawerTitle = getTitle();
@@ -115,18 +119,18 @@ public class MainDrawerActivity extends Activity implements
                 this,
                 mDrawerLayout,
                 //TODO change for the ic_drawer (we have to make it white)
-                R.drawable.ic_drawer, //nav menu toggle icon
+                R.drawable.ic_ab_drawer, //nav menu toggle icon
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle(mTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle(mTitle);
                 //getActionBar().setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();

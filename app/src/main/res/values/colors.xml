@@ -58,6 +58,7 @@
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
 
-    <color name="colorPrimary">#488FE9</color>
+    <color name="colorPrimary">#00C0A5</color>
+    <color name="colorPrimaryDarker">#ff00574b</color>
 
 </resources>
