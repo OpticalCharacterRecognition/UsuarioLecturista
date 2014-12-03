@@ -60,5 +60,6 @@
 
     <color name="colorPrimary">#00C0A5</color>
     <color name="colorPrimaryDarker">#ff00574b</color>
+    <color name="greyWater">#F5F5F5</color>
 
 </resources>

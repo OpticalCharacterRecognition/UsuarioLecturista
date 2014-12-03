@@ -41,8 +41,9 @@
         android:layout_height="wrap_content"
         android:text="Home"
         android:layout_gravity="center"
-        android:textColor="@color/grey_locky"
-        android:textSize="15sp" />
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textAppearance="@style/Base.Widget.AppCompat.Light.ActionBar.TabText" />
 
     <!--We might want to add counters to the menu in the future, we leave this commented-->
 

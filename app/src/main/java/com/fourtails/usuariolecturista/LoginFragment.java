@@ -1,7 +1,9 @@
 package com.fourtails.usuariolecturista;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -33,17 +35,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
-* Created by Vazh on 9/25/2014.
-*/
+ * Created by Vazh on 9/25/2014.
+ */
 public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
+    public static final String PREF_FACEBOOK_PROFILE_ID = "facebookProfileIdPref";
+    public static final String PREF_FACEBOOK_PROFILE_NAME = "facebookProfileNamePref";
 
     private UiLifecycleHelper uiHelper;
 
     private TextView userInfoTextView;
 
     public static final String COMES_FROM_LOGOUT = "COMES_FROM_LOGOUT";
+
+    public static String facebookPicId = "";
 
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -101,13 +107,34 @@ public class LoginFragment extends Fragment {
         uiHelper.onCreate(savedInstanceState);
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
 
             Log.i(TAG, "Logged in...");
 
             //userInfoTextView.setVisibility(View.VISIBLE);
             // Request user data and show the results
+            Request.newMeRequest(session, new Request.GraphUserCallback() {
+                @Override
+                public void onCompleted(GraphUser user, Response response) {
+                    if (user != null) {
+                        try {
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences.Editor editor = prefs.edit();
+
+                            editor.putString(PREF_FACEBOOK_PROFILE_ID, user.getId()).apply();
+                            editor.putString(PREF_FACEBOOK_PROFILE_NAME, user.getName()).apply();
+
+                            //Bitmap bitmap = BitmapFactory.decodeStream(imgUrl      // tried this also
+                            //.openConnection().getInputStream());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).executeAsync();
+
+            //TODO: delete this one?
             Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
                 @Override
@@ -265,7 +292,7 @@ public class LoginFragment extends Fragment {
                             final String postId = values.getString("post_id");
                             if (postId != null) {
                                 Toast.makeText(getActivity(),
-                                        "Posted story, id: "+postId,
+                                        "Posted story, id: " + postId,
                                         Toast.LENGTH_SHORT).show();
                             } else {
                                 // User clicked the Cancel button
@@ -301,7 +328,7 @@ public class LoginFragment extends Fragment {
         // may not be triggered. Trigger it if it's open/closed.
         Session session = Session.getActiveSession();
         if (session != null &&
-                (session.isOpened() || session.isClosed()) ) {
+                (session.isOpened() || session.isClosed())) {
             onSessionStateChange(session, session.getState(), null);
         }
 
@@ -346,6 +373,7 @@ public class LoginFragment extends Fragment {
     private interface MyGraphLanguage extends GraphObject {
         // Getter for the ID field
         String getId();
+
         // Getter for the Name field
         String getName();
     }

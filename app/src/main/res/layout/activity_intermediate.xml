@@ -12,6 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ButtonLogout"
-        android:text="LOGOUT"/>
+        android:text="LOGOUT"
+        android:layout_marginTop="48dp"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

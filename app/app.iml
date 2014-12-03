@@ -90,6 +90,7 @@
     <orderEntry type="library" exported="" name="json_simple-1.1" level="project" />
     <orderEntry type="library" exported="" name="jtar-1.0.4" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.2" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.4.0" level="project" />
     <orderEntry type="module" module-name="facebook" exported="" />
     <orderEntry type="module" module-name="tess-two" exported="" />
   </component>

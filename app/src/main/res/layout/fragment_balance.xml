@@ -2,115 +2,131 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.vazh.android.golocky.app.balance.BalanceFragment"
     android:orientation="vertical"
-    android:padding="30dp">
+    android:padding="30dp"
+    tools:context="com.vazh.android.golocky.app.balance.BalanceFragment">
 
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Ciclo: "
-            android:id="@+id/textView4" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Spinner
+            android:id="@+id/spinnerCycleSelector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerCycleSelector"
             android:entries="@array/drop_down_example"
             android:prompt="@string/label_select_cycle" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/layoutBalanceContainer"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:id="@+id/layoutBalanceContainer" />
+        android:orientation="vertical" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        card_view:cardCornerRadius="4dp"
+        android:padding="5dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Fecha Limite:"
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal"
-            android:textIsSelectable="false"
-            android:textSize="20sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="26 de Nov 2014"
-            android:id="@+id/textViewBillingDate"
-            android:textIsSelectable="false"
-            android:textSize="20sp"
-            android:layout_marginLeft="20dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Fecha Limite:"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout"
-        android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/textViewBillingDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="26 de Nov 2014"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Consumo Total:"
-            android:id="@+id/textView3"
-            android:textSize="20sp" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="$100.00"
-            android:id="@+id/textViewTotalBalance"
-            android:textSize="20sp"
-            android:layout_marginLeft="10dp" />
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Consumo Total:"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="20sp" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/textViewTotalBalance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="$100.00"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="20sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Realizada el dia:"
-            android:id="@+id/textView2"
-            android:textSize="20sp" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="2 de Nov 2014"
-            android:id="@+id/textViewLastReadingDate"
-            android:textSize="20sp"
-            android:layout_marginLeft="10dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Realizada el dia:"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textViewLastReadingDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="2 de Nov 2014"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
     <!--Debug purposes only borrar ciclo-->
     <!--<Button-->
     <!--android:layout_width="wrap_content"-->
@@ -119,22 +135,22 @@
     <!--android:id="@+id/buttonResetValuesForCycle"-->
     <!--android:layout_gravity="center_horizontal" />-->
     <Button
+        android:id="@+id/buttonPay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pagar"
-        android:id="@+id/buttonPay"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:text="Pagar" />
 
     <Button
+        android:id="@+id/buttonFBOpenGraph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Share on Facebook"
-        android:id="@+id/buttonFBOpenGraph"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/com_facebook_button_blue"
         android:layout_marginTop="20dp"
+        android:background="@drawable/com_facebook_button_blue"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp" />
+        android:paddingRight="20dp"
+        android:text="Share on Facebook" />
 
     <!--<Button-->
     <!--android:layout_width="wrap_content"-->

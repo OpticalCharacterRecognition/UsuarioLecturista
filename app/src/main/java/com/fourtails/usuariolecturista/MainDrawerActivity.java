@@ -4,27 +4,36 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.ocr.CaptureActivity;
+import com.fourtails.usuariolecturista.utilities.CircleTransform;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_ID;
+import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_NAME;
 
 
 public class MainDrawerActivity extends ActionBarActivity implements
@@ -36,10 +45,14 @@ public class MainDrawerActivity extends ActionBarActivity implements
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
 
-
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    // we need this because when we try to close the drawer we have to pass the container view
+    private RelativeLayout mDrawerRelativeLayout;
+
+    private ImageView imageViewFacebookProfilePic;
+    private TextView textViewFacebookName;
 
     // nav drawer title
     private CharSequence mDrawerTitle;
@@ -56,8 +69,6 @@ public class MainDrawerActivity extends ActionBarActivity implements
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
 
-    private TextView mTopBarTitle;
-
     public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
 
@@ -68,18 +79,12 @@ public class MainDrawerActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
 
-        //getActionBar().setCustomView(R.layout.action_bar_custom);
+        /**toolBar **/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
+        getSupportActionBar().setTitle("Usuario Lecturista");
 
         mDrawerTitle = getTitle();
-
-        // we use a custom bar so we must set the title this way
-        //mTopBarTitle = (TextView) findViewById(R.id.titleActionBarTitle);
 
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -90,6 +95,25 @@ public class MainDrawerActivity extends ActionBarActivity implements
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+
+
+        mDrawerRelativeLayout = (RelativeLayout) findViewById(R.id.linearLayoutDrawer);
+
+        imageViewFacebookProfilePic = (ImageView) findViewById(R.id.imageViewFBProfileImage);
+        textViewFacebookName = (TextView) findViewById(R.id.textViewFacebookName);
+
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
+        String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
+
+        Picasso.with(this)
+                .load("https://graph.facebook.com/"
+                        + facebookId + "/picture?type=large")
+                .transform(new CircleTransform())
+                .into(imageViewFacebookProfilePic);
+
+        textViewFacebookName.setText(facebookName);
 
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
@@ -111,17 +135,12 @@ public class MainDrawerActivity extends ActionBarActivity implements
                 navDrawerItems);
         mDrawerList.setAdapter(adapter);
 
-        // enabling action bar app icon and behaving it as toggle button
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
-//        getActionBar().setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-                //TODO change for the ic_drawer (we have to make it white)
-                R.drawable.ic_ab_drawer, //nav menu toggle icon
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
+                toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close
         ) {
             public void onDrawerClosed(View view) {
                 getSupportActionBar().setTitle(mTitle);
@@ -130,13 +149,20 @@ public class MainDrawerActivity extends ActionBarActivity implements
             }
 
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mTitle);
-                //getActionBar().setTitle(mDrawerTitle);
+                mDrawerList.setItemChecked(1, true);
+                mDrawerList.setSelection(1);
+                getSupportActionBar().setTitle("Usuario Lecturista");
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        // enabling action bar app icon and behaving it as toggle button
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        mDrawerToggle.syncState();
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
@@ -202,7 +228,7 @@ public class MainDrawerActivity extends ActionBarActivity implements
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
+            mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
         } else {
             // error in creating fragment
             Log.e("MainActivity", "Error in creating fragment");
@@ -291,7 +317,7 @@ public class MainDrawerActivity extends ActionBarActivity implements
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment).commit();
 
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
 
     }
 }

@@ -50,6 +50,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.drawer_list_item, null);
         }
 
+
         assert convertView != null;
         LinearLayout container = (LinearLayout) convertView.findViewById(R.id.navDrawerContainer);
 
