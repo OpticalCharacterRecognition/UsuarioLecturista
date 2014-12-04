@@ -33,9 +33,9 @@
         android:id="@+id/linearLayoutDrawer"
         android:layout_width="304dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_gravity="start"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_gravity="start">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageViewDrawer"
@@ -47,30 +47,29 @@
             android:src="@drawable/test1" />
 
         <ImageView
+            android:id="@+id/imageViewFBProfileImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="start"
-            android:id="@+id/imageViewFBProfileImage"
             android:layout_marginLeft="16dp"
-            android:contentDescription="profile pic"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:contentDescription="profile pic" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:textColor="@color/white_locky"
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewDrawerMedium"
             android:id="@+id/textViewFacebookName"
-            android:layout_below="@+id/imageViewFBProfileImage"
             android:layout_alignLeft="@+id/imageViewFBProfileImage"
             android:layout_alignStart="@+id/imageViewFBProfileImage"
-            android:textSize="20sp"
-            android:layout_marginTop="8dp" />
+            android:layout_below="@+id/imageViewFBProfileImage"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/whiteWater"
+            android:text="New Text" />
 
         <ListView
             android:id="@+id/list_slidermenu"
             android:layout_width="304dp"
             android:layout_height="match_parent"
+            android:layout_below="@+id/imageViewDrawer"
             android:layout_gravity="start"
             android:background="@color/white_locky"
             android:choiceMode="singleChoice"
@@ -78,7 +77,6 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="10dp"
             android:drawSelectorOnTop="false"
-            android:listSelector="@drawable/list_selector"
-            android:layout_below="@+id/imageViewDrawer" />
+            android:listSelector="@drawable/list_selector" />
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

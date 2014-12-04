@@ -16,14 +16,10 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp" />
 
-    <TextView
+    <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/textViewDrawer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        style="@style/TextViewDrawerMedium"
+        android:text="Home" />
 
     <!--We might want to add counters to the menu in the future, we leave this commented-->
 

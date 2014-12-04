@@ -9,5 +9,29 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <style name="TextViewMainPage">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/blackWater</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
+    <style name="TextViewMainPageLabel">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/greyWater</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
+    <style name="TextViewDrawerMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/blackWater</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
 
 </resources>
