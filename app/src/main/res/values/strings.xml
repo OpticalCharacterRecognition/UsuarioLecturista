@@ -23,16 +23,20 @@
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item>Balance</item>
-        <item>Lectura</item>
-        <item>LogOut</item>
+        <item>Promociones</item>
+        <item>Notificaciones</item>
+        <item>Contacto</item>
+        <item>Ajustes</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
-        <item>@drawable/shutter</item>
-        <item>@drawable/shutter</item>
-        <item>@drawable/shutter</item>
+        <item>@drawable/ic_equalizer_black_48dp</item>
+        <item>@drawable/ic_new_releases_black_48dp</item>
+        <item>@drawable/ic_notifications_black_48dp</item>
+        <item>@drawable/ic_gps_fixed_black_48dp</item>
+        <item>@drawable/ic_settings_black_48dp</item>
     </array>
 
     <!--Balance-->

@@ -1,22 +1,5 @@
 <resources>
 
-    <!--&lt;!&ndash; Base application theme. &ndash;&gt;-->
-    <!--<style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">-->
-    <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-    <!--</style>-->
-
-    <!--<style name="AppTheme" parent="AppTheme.Base"/>-->
-
-    <!--<style name="AppTheme.Base" parent="Theme.AppCompat">-->
-    <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-    <!--<item name="colorPrimaryDark">@color/colorPrimary</item>-->
-    <!--<item name="android:windowNoTitle">true</item>-->
-    <!--<item name="windowActionBar">false</item>-->
-    <!--</style>-->
-
-    <!-- Base application theme. -->
-    <!--<style name="AppTheme" parent="android:Theme.Material.Light">-->
-    <!--</style>-->
     <style name="MyToolbar" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@color/white_locky</item>
     </style>

@@ -50,7 +50,6 @@ public class NavDrawerListAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.drawer_list_item, null);
         }
 
-
         assert convertView != null;
         LinearLayout container = (LinearLayout) convertView.findViewById(R.id.navDrawerContainer);
 
@@ -60,30 +59,6 @@ public class NavDrawerListAdapter extends BaseAdapter {
 
         imgIcon.setImageResource(navDrawerItems.get(position).getIcon());
         txtTitle.setText(navDrawerItems.get(position).getTitle());
-
-        /** This logic is used in case we want the first item to be the app icon **/
-        // Bigger item just for the mascot
-//        ImageView imgIconLogo = (ImageView) convertView.findViewById(R.id.imageButtonDrawerIconLogo);
-//        TextView txtTitleLogo = (TextView) convertView.findViewById(R.id.textViewDrawerLogo);
-//
-//        imgIconLogo.setImageResource(navDrawerItems.get(position).getIcon());
-//        txtTitleLogo.setText(navDrawerItems.get(position).getTitle());
-//
-//        // position zero means that is the mascot, and that is why we make the height bigger, and
-//        // "render" the different icon and text, and hide the others
-//        if (position == 0) {
-//            container.setMinimumHeight(100);
-//            imgIcon.setVisibility(View.GONE);
-//            txtTitle.setVisibility(View.GONE);
-//            imgIconLogo.setVisibility(View.VISIBLE);
-//            txtTitleLogo.setVisibility(View.VISIBLE);
-//        } else {
-//            imgIcon.setVisibility(View.VISIBLE);
-//            txtTitle.setVisibility(View.VISIBLE);
-//            imgIconLogo.setVisibility(View.GONE);
-//            txtTitleLogo.setVisibility(View.GONE);
-//
-//        }
 
         imgIcon.setVisibility(View.VISIBLE);
         txtTitle.setVisibility(View.VISIBLE);

@@ -4,46 +4,26 @@
     android:id="@+id/navDrawerContainer"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
-    android:layout_height="60dp">
-
-    <!--this part is in case we want a "fixed" image first-->
-    <!--<ImageView-->
-    <!--android:id="@+id/imageButtonDrawerIconLogo"-->
-    <!--android:layout_width="100dp"-->
-    <!--android:layout_height="100dp"-->
-    <!--android:background="@null"-->
-    <!--android:src="@drawable/nav_mascotti"-->
-    <!--android:layout_marginLeft="20dp"-->
-    <!--android:layout_marginRight="20dp" />-->
-
-    <!--<com.vazh.android.golocky.app.custom.GoLockyTextView-->
-    <!--android:id="@+id/textViewDrawerLogo"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Home"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:textColor="@color/grey_locky"-->
-    <!--android:textSize="20sp"-->
-    <!--app:typeface="montserratBold" />-->
+    android:layout_height="48dp"
+    android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/imageButtonDrawerIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@null"
-        android:src="@drawable/shutter"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:src="@drawable/ic_notifications_black_48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
 
     <TextView
         android:id="@+id/textViewDrawer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Home"
-        android:layout_gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textAppearance="@style/Base.Widget.AppCompat.Light.ActionBar.TabText" />
+        android:textSize="14sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <!--We might want to add counters to the menu in the future, we leave this commented-->
 

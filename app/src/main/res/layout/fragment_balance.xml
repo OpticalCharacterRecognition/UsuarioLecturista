@@ -1,15 +1,20 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="30dp"
     tools:context="com.vazh.android.golocky.app.balance.BalanceFragment">
 
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
         android:orientation="horizontal">
 
         <TextView
@@ -29,8 +34,12 @@
 
     <LinearLayout
         android:id="@+id/layoutBalanceContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="200dp"
+        android:layout_alignEnd="@+id/buttonFBOpenGraph"
+        android:layout_alignRight="@+id/buttonFBOpenGraph"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_margin="20dp"
         android:orientation="vertical" />
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -38,10 +47,13 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp"
-        android:padding="5dp">
+        android:layout_alignEnd="@+id/buttonFBOpenGraph"
+        android:layout_alignRight="@+id/buttonFBOpenGraph"
+        android:layout_below="@+id/layoutBalanceContainer"
+        android:padding="5dp"
+        card_view:cardCornerRadius="4dp">
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -134,19 +146,43 @@
     <!--android:text="Borrar Ciclo"-->
     <!--android:id="@+id/buttonResetValuesForCycle"-->
     <!--android:layout_gravity="center_horizontal" />-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/card_view"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginRight="20dp">
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_payment_white_24dp"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimary" />
+    </RelativeLayout>
+
     <Button
         android:id="@+id/buttonPay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="408dp"
+        android:layout_marginTop="1299dp"
         android:text="Pagar" />
 
     <Button
         android:id="@+id/buttonFBOpenGraph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="267dp"
+        android:layout_marginTop="1503dp"
         android:background="@drawable/com_facebook_button_blue"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -159,4 +195,4 @@
     <!--android:id="@+id/buttonFB"-->
     <!--android:layout_gravity="center_horizontal" />-->
 
-</LinearLayout>
+</RelativeLayout>
