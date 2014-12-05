@@ -33,5 +33,19 @@
         <item name="typeface">roboto_medium</item>
     </style>
 
+    <!--<style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">-->
+    <!--<item name="android:textColor">@color/whiteWater</item>-->
+    <!--<item name="android:background">@color/colorPrimary</item>-->
+    <!--</style>-->
+
+    <!--<style name="mySpinnerItemStyle2" parent="@android:style/Widget.Holo.Spinner">-->
+    <!--<item name="android:textColor">@color/whiteWater</item>-->
+    <!--</style>-->
+
+    <!--<style name="snipnaahh" parent="@android:style/Widget.Holo">-->
+    <!--<item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>-->
+    <!--<item name="android:spinnerItemStyle">@style/mySpinnerItemStyle</item>-->
+    <!--</style>-->
+
 
 </resources>

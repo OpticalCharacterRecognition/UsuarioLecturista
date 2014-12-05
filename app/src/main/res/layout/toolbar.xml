@@ -5,6 +5,15 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
-    app:theme="@style/MyToolbar" />
+    android:minHeight="?attr/actionBarSize"
+    app:theme="@style/MyToolbar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    <Spinner
+        android:id="@+id/topBarSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:dropDownVerticalOffset="-50dp"
+        android:dropDownSelector="@drawable/spinner_selector" />
+</android.support.v7.widget.Toolbar>

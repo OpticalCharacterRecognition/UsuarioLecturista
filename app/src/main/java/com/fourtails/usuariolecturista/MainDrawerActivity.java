@@ -13,20 +13,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.internal.widget.TintSpinner;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
-import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
 import com.squareup.picasso.Picasso;
 
@@ -69,6 +71,9 @@ public class MainDrawerActivity extends ActionBarActivity implements
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
 
+    Toolbar toolbar;
+    TintSpinner toolbarSpinner;
+
     public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
 
@@ -80,9 +85,32 @@ public class MainDrawerActivity extends ActionBarActivity implements
         setContentView(R.layout.activity_main_drawer);
 
         /**toolBar **/
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbarSpinner = (TintSpinner) toolbar.getChildAt(0);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Usuario Lecturista");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        String[] frags = new String[]{
+                "1 Nov - 30 Nov 2014",
+                "1 Oct - 31 Oct 2014",
+                "1 Sep - 30 Sep 2014"
+        };
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, frags);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
+        //TODO: fix the goddamn arrow on the goddamn spinner >:\
+        toolbarSpinner.setAdapter(spinnerAdapter);
+        toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "thing clicked " + position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         mDrawerTitle = getTitle();
 
@@ -206,11 +234,15 @@ public class MainDrawerActivity extends ActionBarActivity implements
             // we will start from case 0 is mascot, so we break
             case 0:
                 fragment = new BalanceFragment();
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                toolbarSpinner.setVisibility(View.VISIBLE);
                 break;
             case 1:
-                Intent ocrCaptureActivity = new Intent(this, CaptureActivity.class);
-                startActivityForResult(ocrCaptureActivity, GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
-                //fragment = new HomeFragment();
+//                Intent ocrCaptureActivity = new Intent(this, CaptureActivity.class);
+//                startActivityForResult(ocrCaptureActivity, GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
+                fragment = new HomeFragment();
+                toolbarSpinner.setVisibility(View.GONE);
+                getSupportActionBar().setDisplayShowTitleEnabled(true);
                 break;
             case 2:
                 finish();

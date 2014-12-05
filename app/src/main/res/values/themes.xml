@@ -7,7 +7,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="android:textColorHighlight">@color/white_locky</item>
-
         <item name="android:color">@color/white_locky</item>
         <item name="android:text">@color/teal_locky</item>
         <item name="android:windowNoTitle">true</item>
