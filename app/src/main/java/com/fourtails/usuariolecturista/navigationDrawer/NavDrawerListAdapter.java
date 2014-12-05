@@ -56,6 +56,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
         // Normal Items
         ImageView imgIcon = (ImageView) convertView.findViewById(R.id.imageButtonDrawerIcon);
         TextView txtTitle = (TextView) convertView.findViewById(R.id.textViewDrawer);
+        TextView textCount = (TextView) convertView.findViewById(R.id.counter);
 
         imgIcon.setImageResource(navDrawerItems.get(position).getIcon());
         txtTitle.setText(navDrawerItems.get(position).getTitle());
@@ -63,15 +64,13 @@ public class NavDrawerListAdapter extends BaseAdapter {
         imgIcon.setVisibility(View.VISIBLE);
         txtTitle.setVisibility(View.VISIBLE);
 
-
-        /** Future Proof for displaying count**/
         // check whether it set visible or not
-/*        if(navDrawerItems.get(position).getCounterVisibility()){
-            txtCount.setText(navDrawerItems.get(position).getCount());
+        if (navDrawerItems.get(position).getCounterVisibility()) {
+            textCount.setText(navDrawerItems.get(position).getCount());
         }else{
             // hide the counter view
-            txtCount.setVisibility(View.GONE);
-        }*/
+            textCount.setVisibility(View.GONE);
+        }
 
         return convertView;
     }

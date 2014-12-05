@@ -15,11 +15,24 @@ public class NavDrawerItem {
     public NavDrawerItem() {
     }
 
+    /**
+     * Constructor for default kind of item
+     *
+     * @param title
+     * @param icon
+     */
     public NavDrawerItem(String title, int icon) {
         this.title = title;
         this.icon = icon;
     }
 
+    /**
+     * Constructor with counter
+     * @param title
+     * @param icon
+     * @param isCounterVisible
+     * @param count
+     */
     public NavDrawerItem(String title, int icon, boolean isCounterVisible, String count) {
         this.title = title;
         this.icon = icon;
