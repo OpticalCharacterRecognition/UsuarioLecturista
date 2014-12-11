@@ -31,7 +31,7 @@
         android:layout_alignParentRight="true"
         android:textColor="@color/whiteWater"
         android:text="4"
-        android:background="@drawable/ic_lens_orange600_24dp"
+        android:background="@drawable/counter"
         android:gravity="center_vertical|center_horizontal"
         android:layout_width="40dp"
         android:layout_height="40dp"
