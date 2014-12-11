@@ -106,39 +106,33 @@
     <!--android:text="Borrar Ciclo"-->
     <!--android:id="@+id/buttonResetValuesForCycle"-->
     <!--android:layout_gravity="center_horizontal" />-->
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/card_view"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="-32dp"
-        android:layout_marginRight="20dp"
-        android:id="@+id/relativeLayout">
 
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fabPay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_payment_white_24dp"
+            android:layout_alignBottom="@+id/card_view"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="-32dp"
+            android:layout_marginRight="20dp"
+            android:elevation="7dp"
             fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorPrimaryDarker" />
-    </RelativeLayout>
 
     <!--Scan button-->
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/relativeLayout"
-        android:layout_above="@+id/relativeLayout">
-
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fabScan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_camera_alt_white_24dp"
+            android:elevation="7dp"
             fab:fab_colorNormal="@color/colorPrimary"
-            fab:fab_colorPressed="@color/colorPrimaryDarker" />
-    </RelativeLayout>
+            fab:fab_colorPressed="@color/colorPrimaryDarker"
+            android:layout_alignBottom="@+id/card_view"
+            android:layout_alignLeft="@+id/fabPay"
+            android:layout_alignStart="@+id/fabPay"
+            android:layout_marginBottom="50dp" />
 
     <!--<Button-->
     <!--android:id="@+id/buttonPay"-->

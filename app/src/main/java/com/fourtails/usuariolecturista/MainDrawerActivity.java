@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.internal.widget.TintSpinner;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +72,7 @@ public class MainDrawerActivity extends ActionBarActivity implements
     private NavDrawerListAdapter adapter;
 
     Toolbar toolbar;
-    TintSpinner toolbarSpinner;
+    Spinner toolbarSpinner;
 
     public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
@@ -86,7 +86,7 @@ public class MainDrawerActivity extends ActionBarActivity implements
 
         /**toolBar **/
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarSpinner = (TintSpinner) toolbar.getChildAt(0);
+        toolbarSpinner = (Spinner) toolbar.getChildAt(0);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Usuario Lecturista");
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -130,7 +130,6 @@ public class MainDrawerActivity extends ActionBarActivity implements
         imageViewFacebookProfilePic = (ImageView) findViewById(R.id.imageViewFBProfileImage);
         textViewFacebookName = (TextView) findViewById(R.id.textViewFacebookName);
 
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
         String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
@@ -138,7 +137,9 @@ public class MainDrawerActivity extends ActionBarActivity implements
         Picasso.with(this)
                 .load("https://graph.facebook.com/"
                         + facebookId + "/picture?type=large")
+                .placeholder(R.drawable.ic_titular)
                 .transform(new CircleTransform())
+                .error(R.drawable.ic_titular)
                 .into(imageViewFacebookProfilePic);
 
         textViewFacebookName.setText(facebookName);
