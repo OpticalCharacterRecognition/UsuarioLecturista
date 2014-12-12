@@ -1,10 +1,8 @@
 package com.fourtails.usuariolecturista;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -13,14 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
-import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphObject;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
@@ -35,29 +31,18 @@ import com.melnykov.fab.FloatingActionButton;
 import java.util.Date;
 import java.util.Random;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 
 /**
  * This is the balance fragment where it shows your metrics for the last reading, this month etc,
  * also calls for a facebook publish
  */
 public class BalanceFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private final String TAG = "BalanceFragment";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private TextView textViewBalanceMoney;
-    private TextView textViewBalanceMoneyOut;
-
-    private ProgressBar progressBar;
-
-    private OnFragmentInteractionListener mListener;
 
     public static final String PREF_LAST_READING = "lastReadingPref";
     public static final String PREF_LAST_READING_DATE = "lastReadingDatePref";
@@ -69,26 +54,29 @@ public class BalanceFragment extends Fragment {
 
     private String lastReadingDateValue;
 
-    private UiLifecycleHelper uiHelper;
+    // Injected views and clicklisteners
+    @InjectView(R.id.textViewLastReadingDate)
+    TextView lastReading;
+    //@InjectView(R.id.textViewLastReadingDate) TextView lastReadingDate;
+    @InjectView(R.id.textViewTotalBalance)
+    TextView totalLitersForCycle;
 
+    @InjectView(R.id.fabScan)
+    FloatingActionButton fabScan;
 
+    @OnClick(R.id.fabScan)
+    public void scanButtonClicked() {
+        Intent ocrCaptureActivity = new Intent(getActivity(), CaptureActivity.class);
+        MainActivity.bus.post(ocrCaptureActivity);
+    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BalanceFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BalanceFragment newInstance(String param1, String param2) {
-        BalanceFragment fragment = new BalanceFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @InjectView(R.id.fabPay)
+    FloatingActionButton fabPay;
+
+    @OnClick(R.id.fabPay)
+    public void payButtonClicked() {
+        Fragment payOptionsFragment = new PayOptionsFragment();
+        MainActivity.bus.post(payOptionsFragment);
     }
 
     public BalanceFragment() {
@@ -101,69 +89,14 @@ public class BalanceFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        uiHelper.onPause();
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        uiHelper.onDestroy();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        uiHelper.onResume();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        uiHelper = new UiLifecycleHelper(getActivity(), null);
-        uiHelper.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_balance, container, false);
 
-        // View components
-        TextView lastReading = (TextView) view.findViewById(R.id.textViewLastReadingDate);
-        TextView lastReadingDate = (TextView) view.findViewById(R.id.textViewLastReadingDate);
-        TextView totalLitersForCycle = (TextView) view.findViewById(R.id.textViewTotalBalance);
+        ButterKnife.inject(this, view);
 
         //Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
-
-        FloatingActionButton fabPay = (FloatingActionButton) view.findViewById(R.id.fabPay);
-        fabPay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                payButtonClicked();
-            }
-        });
-
-        FloatingActionButton fabScan = (FloatingActionButton) view.findViewById(R.id.fabScan);
-        fabScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanButtonClicked();
-            }
-        });
 
         //facebook open graph
 //        Button facebookOpenGraph = (Button) view.findViewById(R.id.buttonFBOpenGraph);
@@ -195,7 +128,7 @@ public class BalanceFragment extends Fragment {
 
         lastReading.setText(String.valueOf(lastReadingValue));
 
-        lastReadingDate.setText(lastReadingDateValue);
+        //lastReadingDate.setText(lastReadingDateValue);
 
         totalLitersForCycle.setText(String.valueOf(totalLitersForCycleValue));
 
@@ -310,7 +243,6 @@ public class BalanceFragment extends Fragment {
         layout.addView(graphView);
 
 
-
 //        Button button = (Button) view.findViewById(R.id.buttonPaypalTest);
 //        button.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -381,23 +313,6 @@ public class BalanceFragment extends Fragment {
         return view;
     }
 
-    private void scanButtonClicked() {
-        Intent ocrCaptureActivity = new Intent(getActivity(), CaptureActivity.class);
-        startActivity(ocrCaptureActivity);
-    }
-
-    private void payButtonClicked() {
-        FragmentManager fragmentManager = getFragmentManager();
-        assert fragmentManager != null;
-
-        Fragment payOptionsFragment = new PayOptionsFragment();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, payOptionsFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
     /**
      * Resets the preferences to 0 and then refreshes the fragment
      */
@@ -428,7 +343,7 @@ public class BalanceFragment extends Fragment {
             FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
                     .setLink("https://developers.facebook.com/android")
                     .build();
-            uiHelper.trackPendingDialogCall(shareDialog.present());
+            //uiHelper.trackPendingDialogCall(shareDialog.present());
 
         } else { //If the app is not installed then creates a really cool dialog which might be a better choice
             // Fallback. For example, publish the post using the Feed Dialog
@@ -508,48 +423,9 @@ public class BalanceFragment extends Fragment {
 
         FacebookDialog shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(getActivity(), action, "lecturista:realizar", "lectura")
                 .build();
-        uiHelper.trackPendingDialogCall(shareDialog.present());
+        //uiHelper.trackPendingDialogCall(shareDialog.present());
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
 
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {

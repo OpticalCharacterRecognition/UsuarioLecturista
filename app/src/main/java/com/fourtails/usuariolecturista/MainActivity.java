@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -30,31 +29,43 @@ import android.widget.Toast;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_ID;
 import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_NAME;
 
 
-public class MainDrawerActivity extends ActionBarActivity implements
-        HomeFragment.OnFragmentInteractionListener,
-        BalanceFragment.OnFragmentInteractionListener,
-        PayOptionsFragment.OnFragmentInteractionListener,
-        AddCreditCardFragment.OnFragmentInteractionListener {
+public class MainActivity extends ActionBarActivity {
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    public static Bus bus;
+
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @InjectView(R.id.list_slidermenu)
+    ListView mDrawerList;
+    @InjectView(R.id.linearLayoutDrawer)
+    RelativeLayout mDrawerRelativeLayout;
+
+    @InjectView(R.id.imageViewFBProfileImage)
+    ImageView imageViewFacebookProfilePic;
+    @InjectView(R.id.textViewFacebookName)
+    TextView textViewFacebookName;
+
+
     private ActionBarDrawerToggle mDrawerToggle;
     // we need this because when we try to close the drawer we have to pass the container view
-    private RelativeLayout mDrawerRelativeLayout;
 
-    private ImageView imageViewFacebookProfilePic;
-    private TextView textViewFacebookName;
 
     // nav drawer title
     private CharSequence mDrawerTitle;
@@ -71,6 +82,7 @@ public class MainDrawerActivity extends ActionBarActivity implements
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
 
+    @InjectView(R.id.toolbar)
     Toolbar toolbar;
     Spinner toolbarSpinner;
 
@@ -82,35 +94,15 @@ public class MainDrawerActivity extends ActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_drawer);
+        setContentView(R.layout.activity_main);
+
+        bus = new Bus(ThreadEnforcer.MAIN);
+        bus.register(this);
+
+        ButterKnife.inject(this);
 
         /**toolBar **/
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarSpinner = (Spinner) toolbar.getChildAt(0);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Usuario Lecturista");
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        String[] frags = new String[]{
-                "1 Nov - 30 Nov 2014",
-                "1 Oct - 31 Oct 2014",
-                "1 Sep - 30 Sep 2014"
-        };
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, frags);
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
-        //TODO: fix the goddamn arrow on the goddamn spinner >:\
-        toolbarSpinner.setAdapter(spinnerAdapter);
-        toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "thing clicked " + position, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        setUpToolBar();
 
         mDrawerTitle = getTitle();
 
@@ -120,15 +112,6 @@ public class MainDrawerActivity extends ActionBarActivity implements
         // nav drawer icons from resources
         navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-
-
-        mDrawerRelativeLayout = (RelativeLayout) findViewById(R.id.linearLayoutDrawer);
-
-        imageViewFacebookProfilePic = (ImageView) findViewById(R.id.imageViewFBProfileImage);
-        textViewFacebookName = (TextView) findViewById(R.id.textViewFacebookName);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
@@ -166,7 +149,6 @@ public class MainDrawerActivity extends ActionBarActivity implements
                 navDrawerItems);
         mDrawerList.setAdapter(adapter);
 
-
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -189,10 +171,6 @@ public class MainDrawerActivity extends ActionBarActivity implements
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        // enabling action bar app icon and behaving it as toggle button
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         mDrawerToggle.syncState();
 
         if (savedInstanceState == null) {
@@ -201,16 +179,62 @@ public class MainDrawerActivity extends ActionBarActivity implements
         }
     }
 
+    private void setUpToolBar() {
+        toolbarSpinner = (Spinner) toolbar.getChildAt(0);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Usuario Lecturista");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+        String[] frags = new String[]{
+                "1 Nov - 30 Nov 2014",
+                "1 Oct - 31 Oct 2014",
+                "1 Sep - 30 Sep 2014"
+        };
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, frags);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
+        //TODO: fix the goddamn arrow on the goddamn spinner >:\
+        toolbarSpinner.setAdapter(spinnerAdapter);
+        toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "thing clicked " + position, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        // enabling action bar app icon and behaving it as toggle button
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-//    @Override
-//    public void onFragmentInteraction(String id) {
-//
-//    }
+    /**
+     * Bus event called by fragments to change into other fragments
+     *
+     * @param fragment
+     */
+    @Subscribe
+    public void changeFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        assert fragmentManager != null;
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    /**
+     * Bus event called by fragments to start any activity
+     *
+     * @param intent
+     */
+    @Subscribe
+    public void startAnyActivity(Intent intent) {
+        startActivity(intent);
+    }
 
     /**
      * Slide menu item click listener

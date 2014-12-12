@@ -61,7 +61,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourtails.usuariolecturista.BalanceFragment;
-import com.fourtails.usuariolecturista.MainDrawerActivity;
+import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.ocr.camera.CameraManager;
 import com.fourtails.usuariolecturista.ocr.camera.ShutterButton;
@@ -930,7 +930,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
             editor.putInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, totalLitersThisCycle).commit(); // total liters for this cycle
 
             // we go back to the drawer and go to balance
-            setResult(MainDrawerActivity.GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
+            setResult(MainActivity.GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
             finish();
         }
         return true;

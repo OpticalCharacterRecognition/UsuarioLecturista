@@ -152,7 +152,7 @@ public class LoginFragment extends Fragment {
 //                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
 //                            startActivity(intentNewActivity);
                             //Starts Main Drawer Activity After login
-                            Intent intentNewActivity = new Intent(getActivity(), MainDrawerActivity.class);
+                            Intent intentNewActivity = new Intent(getActivity(), MainActivity.class);
                             intent.putExtra(COMES_FROM_LOGOUT, true);
                             startActivity(intentNewActivity);
                         }

@@ -17,6 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
 }
 
 dependencies {
@@ -35,5 +42,8 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.0.9'
     // implementing the Roboto styles
     compile 'com.github.johnkil.android-robototextview:robototextview:2.2.0'
-
+    // View "injection" Library
+    compile 'com.jakewharton:butterknife:6.0.0'
+    // enhanced event bus
+    compile 'com.squareup:otto:1.3.5'
 }

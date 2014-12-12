@@ -63,7 +63,7 @@
         </activity>
         <activity android:name=".ocr.PreferencesActivity" />
         <activity
-            android:name=".MainDrawerActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main_drawer"></activity>
     </application>
 

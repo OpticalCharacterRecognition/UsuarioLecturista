@@ -119,7 +119,8 @@
             android:layout_alignBottom="@+id/card_view"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="50dp" />
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="20dp" />
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabPay"
@@ -131,7 +132,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/fabScan"
-        android:layout_marginTop="86dp" />
+        android:layout_marginTop="86dp"
+        android:layout_marginRight="20dp" />
 
     <!--<Button-->
     <!--android:id="@+id/buttonPay"-->
