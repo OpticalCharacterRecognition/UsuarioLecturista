@@ -44,7 +44,7 @@
             android:layout_gravity="start"
             android:contentDescription="thing"
             android:scaleType="centerCrop"
-            android:src="@drawable/test1" />
+            android:src="@drawable/drawer_back_image_blur" />
 
         <ImageView
             android:id="@+id/imageViewFBProfileImage"
