@@ -5,7 +5,7 @@
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarker</item>
         <item name="android:textColorHighlight">@color/white_locky</item>
         <item name="android:color">@color/white_locky</item>
         <item name="android:text">@color/teal_locky</item>
