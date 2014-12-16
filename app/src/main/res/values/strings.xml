@@ -52,6 +52,7 @@
     <string name="textAddCreditCard">Agregar tarjeta</string>
     <string name="labelPayInOxxo">Pague en el Oxxo con este codigo de barras</string>
     <string name="labelPaymentOptionDesc">Seleccione una opcion para pagar:</string>
+    <string name="toolbarTitlePayOptions">Opciones de Pago</string>
 
     <!--Add Credit Card -->
     <string name="labelCreditCardType">Tipo de Tarjeta</string>
@@ -61,6 +62,7 @@
     <string name="labelExpirationDate">Fecha de Expiracion</string>
     <string name="labelButtonAddCard">Agregar</string>
     <string name="labelCheckBoxAgreedWithCCTAC">Estoy de acuerdo con los terminos y condiciones</string>
+    <string name="toolbarTitleAddCreditCard">Agregar Tarjeta</string>
 
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>
