@@ -33,6 +33,38 @@
         <item name="typeface">roboto_medium</item>
     </style>
 
+    <style name="TextViewLabelMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/greyWater</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="typeface">roboto_medium</item>
+    </style>
+
+    <style name="RobotoButton">
+        <item name="typeface">roboto_medium</item>
+        <item name="android:textColor">@color/whiteWater</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="RobotoCheckBox">
+        <item name="typeface">roboto_medium</item>
+        <item name="android:textColor">@color/blackWater</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="RobotoEditText">
+        <item name="typeface">roboto_medium</item>
+        <item name="android:textColor">@color/blackWater</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!--<style name="ButtonAppTheme" parent="android:Widget.Material.Button">-->
+    <style name="ButtonAppTheme" parent="Widget.AppCompat.ActionButton">
+        <item name="android:background">@drawable/custom_button</item>
+    </style>
+
+
     <!--<style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">-->
     <!--<item name="android:textColor">@color/whiteWater</item>-->
     <!--<item name="android:background">@color/colorPrimary</item>-->

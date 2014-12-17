@@ -13,6 +13,8 @@
         <item name="windowActionBar">false</item>
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:buttonStyle">@style/ButtonAppTheme</item>
+
 
     </style>
 </resources>

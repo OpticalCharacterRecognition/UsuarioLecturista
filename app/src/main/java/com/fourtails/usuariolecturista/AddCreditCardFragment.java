@@ -6,9 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.utilities.CreditCard;
 import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 
 import java.util.Calendar;
@@ -22,11 +27,31 @@ public class AddCreditCardFragment extends Fragment {
     @InjectView(R.id.editTextCreditCardExpirationDate)
     TextView textViewCreditCardExpirationDate;
 
+    @InjectView(R.id.spinnerCreditCardSelector)
+    Spinner spinnerCreditCardSelector;
+
+    @InjectView(R.id.editTextCreditCardNumber)
+    EditText editTextCreditCardNumber;
+
+    @InjectView(R.id.editTextCreditCardName)
+    EditText editTextCreditCardName;
+
+    @InjectView(R.id.editTextCCV)
+    EditText editTextCCV;
+
+    @InjectView(R.id.checkBoxAgreedTAC)
+    CheckBox checkBoxAgreedTAC;
+
+
     @OnClick(R.id.editTextCreditCardExpirationDate)
     public void clickedDate() {
         showDatePicker();
     }
 
+    @OnClick(R.id.buttonAddCreditCard)
+    public void clickedAddCreditCard() {
+        saveNewCreditCard();
+    }
 
     public AddCreditCardFragment() {
         // Required empty public constructor
@@ -44,6 +69,20 @@ public class AddCreditCardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_credit_card, container, false);
         ButterKnife.inject(this, view);
         return view;
+    }
+
+    private void saveNewCreditCard() {
+        if (checkBoxAgreedTAC.isChecked()) {
+            CreditCard creditCard = new CreditCard(
+                    spinnerCreditCardSelector.getSelectedItem().toString(),
+                    Long.parseLong(editTextCreditCardNumber.getText().toString()),
+                    editTextCreditCardName.getText().toString(),
+                    Integer.parseInt(editTextCCV.getText().toString()),
+                    textViewCreditCardExpirationDate.getText().toString());
+            MainActivity.bus.post(creditCard);
+        } else {
+            Toast.makeText(getActivity(), "Tiene que estar de acuerdo con los terminos y condiciones", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -80,5 +119,13 @@ public class AddCreditCardFragment extends Fragment {
 
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        MainActivity.bus.post(getResources().getString(R.string.toolbarTitleAddCreditCard));
+    }
+
 
 }

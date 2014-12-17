@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ButtonAppTheme" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/custom_button</item>
+    </style>
+
+</resources>

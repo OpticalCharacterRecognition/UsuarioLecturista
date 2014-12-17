@@ -42,7 +42,7 @@ import butterknife.OnClick;
  */
 public class BalanceFragment extends Fragment {
 
-    private final String TAG = "BalanceFragment";
+    public static final String TAG = "BalanceFragment";
 
     public static final String PREF_LAST_READING = "lastReadingPref";
     public static final String PREF_LAST_READING_DATE = "lastReadingDatePref";
@@ -311,6 +311,13 @@ public class BalanceFragment extends Fragment {
 //        }.execute();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        MainActivity.bus.post(TAG);
     }
 
     /**

@@ -12,7 +12,7 @@ import butterknife.OnClick;
 
 public class PayOptionsFragment extends Fragment {
 
-    @OnClick(R.id.buttonAddCreditCard)
+    @OnClick(R.id.imageViewAddCreditCard)
     public void addCreditCardClicked() {
         Fragment addCreditCardFragment = new AddCreditCardFragment();
         MainActivity.bus.post(addCreditCardFragment);
@@ -38,6 +38,13 @@ public class PayOptionsFragment extends Fragment {
 
         ButterKnife.inject(this, view);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        MainActivity.bus.post(getResources().getString(R.string.toolbarTitlePayOptions));
     }
 
 }

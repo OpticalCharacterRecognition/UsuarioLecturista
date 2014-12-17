@@ -24,11 +24,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
+import com.fourtails.usuariolecturista.utilities.CreditCard;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -177,6 +177,14 @@ public class MainActivity extends ActionBarActivity {
             // on first time display view for first nav item
             displayView(0);
         }
+
+        // we might not need this
+        getSupportFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    public void onBackStackChanged() {
+                        // boolean carlos = true;
+                    }
+                });
     }
 
     private void setUpToolBar() {
@@ -197,7 +205,7 @@ public class MainActivity extends ActionBarActivity {
         toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "thing clicked " + position, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "thing clicked " + position, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -219,6 +227,7 @@ public class MainActivity extends ActionBarActivity {
     public void changeFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         assert fragmentManager != null;
+        enableToolbarSpinner(false);
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
@@ -234,6 +243,30 @@ public class MainActivity extends ActionBarActivity {
     @Subscribe
     public void startAnyActivity(Intent intent) {
         startActivity(intent);
+    }
+
+    @Subscribe
+    public void changeTitle(String string) {
+        if (string.equals(BalanceFragment.TAG)) {
+            enableToolbarSpinner(true);
+        } else {
+            enableToolbarSpinner(false);
+            getSupportActionBar().setTitle(string);
+        }
+    }
+
+    /**
+     * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
+     * BackStack, this prevents the back button from going to the AddCreditCardFragment again
+     * @param creditCard
+     */
+    @Subscribe
+    public void saveCreditCardAndGoBackToLists(CreditCard creditCard) {
+        PayOptionsFragment fragment = new PayOptionsFragment();
+        //changeFragment(fragment);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.popBackStack();
     }
 
     /**
@@ -259,15 +292,13 @@ public class MainActivity extends ActionBarActivity {
             // we will start from case 0 is mascot, so we break
             case 0:
                 fragment = new BalanceFragment();
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                toolbarSpinner.setVisibility(View.VISIBLE);
+                enableToolbarSpinner(true);
                 break;
             case 1:
 //                Intent ocrCaptureActivity = new Intent(this, CaptureActivity.class);
 //                startActivityForResult(ocrCaptureActivity, GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
                 fragment = new HomeFragment();
-                toolbarSpinner.setVisibility(View.GONE);
-                getSupportActionBar().setDisplayShowTitleEnabled(true);
+                enableToolbarSpinner(false);
                 break;
             case 2:
                 finish();
@@ -292,6 +323,17 @@ public class MainActivity extends ActionBarActivity {
             // error in creating fragment
             Log.e("MainActivity", "Error in creating fragment");
         }
+    }
+
+    private void enableToolbarSpinner(boolean b) {
+        if (b) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            toolbarSpinner.setVisibility(View.VISIBLE);
+        } else {
+            toolbarSpinner.setVisibility(View.GONE);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+        }
+
     }
 
 

@@ -58,11 +58,13 @@
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
 
-    <color name="colorPrimary">#00C0A5</color>
-    <color name="colorPrimaryDarker">#ff00574b</color>
+    <color name="colorPrimary">#00BFA5</color>
+    <color name="colorPrimaryDarker">#004D40</color>
+    <color name="drawerOver">#B2DFDB</color>
     <color name="whiteWater">#F5F5F5</color>
-    <color name="blackWater">#1C1E20</color>
-    <color name="greyWater">#ff8d8c94</color>
+    <color name="blackWater">#f3000000</color>
+    <color name="almostBlackWater">#a0000000</color>
+    <color name="greyWater">#ff818181</color>
 
 
 </resources>

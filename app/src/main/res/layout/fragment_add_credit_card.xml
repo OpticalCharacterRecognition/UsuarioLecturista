@@ -8,12 +8,10 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewLabelMedium"
         android:text="@string/labelCreditCardType"
-        android:id="@+id/textView7"
-        style="@style/Base.TextAppearance.AppCompat.Medium" />
+        android:id="@+id/textView7" />
 
     <Spinner
         android:layout_width="wrap_content"
@@ -21,78 +19,80 @@
         android:entries="@array/drop_down_credit_card_type"
         android:id="@+id/spinnerCreditCardSelector" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewLabelMedium"
         android:text="@string/labelCreditCardNumber"
         android:id="@+id/textView8"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_marginTop="10dp" />
 
-    <EditText
+    <com.devspark.robototextview.widget.RobotoEditText
+        style="@style/RobotoEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:ems="10"
-        android:id="@+id/editTextCreditCardNumber" />
+        android:id="@+id/editTextCreditCardNumber"
+        android:inputType="number"
+        android:text="411111111111111" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewLabelMedium"
         android:text="@string/labelNameOnCreditCard"
         android:layout_marginTop="10dp"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:id="@+id/textView9" />
 
-    <EditText
+    <com.devspark.robototextview.widget.RobotoEditText
+        style="@style/RobotoEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:id="@+id/editTextCreditCardName" />
+        android:id="@+id/editTextCreditCardName"
+        android:text="Carlos Labrado" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewLabelMedium"
         android:text="@string/labelSecurityCode"
         android:layout_marginTop="10dp"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:id="@+id/textView10" />
 
-    <EditText
+    <com.devspark.robototextview.widget.RobotoEditText
+        style="@style/RobotoEditText"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editTextCCV" />
+        android:id="@+id/editTextCCV"
+        android:text="111" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewLabelMedium"
         android:text="@string/labelExpirationDate"
         android:layout_marginTop="10dp"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:id="@+id/textView11" />
 
-    <EditText
+    <com.devspark.robototextview.widget.RobotoEditText
+        style="@style/RobotoEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:editable="false"
         android:focusable="false"
-        android:id="@+id/editTextCreditCardExpirationDate" />
+        android:id="@+id/editTextCreditCardExpirationDate"
+        android:text=" " />
 
-    <CheckBox
+    <com.devspark.robototextview.widget.RobotoCheckBox
+        style="@style/RobotoCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/labelCheckBoxAgreedWithCCTAC"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBoxAgreedTAC"
         android:checked="false" />
 
-    <Button
+    <com.devspark.robototextview.widget.RobotoButton
+        style="@style/RobotoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/labelButtonAddCard"
-        android:id="@+id/button"
+        android:id="@+id/buttonAddCreditCard"
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
