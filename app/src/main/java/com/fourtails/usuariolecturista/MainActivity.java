@@ -24,11 +24,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.activeandroid.query.Select;
+import com.fourtails.usuariolecturista.model.CreditCard;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
-import com.fourtails.usuariolecturista.utilities.CreditCard;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -256,13 +258,41 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
+     * This will get the pay amount from the PayFragment and will attempt to call our server
+     * to make a successful transaction
+     * @param payAmount
+     */
+    @Subscribe
+    public void paymentAttempt(Double payAmount) {
+        // TODO: add all the server calls here
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.popBackStack();
+        fragmentManager.popBackStack();
+        Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    /**
+     * Retrieves the first saved CC from the database
+     *
+     * @return first saved CC
+     */
+    public static CreditCard checkForSavedCreditCard() {
+        return new Select().from(CreditCard.class).executeSingle();
+    }
+
+
+    /**
      * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
      * BackStack, this prevents the back button from going to the AddCreditCardFragment again
-     * @param creditCard
+     * @param creditCard CC that is going to be saved on the database
      */
     @Subscribe
     public void saveCreditCardAndGoBackToLists(CreditCard creditCard) {
-        PayOptionsFragment fragment = new PayOptionsFragment();
+        creditCard.save();
+        //PayOptionsFragment fragment = new PayOptionsFragment();
         //changeFragment(fragment);
         FragmentManager fragmentManager = getSupportFragmentManager();
 

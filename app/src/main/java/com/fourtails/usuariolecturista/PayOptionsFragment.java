@@ -6,19 +6,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+
+import com.fourtails.usuariolecturista.model.CreditCard;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class PayOptionsFragment extends Fragment {
 
-    @OnClick(R.id.imageViewAddCreditCard)
-    public void addCreditCardClicked() {
-        Fragment addCreditCardFragment = new AddCreditCardFragment();
-        MainActivity.bus.post(addCreditCardFragment);
+    @InjectView(R.id.containerPayOptionsAddCard)
+    LinearLayout containerPayOptionsAddCard;
+
+    @InjectView(R.id.containerPayOptionsSavedCard)
+    LinearLayout containerPayOptionsSavedCard;
+
+    @InjectView(R.id.buttonSavedCreditCard)
+    Button buttonSavedCreditCard;
+
+    @OnClick(R.id.buttonSavedCreditCard)
+    public void savedCreditCardClicked() {
+        Fragment payFragment = new PayFragment();
+        MainActivity.bus.post(payFragment);
     }
 
-    Button addCreditCardButton;
+
+    @OnClick(R.id.imageViewAddCreditCard)
+    public void addCreditCardClicked() {
+        Fragment addCreditCardFragment = new PayAddCreditCardFragment();
+        MainActivity.bus.post(addCreditCardFragment);
+    }
 
 
     public PayOptionsFragment() {
@@ -35,8 +53,19 @@ public class PayOptionsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pay_options, container, false);
-
         ButterKnife.inject(this, view);
+
+        CreditCard creditCard = MainActivity.checkForSavedCreditCard();
+        if (creditCard != null) {
+            containerPayOptionsAddCard.setVisibility(View.GONE);
+            containerPayOptionsSavedCard.setVisibility(View.VISIBLE);
+
+            buttonSavedCreditCard.setText("Tarjeta \n" + creditCard.number);
+        } else {
+            containerPayOptionsAddCard.setVisibility(View.VISIBLE);
+            containerPayOptionsSavedCard.setVisibility(View.GONE);
+        }
+
         return view;
     }
 

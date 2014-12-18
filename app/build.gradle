@@ -54,4 +54,6 @@ dependencies {
     compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
         transitive = true
     }
+    // ActiveAndroid ORM (Object Relational Mapper)
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }

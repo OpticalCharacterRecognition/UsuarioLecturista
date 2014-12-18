@@ -64,6 +64,12 @@
     <string name="labelCheckBoxAgreedWithCCTAC">Estoy de acuerdo con los terminos y condiciones</string>
     <string name="toolbarTitleAddCreditCard">Agregar Tarjeta</string>
 
+    <!--Pay Fragment-->
+    <string name="toolbarTitlePayFragment">Pagar</string>
+    <string name="labelButtonPayFragmentPay">Pagar</string>
+    <string name="labelSubTotal">Total a pagar:</string>
+
+
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>
         <item>Master Card</item>

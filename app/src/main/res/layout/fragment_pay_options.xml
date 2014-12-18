@@ -18,9 +18,10 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/containerPayOptionsAddCard">
 
-        <ImageView
+    <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageViewAddCreditCard"
@@ -32,10 +33,11 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/containerPayOptionsSavedCard">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonSavedCreditCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

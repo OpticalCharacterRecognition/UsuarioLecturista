@@ -11,11 +11,12 @@
         android:text="@string/labelCreditCardType"
         android:id="@+id/textView7" />
 
-    <Spinner
-        android:layout_width="wrap_content"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/RobotoEditText"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/drop_down_credit_card_type"
-        android:id="@+id/spinnerCreditCardSelector" />
+        android:text="VISA"
+        android:id="@+id/textViewPayCCType" />
 
     <com.devspark.robototextview.widget.RobotoTextView
         style="@style/TextViewLabelMedium"
@@ -23,12 +24,12 @@
         android:id="@+id/textView8"
         android:layout_marginTop="10dp" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <com.devspark.robototextview.widget.RobotoTextView
         style="@style/RobotoEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:id="@+id/editTextCreditCardNumber"
+        android:id="@+id/textViewPayCreditCardNumber"
         android:inputType="number"
         android:text="411111111111111" />
 
@@ -38,12 +39,12 @@
         android:layout_marginTop="10dp"
         android:id="@+id/textView9" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <com.devspark.robototextview.widget.RobotoTextView
         style="@style/RobotoEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:id="@+id/editTextCreditCardName"
+        android:id="@+id/textViewPayCreditCardName"
         android:text="Carlos Labrado" />
 
     <com.devspark.robototextview.widget.RobotoTextView
@@ -58,7 +59,7 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editTextCCV"
+        android:id="@+id/editTextPayCCV"
         android:text="111" />
 
     <com.devspark.robototextview.widget.RobotoTextView
@@ -67,14 +68,14 @@
         android:layout_marginTop="10dp"
         android:id="@+id/textView11" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <com.devspark.robototextview.widget.RobotoTextView
         style="@style/RobotoEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:editable="false"
         android:focusable="false"
-        android:id="@+id/editTextCreditCardExpirationDate"
+        android:id="@+id/textViewPayCreditCardExpirationDate"
         android:text=" " />
 
     <com.devspark.robototextview.widget.RobotoCheckBox
@@ -82,15 +83,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/labelCheckBoxAgreedWithCCTAC"
-        android:id="@+id/checkBoxAgreedTAC"
+        android:id="@+id/checkBoxPayAgreedTAC"
         android:checked="false" />
+
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/RobotoEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/textViewLabelSubTotalPay"
+        android:textSize="15sp"
+        android:text="@string/labelSubTotal"
+        android:layout_marginTop="20dp" />
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/RobotoEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/textViewSubTotalPay"
+        android:textSize="30sp"
+        android:text="132.00"
+        android:layout_marginTop="5dp" />
 
     <com.devspark.robototextview.widget.RobotoButton
         style="@style/RobotoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/labelButtonAddCard"
-        android:id="@+id/buttonAddCreditCard"
+        android:text="@string/labelButtonPayFragmentPay"
+        android:id="@+id/buttonPayFragmentPay"
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

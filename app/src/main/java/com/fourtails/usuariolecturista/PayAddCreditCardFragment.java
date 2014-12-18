@@ -13,7 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fourtails.usuariolecturista.utilities.CreditCard;
+import com.fourtails.usuariolecturista.model.CreditCard;
 import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 
 import java.util.Calendar;
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class AddCreditCardFragment extends Fragment {
+public class PayAddCreditCardFragment extends Fragment {
 
     @InjectView(R.id.editTextCreditCardExpirationDate)
     TextView textViewCreditCardExpirationDate;
@@ -53,7 +53,7 @@ public class AddCreditCardFragment extends Fragment {
         saveNewCreditCard();
     }
 
-    public AddCreditCardFragment() {
+    public PayAddCreditCardFragment() {
         // Required empty public constructor
     }
 
