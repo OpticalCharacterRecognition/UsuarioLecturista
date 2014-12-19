@@ -1,0 +1,94 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fourtails.usuariolecturista.PromotionsFragment"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewPromotionsLabel"
+                android:text="Prepagos"
+                android:textIsSelectable="false" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewPromotionsContent"
+                android:layout_marginTop="10dp"
+                android:text="Haz un abono y obten un descuento en tu proximo pago."
+                android:textIsSelectable="true" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewPromotionsLabel"
+                android:text="Comparte en Facebook"
+                android:textIsSelectable="false" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewPromotionsContent"
+                android:layout_marginTop="10dp"
+                android:text="Comparte en Facebook que hiciste un pago mediante la app y gana puntos."
+                android:textIsSelectable="true" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewPromotionsLabel"
+                android:text="Invita Amigos"
+                android:textIsSelectable="false" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewPromotionsContent"
+                android:layout_marginTop="10dp"
+                android:text="Invita a un amigo y por cada amigo que pague con la app tu obtienes descuentos!"
+                android:textIsSelectable="true" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

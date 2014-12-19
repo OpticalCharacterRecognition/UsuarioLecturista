@@ -69,6 +69,9 @@
     <string name="labelButtonPayFragmentPay">Pagar</string>
     <string name="labelSubTotal">Total a pagar:</string>
 
+    <!--Promotions fragment-->
+    <string name="toolbarTitlePromotionsFragment">Promociones</string>
+
 
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>

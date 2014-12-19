@@ -135,9 +135,9 @@ public class MainActivity extends ActionBarActivity {
         // Balance
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Dummy
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1), true, "4"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // OCR scanner
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "4"));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
 
@@ -180,13 +180,6 @@ public class MainActivity extends ActionBarActivity {
             displayView(0);
         }
 
-        // we might not need this
-        getSupportFragmentManager().addOnBackStackChangedListener(
-                new FragmentManager.OnBackStackChangedListener() {
-                    public void onBackStackChanged() {
-                        // boolean carlos = true;
-                    }
-                });
     }
 
     private void setUpToolBar() {
@@ -260,6 +253,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * This will get the pay amount from the PayFragment and will attempt to call our server
      * to make a successful transaction
+     *
      * @param payAmount
      */
     @Subscribe
@@ -287,6 +281,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
      * BackStack, this prevents the back button from going to the AddCreditCardFragment again
+     *
      * @param creditCard CC that is going to be saved on the database
      */
     @Subscribe
@@ -325,9 +320,7 @@ public class MainActivity extends ActionBarActivity {
                 enableToolbarSpinner(true);
                 break;
             case 1:
-//                Intent ocrCaptureActivity = new Intent(this, CaptureActivity.class);
-//                startActivityForResult(ocrCaptureActivity, GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
-                fragment = new HomeFragment();
+                fragment = new PromotionsFragment();
                 enableToolbarSpinner(false);
                 break;
             case 2:
@@ -341,7 +334,9 @@ public class MainActivity extends ActionBarActivity {
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).commit();
+                    .addToBackStack(null)
+                    .replace(R.id.container, fragment)
+                    .commit();
 
 
             // update selected item and title, then close the drawer
