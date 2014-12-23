@@ -324,8 +324,8 @@ public class MainActivity extends ActionBarActivity {
                 enableToolbarSpinner(false);
                 break;
             case 2:
-                finish();
-                //fragment = new BalanceFragment();
+                fragment = new NotificationsFragment();
+                enableToolbarSpinner(false);
                 break;
             default:
                 break;

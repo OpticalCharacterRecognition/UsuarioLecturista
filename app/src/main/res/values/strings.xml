@@ -72,6 +72,10 @@
     <!--Promotions fragment-->
     <string name="toolbarTitlePromotionsFragment">Promociones</string>
 
+    <!--Notifications fragment-->
+    <string name="toolbarTitleNotificationsFragment">Notificaciones</string>
+    <string name="infoNotificationsFragmentSwipe">Desliza para eliminar la notificacion</string>
+
 
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>
