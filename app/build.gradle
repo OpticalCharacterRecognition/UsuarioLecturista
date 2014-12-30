@@ -52,4 +52,6 @@ dependencies {
     compile 'com.squareup:otto:1.3.5'
     // ActiveAndroid ORM (Object Relational Mapper)
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    // An interactive indicator to navigate between the different pages of a ViewPager
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }

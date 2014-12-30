@@ -1,0 +1,129 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fourtails.usuariolecturista.contactSlidingFragments.CustomerSupport"
+    android:orientation="vertical">
+
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewNotificationsLabel"
+        android:text="Ocampo"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView3"
+            android:src="@drawable/ic_call_grey600_48dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewNotificationsLabel"
+            android:text="(614)439-44-00"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView3"
+            android:layout_toEndOf="@+id/imageView3"
+            android:id="@+id/imageView4" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewNotificationsContent"
+            android:text="Atencion todos los dias"
+            android:layout_below="@+id/imageView4"
+            android:layout_toRightOf="@+id/imageView3"
+            android:layout_toEndOf="@+id/imageView3"
+            android:layout_marginTop="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView5"
+            android:src="@drawable/ic_location_on_grey600_48dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewNotificationsLabel"
+            android:text=" Ave. Ocampo 1604, Col. Centro"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView5"
+            android:layout_toEndOf="@+id/imageView5"
+            android:id="@+id/imageView6" />
+    </RelativeLayout>
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewNotificationsLabel"
+        android:text="Fuentes Mares"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView7"
+            android:src="@drawable/ic_call_grey600_48dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewNotificationsLabel"
+            android:text="(614)439-44-00"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView7"
+            android:layout_toEndOf="@+id/imageView7"
+            android:id="@+id/imageView8" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewNotificationsContent"
+            android:text="Atencion todos los dias"
+            android:layout_below="@+id/imageView8"
+            android:layout_toRightOf="@+id/imageView7"
+            android:layout_toEndOf="@+id/imageView7"
+            android:layout_marginTop="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView9"
+            android:src="@drawable/ic_location_on_grey600_48dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            style="@style/TextViewNotificationsLabel"
+            android:text="Blvd. Fuentes Mares 8414, Plaza Comercial, Local 16"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView9"
+            android:layout_toEndOf="@+id/imageView9"
+            android:id="@+id/imageView10" />
+    </RelativeLayout>
+
+</LinearLayout>

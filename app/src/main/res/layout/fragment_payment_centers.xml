@@ -1,0 +1,194 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context="com.fourtails.usuariolecturista.contactSlidingFragments.PaymentCenters">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewNotificationsContent"
+                android:text="Bancos" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="20dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_bancomer" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="Bancomer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_afirme" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="Afirme" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_banorte" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="Banorte" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_hsbc" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="HSBC" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_banregio" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="BanRegio" />
+            </LinearLayout>
+
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                style="@style/TextViewNotificationsContent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:text="Centros de Pago" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_oxxo" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="Oxxo" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_alsuper" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="AlSuper" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_soriana" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="Soriana" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_smart" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    style="@style/TextViewNotificationsContent"
+                    android:layout_gravity="center_vertical"
+                    android:text="Smart" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

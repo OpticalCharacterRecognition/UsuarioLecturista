@@ -327,6 +327,10 @@ public class MainActivity extends ActionBarActivity {
                 fragment = new NotificationsFragment();
                 enableToolbarSpinner(false);
                 break;
+            case 3:
+                fragment = new ContactFragment();
+                enableToolbarSpinner(false);
+                break;
             default:
                 break;
         }
