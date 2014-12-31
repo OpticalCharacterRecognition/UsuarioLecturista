@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fourtails.usuariolecturista.introFragments.IntroWelcomeFragment"
+    android:orientation="vertical"
+    android:gravity="center_vertical|center_horizontal"
+    android:padding="10dp">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView11"
+        android:src="@drawable/login4"
+        android:layout_marginBottom="20dp" />
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewIntroTitle"
+        android:text="@string/intro_final_title"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal" />
+
+    <com.devspark.robototextview.widget.RobotoButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_facebook_intro"
+        android:id="@+id/buttonIntroFB"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/whiteWater"
+        app:typeface="roboto_bold"
+        android:textSize="19sp"
+        android:padding="5dp"
+        android:background="@drawable/custom_button_blue"
+        android:layout_marginBottom="20dp" />
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewIntroDesc"
+        android:textSize="15sp"
+        android:text="@string/intro_final_desc"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal" />
+
+</LinearLayout>

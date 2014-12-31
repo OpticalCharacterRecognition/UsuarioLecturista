@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/facebook" />
             <option value="$PROJECT_DIR$/tess-two" />
+            <option value="$PROJECT_DIR$/viewPagerLibrary" />
           </set>
         </option>
       </GradleProjectSettings>

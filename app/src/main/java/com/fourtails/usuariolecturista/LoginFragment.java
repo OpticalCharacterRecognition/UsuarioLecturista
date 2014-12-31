@@ -124,7 +124,18 @@ public class LoginFragment extends Fragment {
 
                             editor.putString(PREF_FACEBOOK_PROFILE_ID, user.getId()).apply();
                             editor.putString(PREF_FACEBOOK_PROFILE_NAME, user.getName()).apply();
-
+                            Intent intent = getActivity().getIntent();
+                            boolean comesFromLogoutButton = intent.getBooleanExtra(IntermediateActivity.COMES_FROM_LOGOUT, false);
+                            intent.removeExtra(IntermediateActivity.COMES_FROM_LOGOUT);
+                            if (!comesFromLogoutButton) {
+                                Log.i(TAG, "opening next activity");
+//                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
+//                            startActivity(intentNewActivity);
+                                //Starts Main Drawer Activity After login
+                                Intent intentNewActivity = new Intent(getActivity(), MainActivity.class);
+                                intent.putExtra(COMES_FROM_LOGOUT, true);
+                                startActivity(intentNewActivity);
+                            }
                             //Bitmap bitmap = BitmapFactory.decodeStream(imgUrl      // tried this also
                             //.openConnection().getInputStream());
                         } catch (Exception e) {
@@ -144,18 +155,7 @@ public class LoginFragment extends Fragment {
                         //userInfoTextView.setText(buildUserInfoDisplay(user));
 
                         // If it wasn't called from the logout button
-                        Intent intent = getActivity().getIntent();
-                        boolean comesFromLogoutButton = intent.getBooleanExtra(IntermediateActivity.COMES_FROM_LOGOUT, false);
-                        intent.removeExtra(IntermediateActivity.COMES_FROM_LOGOUT);
-                        if (!comesFromLogoutButton) {
-                            Log.i(TAG, "opening next activity");
-//                            Intent intentNewActivity = new Intent(getActivity(), IntermediateActivity.class);
-//                            startActivity(intentNewActivity);
-                            //Starts Main Drawer Activity After login
-                            Intent intentNewActivity = new Intent(getActivity(), MainActivity.class);
-                            intent.putExtra(COMES_FROM_LOGOUT, true);
-                            startActivity(intentNewActivity);
-                        }
+
                     }
                 }
             });

@@ -1,2 +1,3 @@
 include ':app', ':facebook'
 include 'tess-two'
+include ':viewPagerLibrary'
