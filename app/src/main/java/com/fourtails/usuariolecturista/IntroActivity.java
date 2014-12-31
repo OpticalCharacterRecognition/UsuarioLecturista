@@ -15,6 +15,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
+/**
+ * This will show an introduction tutorial images to the user so he knows what
+ * the app can do, and upon calling another activity it will die.
+ */
 public class IntroActivity extends ActionBarActivity {
 
 
@@ -47,7 +51,7 @@ public class IntroActivity extends ActionBarActivity {
     /**
      * Bus event called by fragments to start any activity
      *
-     * @param intent
+     * @param intent the activity we want to start
      */
     @Subscribe
     public void startAnyActivity(Intent intent) {

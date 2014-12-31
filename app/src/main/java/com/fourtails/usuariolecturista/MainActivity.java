@@ -1,6 +1,8 @@
 package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -52,6 +54,8 @@ public class MainActivity extends ActionBarActivity {
 
     public static Bus bus;
 
+    public static String TAG = "MainActivity";
+
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @InjectView(R.id.list_slidermenu)
@@ -64,13 +68,8 @@ public class MainActivity extends ActionBarActivity {
     @InjectView(R.id.textViewFacebookName)
     TextView textViewFacebookName;
 
-
     private ActionBarDrawerToggle mDrawerToggle;
     // we need this because when we try to close the drawer we have to pass the container view
-
-
-    // nav drawer title
-    private CharSequence mDrawerTitle;
 
     /**
      * Used to store the last screen title. For use in {@link #()}.
@@ -106,8 +105,6 @@ public class MainActivity extends ActionBarActivity {
         /**toolBar **/
         setUpToolBar();
 
-        mDrawerTitle = getTitle();
-
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
@@ -119,7 +116,8 @@ public class MainActivity extends ActionBarActivity {
         String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
         String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
 
-        Picasso.with(this)
+        //loadImageInBackground(facebookId);
+        Picasso.with(MainActivity.this)
                 .load("https://graph.facebook.com/"
                         + facebookId + "/picture?type=large")
                 .placeholder(R.drawable.ic_titular)
@@ -228,6 +226,7 @@ public class MainActivity extends ActionBarActivity {
                 .replace(R.id.container, fragment)
                 .addToBackStack(null)
                 .commit();
+        Log.d(TAG, "fragment added " + fragment.getTag());
     }
 
     /**
@@ -264,8 +263,6 @@ public class MainActivity extends ActionBarActivity {
         fragmentManager.popBackStack();
         fragmentManager.popBackStack();
         Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
-
-
     }
 
     /**
@@ -287,11 +284,10 @@ public class MainActivity extends ActionBarActivity {
     @Subscribe
     public void saveCreditCardAndGoBackToLists(CreditCard creditCard) {
         creditCard.save();
-        //PayOptionsFragment fragment = new PayOptionsFragment();
-        //changeFragment(fragment);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.popBackStack();
+        Log.d(TAG, "fragment poped");
     }
 
     /**
@@ -304,6 +300,27 @@ public class MainActivity extends ActionBarActivity {
                                 long id) {
             // display view for selected nav drawer item
             displayView(position);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        int fragments = getSupportFragmentManager().getBackStackEntryCount();
+        if (fragments > 1) {
+            super.onBackPressed();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setMessage("Esta seguro que quiere salir de la applicacion?")
+                    .setCancelable(false)
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                            // this will call for a finish on the top login activity
+                            LoginActivity.loginBus.post(true);
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         }
     }
 
@@ -341,7 +358,7 @@ public class MainActivity extends ActionBarActivity {
                     .addToBackStack(null)
                     .replace(R.id.container, fragment)
                     .commit();
-
+            Log.d(TAG, "fragment added " + fragment.getTag());
 
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
@@ -364,12 +381,39 @@ public class MainActivity extends ActionBarActivity {
         }
 
     }
+//
+//    public void loadImageInBackground(final String facebookId) {
+//        new AsyncTask<Void, Void, Integer>() {
+//
+//            @Override
+//            protected Integer doInBackground(Void... params) {
+//                try {
+//                    Picasso.with(MainActivity.this)
+//                            .load("https://graph.facebook.com/"
+//                                    + facebookId + "/picture?type=large")
+//                            .placeholder(R.drawable.ic_titular)
+//                            .transform(new CircleTransform())
+//                            .error(R.drawable.ic_titular)
+//                            .into(imageViewFacebookProfilePic);
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Log.e(TAG, e.getMessage());
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Integer transactionResponse) {
+//
+//            }
+//        }.execute();
+//    }
 
 
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        //mTopBarTitle.setText(mTitle);
     }
 
 
@@ -436,17 +480,22 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // This comes from the OCR activity
         if (requestCode == GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE) {
             startBalanceFragment();
         }
     }
 
+    /**
+     * start the balance fragment when coming from the OCR activity
+     */
     private void startBalanceFragment() {
         Fragment fragment = new BalanceFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
+                .addToBackStack(null)
                 .replace(R.id.container, fragment).commit();
-
+        Log.d(TAG, "fragment added in the beginning " + fragment.getTag());
         mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
 
     }
