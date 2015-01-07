@@ -107,6 +107,12 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="RobotoEditTextLogin">
+        <item name="typeface">roboto_medium</item>
+        <item name="android:textColor">@color/blackWater</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <!--<style name="ButtonAppTheme" parent="android:Widget.Material.Button">-->
     <style name="ButtonAppTheme" parent="Widget.AppCompat.ActionButton">
         <item name="android:background">@drawable/custom_button</item>

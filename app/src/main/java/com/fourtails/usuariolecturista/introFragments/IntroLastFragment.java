@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fourtails.usuariolecturista.DispatchActivity;
 import com.fourtails.usuariolecturista.IntroActivity;
-import com.fourtails.usuariolecturista.LoginActivity;
 import com.fourtails.usuariolecturista.R;
 
 import butterknife.ButterKnife;
@@ -22,7 +22,7 @@ public class IntroLastFragment extends Fragment {
 
     @OnClick(R.id.buttonIntroFB)
     public void facebookIntroButtonClicked() {
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        Intent intent = new Intent(getActivity(), DispatchActivity.class);
         IntroActivity.introBus.post(intent);
     }
 

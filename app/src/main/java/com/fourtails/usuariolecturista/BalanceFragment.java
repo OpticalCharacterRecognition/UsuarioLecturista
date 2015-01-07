@@ -12,16 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Session;
-import com.facebook.model.GraphObject;
-import com.facebook.model.OpenGraphAction;
-import com.facebook.model.OpenGraphObject;
-import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.WebDialog;
 import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewSeries;
@@ -97,26 +88,6 @@ public class BalanceFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         //Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
-
-        //facebook open graph
-//        Button facebookOpenGraph = (Button) view.findViewById(R.id.buttonFBOpenGraph);
-//        facebookOpenGraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openGraphClicked();
-//            }
-//        });
-
-
-        //facebook share
-//        Button facebookShareButton = (Button) view.findViewById(R.id.buttonFB);
-//        facebookShareButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                shareLinkClicked();
-//            }
-//        });
-
 
         // setting the texts
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -338,116 +309,4 @@ public class BalanceFragment extends Fragment {
                 .replace(R.id.container, fragment).commit();
 
     }
-
-    /**
-     * Used to create a Facebook shareDialog
-     */
-    public void shareLinkClicked() {
-        // If facebook App is installed calls to that app and handles the post from there
-        if (FacebookDialog.canPresentShareDialog(getActivity().getApplicationContext(),
-                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-            // Publish the post using the Share Dialog
-            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
-                    .setLink("https://developers.facebook.com/android")
-                    .build();
-            //uiHelper.trackPendingDialogCall(shareDialog.present());
-
-        } else { //If the app is not installed then creates a really cool dialog which might be a better choice
-            // Fallback. For example, publish the post using the Feed Dialog
-            publishFeedDialog();
-        }
-    }
-
-    private void publishFeedDialog() {
-        Bundle params = new Bundle();
-        params.putString("name", "Facebook SDK for Android");
-        params.putString("caption", "Build great social apps and get more installs.");
-        params.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-        params.putString("link", "https://developers.facebook.com/android");
-        params.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-
-        WebDialog feedDialog = (
-                new WebDialog.FeedDialogBuilder(getActivity(),
-                        Session.getActiveSession(),
-                        params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
-
-                    @Override
-                    public void onComplete(Bundle values,
-                                           FacebookException error) {
-                        if (error == null) {
-                            // When the story is posted, echo the success
-                            // and the post Id.
-                            final String postId = values.getString("post_id");
-                            if (postId != null) {
-                                Toast.makeText(getActivity(),
-                                        "Posted story, id: " + postId,
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                // User clicked the Cancel button
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "Publish cancelled",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } else if (error instanceof FacebookOperationCanceledException) {
-                            // User clicked the "x" button
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    "Publish cancelled",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Generic, ex: network error
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    "Error posting story",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                })
-                .build();
-        feedDialog.show();
-    }
-
-    /**
-     * This kind of "sharing" is more customized
-     */
-    public void openGraphClicked() {
-/*        OpenGraphAction action = GraphObject.Factory.create(OpenGraphAction.class);
-        action.setProperty("lectura", "https://example.com/book/Snow-Crash.html");
-
-        FacebookDialog shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(getActivity(), action, "lectura.realizar", "lectura")
-                .build();
-        uiHelper.trackPendingDialogCall(shareDialog.present());*/
-
-
-        OpenGraphObject lectura = OpenGraphObject.Factory.createForPost("lecturista:lectura");
-        lectura.setProperty("title", "Lectura Realizada de " + lastReadingValue + "!");
-        lectura.setProperty("image", "http://upload.wikimedia.org/wikipedia/en/8/82/Water_meter_register.jpg");
-        lectura.setProperty("url", "http://www.google.com");
-        lectura.setProperty("description", "Realize una lectura de " + lastReadingValue + " litros el " + lastReadingDateValue + ". Mi consumo total este mes es de " + totalLitersForCycleValue);
-
-        OpenGraphAction action = GraphObject.Factory.create(OpenGraphAction.class);
-        action.setProperty("lectura", lectura);
-
-        FacebookDialog shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(getActivity(), action, "lecturista:realizar", "lectura")
-                .build();
-        //uiHelper.trackPendingDialogCall(shareDialog.present());
-    }
-
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
-//            @Override
-//            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
-//                Log.e("Activity", String.format("Error: %s", error.toString()));
-//            }
-//
-//            @Override
-//            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
-//                Log.i("Activity", "Success!");
-//            }
-//        });
-//    }
 }

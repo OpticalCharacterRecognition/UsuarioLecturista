@@ -15,7 +15,8 @@ import com.squareup.otto.ThreadEnforcer;
 /**
  * All the facebook login happens in the fragment of this activity and calls the Main activity
  */
-public class LoginActivity extends FragmentActivity {
+@Deprecated
+public class LoginActivityBack extends FragmentActivity {
 
     public static String TAG = "LoginActivity";
 

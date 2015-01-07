@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.devspark.robototextview.widget.RobotoEditText
+        android:id="@+id/signup_username_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/RobotoEditTextLogin"
+        android:hint="@string/com_parse_ui_username_input_hint" />
+
+    <com.devspark.robototextview.widget.RobotoEditText
+        android:id="@+id/signup_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/RobotoEditTextLogin"
+        android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
+        android:fontFamily="sans-serif"
+        android:hint="@string/com_parse_ui_password_input_hint"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true" />
+
+    <com.devspark.robototextview.widget.RobotoEditText
+        android:id="@+id/signup_confirm_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/RobotoEditTextLogin"
+        android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
+        android:fontFamily="sans-serif"
+        android:hint="@string/com_parse_ui_confirm_password_input_hint"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true" />
+
+    <com.devspark.robototextview.widget.RobotoEditText
+        android:id="@+id/signup_email_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/RobotoEditTextLogin"
+        android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
+        android:hint="@string/com_parse_ui_email_input_hint"
+        android:inputType="textEmailAddress" />
+
+    <com.devspark.robototextview.widget.RobotoEditText
+        android:id="@+id/signup_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/RobotoEditTextLogin"
+        android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
+        android:hint="@string/com_parse_ui_name_input_hint"
+        android:inputType="textPersonName" />
+
+    <com.devspark.robototextview.widget.RobotoButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_account"
+        style="@style/RobotoButton"
+        android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
+        android:text="@string/com_parse_ui_create_account_button_label" />
+
+</LinearLayout>

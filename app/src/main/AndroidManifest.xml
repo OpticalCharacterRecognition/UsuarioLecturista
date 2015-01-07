@@ -13,7 +13,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name="com.activeandroid.app.Application"
+        android:name=".FirstApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -43,11 +43,10 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".LoginActivityBack"
             android:label="@string/title_activity_login">
 
         </activity>
-        <activity android:name="com.facebook.LoginActivity" />
         <activity
             android:name=".IntermediateActivity"
             android:label="@string/title_activity_intermediate"
@@ -74,11 +73,34 @@
         <activity
             android:name=".IntroActivity"
             android:label="Usuario Lecturista">
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".DispatchActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"></activity>
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.parse.ui.ParseLoginActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
+                android:value="true" />
+            <meta-data
+                android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_EMAIL_AS_USERNAME"
+                android:value="true" />
+            <meta-data
+                android:name="com.parse.ui.ParseLoginActivity.FACEBOOK_LOGIN_ENABLED"
+                android:value="true" />
+
         </activity>
     </application>
 

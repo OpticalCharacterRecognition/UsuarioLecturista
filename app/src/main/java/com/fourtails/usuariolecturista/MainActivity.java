@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,10 +31,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
 import com.fourtails.usuariolecturista.model.CreditCard;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -43,7 +50,6 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_ID;
 import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_NAME;
 
 
@@ -113,17 +119,17 @@ public class MainActivity extends ActionBarActivity {
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
+        //String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
         String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
 
-        //loadImageInBackground(facebookId);
-        Picasso.with(MainActivity.this)
-                .load("https://graph.facebook.com/"
-                        + facebookId + "/picture?type=large")
-                .placeholder(R.drawable.ic_titular)
-                .transform(new CircleTransform())
-                .error(R.drawable.ic_titular)
-                .into(imageViewFacebookProfilePic);
+        loadImageInBackground();
+//        Picasso.with(MainActivity.this)
+//                .load("https://graph.facebook.com/"
+//                        + facebookId + "/picture?type=large")
+//                .placeholder(R.drawable.ic_titular)
+//                .transform(new CircleTransform())
+//                .error(R.drawable.ic_titular)
+//                .into(imageViewFacebookProfilePic);
 
         textViewFacebookName.setText(facebookName);
 
@@ -239,6 +245,12 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    /**
+     * Every fragment opened from the drawer must call this method to set the
+     * correct toolbar title
+     *
+     * @param string
+     */
     @Subscribe
     public void changeTitle(String string) {
         if (string.equals(BalanceFragment.TAG)) {
@@ -246,6 +258,30 @@ public class MainActivity extends ActionBarActivity {
         } else {
             enableToolbarSpinner(false);
             getSupportActionBar().setTitle(string);
+        }
+    }
+
+    /**
+     * Called by the settings fragment when the user wants to logout from the app
+     *
+     * @param b
+     */
+    @Subscribe
+    public void logOut(Boolean b) {
+        if (b) {
+            ParseUser.logOut();
+
+            // FLAG_ACTIVITY_CLEAR_TASK only works on API 11, so if the user
+            // logs out on older devices, we'll just exit.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                Intent intent = new Intent(MainActivity.this,
+                        DispatchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                finish();
+            }
         }
     }
 
@@ -316,7 +352,7 @@ public class MainActivity extends ActionBarActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             finish();
                             // this will call for a finish on the top login activity
-                            LoginActivity.loginBus.post(true);
+                            //LoginActivityBack.loginBus.post(true);
                         }
                     })
                     .setNegativeButton("No", null)
@@ -348,6 +384,9 @@ public class MainActivity extends ActionBarActivity {
                 fragment = new ContactFragment();
                 enableToolbarSpinner(false);
                 break;
+            case 4:
+                fragment = new SettingsFragment();
+                enableToolbarSpinner(false);
             default:
                 break;
         }
@@ -381,8 +420,21 @@ public class MainActivity extends ActionBarActivity {
         }
 
     }
-//
-//    public void loadImageInBackground(final String facebookId) {
+
+    public void loadImageInBackground() {
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (ParseFacebookUtils.isLinked(parseUser)) {
+            if (ParseFacebookUtils.getSession().isOpened()) {
+                Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
+                    @Override
+                    public void onCompleted(GraphUser user, Response response) {
+                        if (user != null) {
+                            loadImageInBackground(user.getId());
+                        }
+                    }
+                }).executeAsync();
+            }
+        }
 //        new AsyncTask<Void, Void, Integer>() {
 //
 //            @Override
@@ -408,7 +460,24 @@ public class MainActivity extends ActionBarActivity {
 //
 //            }
 //        }.execute();
-//    }
+    }
+
+    public void loadImageInBackground(final String facebookId) {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Picasso.with(MainActivity.this)
+                        .load("https://graph.facebook.com/"
+                                + facebookId + "/picture?type=large")
+                        .placeholder(R.drawable.ic_titular)
+                        .transform(new CircleTransform())
+                        .error(R.drawable.ic_titular)
+                        .into(imageViewFacebookProfilePic);
+            }
+        }, 1000);
+
+    }
 
 
     @Override

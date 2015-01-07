@@ -79,6 +79,10 @@
     <!-- Contact fragment -->
     <string name="toolbarTitleContactFragment">Contacto</string>
 
+    <!--Settings Fragment-->
+    <string name="toolbarTitleSettingsFragment">Ajustes</string>
+
+
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>
         <item>Master Card</item>
@@ -95,6 +99,9 @@
     <string name="intro_final_title">Ahorra tiempo y dinero</string>
     <string name="intro_final_desc">No publicaremos nada sin tu consentimiento</string>
     <string name="btn_facebook_intro">Registrate con Facebook</string>
+    <string name="parse_app_id">vewdKbKAPt6y9ufviEEYHlq62dXhlEAPldiwNi5P</string>
+    <string name="parse_client_key">ElCkYKmgcL1RNtZL1qF3YIBSdtNqeEFiTOTQ46n7</string>
+    <string name="buttonLabelSettingsLogOut">Terminar Session</string>
 
 
 </resources>

@@ -50,7 +50,7 @@ public class IntermediateActivity extends Activity {
     }
 
     public void logoutButtonClicked() {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, LoginActivityBack.class);
         intent.putExtra(COMES_FROM_LOGOUT, true);
         //staticComesFromLogout = true;
         startActivity(intent);

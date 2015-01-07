@@ -63,7 +63,7 @@
         <com.devspark.robototextview.widget.RobotoTextView
             style="@style/TextViewNotificationsContent"
             android:text="http://www.jmaschih.gob.mx/"
-            android:textColor="@color/com_facebook_blue"
+            android:textColor="@color/blue_fb"
             android:layout_below="@+id/imageView6"
             android:layout_toRightOf="@+id/imageView5"
             android:layout_toEndOf="@+id/imageView5"
