@@ -74,6 +74,8 @@ public class MainActivity extends ActionBarActivity {
     @InjectView(R.id.textViewFacebookName)
     TextView textViewFacebookName;
 
+    private SharedPreferences prefs;
+
     private ActionBarDrawerToggle mDrawerToggle;
     // we need this because when we try to close the drawer we have to pass the container view
 
@@ -118,18 +120,15 @@ public class MainActivity extends ActionBarActivity {
         navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
         String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
 
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(IntroActivity.PREF_FIRST_TIME, false);
+        editor.apply();
+
         loadImageInBackground();
-//        Picasso.with(MainActivity.this)
-//                .load("https://graph.facebook.com/"
-//                        + facebookId + "/picture?type=large")
-//                .placeholder(R.drawable.ic_titular)
-//                .transform(new CircleTransform())
-//                .error(R.drawable.ic_titular)
-//                .into(imageViewFacebookProfilePic);
 
         textViewFacebookName.setText(facebookName);
 
@@ -138,11 +137,13 @@ public class MainActivity extends ActionBarActivity {
         // adding nav drawer items to array
         // Balance
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Dummy
+        // Promotions
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // OCR scanner
+        // Notifications (has a counter)
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "4"));
+        // Contact
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        // Settings
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
 
         // Recycle the typed array
@@ -170,7 +171,7 @@ public class MainActivity extends ActionBarActivity {
             public void onDrawerOpened(View drawerView) {
                 mDrawerList.setItemChecked(1, true);
                 mDrawerList.setSelection(1);
-                getSupportActionBar().setTitle("Usuario Lecturista");
+                getSupportActionBar().setTitle(R.string.title_activity_login);
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
             }
@@ -262,13 +263,20 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * Called by the settings fragment when the user wants to logout from the app
+     * Called by the settings fragment when the user wants to logout from the app.
+     * Because otto library needs an object we need to pass a boolean, otherwise we
+     * wouldn't just always pass a true
      *
-     * @param b
+     * @param wantsToLogOut true if we want to logout
      */
     @Subscribe
-    public void logOut(Boolean b) {
-        if (b) {
+    public void logOut(Boolean wantsToLogOut) {
+        if (wantsToLogOut) {
+            // reset the first time to show the intro again.
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(IntroActivity.PREF_FIRST_TIME, true);
+            editor.apply();
+
             ParseUser.logOut();
 
             // FLAG_ACTIVITY_CLEAR_TASK only works on API 11, so if the user
@@ -367,7 +375,6 @@ public class MainActivity extends ActionBarActivity {
         // update the main content by replacing fragments
         Fragment fragment = null;
         switch (position) {
-            // we will start from case 0 is mascot, so we break
             case 0:
                 fragment = new BalanceFragment();
                 enableToolbarSpinner(true);
@@ -406,12 +413,12 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
         } else {
             // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(TAG, "Error in creating fragment");
         }
     }
 
-    private void enableToolbarSpinner(boolean b) {
-        if (b) {
+    private void enableToolbarSpinner(boolean enable) {
+        if (enable) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             toolbarSpinner.setVisibility(View.VISIBLE);
         } else {
@@ -421,6 +428,10 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * Here we are going to check if the user is from facebook, and if it is
+     * then we call the other method with picasso to load it
+     */
     public void loadImageInBackground() {
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (ParseFacebookUtils.isLinked(parseUser)) {
@@ -435,33 +446,13 @@ public class MainActivity extends ActionBarActivity {
                 }).executeAsync();
             }
         }
-//        new AsyncTask<Void, Void, Integer>() {
-//
-//            @Override
-//            protected Integer doInBackground(Void... params) {
-//                try {
-//                    Picasso.with(MainActivity.this)
-//                            .load("https://graph.facebook.com/"
-//                                    + facebookId + "/picture?type=large")
-//                            .placeholder(R.drawable.ic_titular)
-//                            .transform(new CircleTransform())
-//                            .error(R.drawable.ic_titular)
-//                            .into(imageViewFacebookProfilePic);
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Log.e(TAG, e.getMessage());
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(Integer transactionResponse) {
-//
-//            }
-//        }.execute();
     }
 
+    /**
+     * This will tell picasso to load the image from the web, after a 1 sec delay
+     *
+     * @param facebookId id needed to load from web
+     */
     public void loadImageInBackground(final String facebookId) {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

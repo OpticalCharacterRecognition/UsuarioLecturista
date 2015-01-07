@@ -1,7 +1,9 @@
 package com.fourtails.usuariolecturista;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 
@@ -21,6 +23,8 @@ import butterknife.InjectView;
  */
 public class IntroActivity extends ActionBarActivity {
 
+    public static final String PREF_FIRST_TIME = "firstTimePref";
+
 
     public static Bus introBus;
 
@@ -35,17 +39,26 @@ public class IntroActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_instructions);
-        introBus = new Bus(ThreadEnforcer.MAIN);
-        introBus.register(this);
-        ButterKnife.inject(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mAdapter = new IntroFragmentAdapter(getSupportFragmentManager());
+        boolean isFirstTime = prefs.getBoolean(PREF_FIRST_TIME, true);
+        // if is the first time then we call for the "tutorial" slides
+        if (isFirstTime) {
+            setContentView(R.layout.activity_instructions);
+            introBus = new Bus(ThreadEnforcer.MAIN);
+            introBus.register(this);
+            ButterKnife.inject(this);
 
-        mPager.setAdapter(mAdapter);
+            mAdapter = new IntroFragmentAdapter(getSupportFragmentManager());
 
-        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setViewPager(mPager);
+            mPager.setAdapter(mAdapter);
+
+            mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+            mIndicator.setViewPager(mPager);
+        } else { // otherwise we go directly to the Main activity
+            Intent intent = new Intent(this, DispatchActivity.class);
+            startAnyActivity(intent);
+        }
     }
 
     /**

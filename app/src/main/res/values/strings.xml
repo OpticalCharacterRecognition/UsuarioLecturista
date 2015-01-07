@@ -4,7 +4,7 @@
     <string name="app_name">UsuarioLecturista</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_login">UsuarioLecturista</string>
+    <string name="title_activity_login">Usuario Lecturista</string>
     <string name="facebook_app_id">1475669572699600</string>
     <string name="title_activity_intermediate">IntermediateActivity</string>
     <string name="title_activity_main_drawer">MainDrawerActivity</string>
