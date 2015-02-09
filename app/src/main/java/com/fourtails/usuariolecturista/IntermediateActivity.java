@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-
+@Deprecated
 public class IntermediateActivity extends Activity {
 
     public static final String COMES_FROM_LOGOUT = "COMES_FROM_LOGOUT";
