@@ -66,5 +66,11 @@
     <color name="almostBlackWater">#a0000000</color>
     <color name="greyWater">#ff818181</color>
 
+    <!--colors for chart-->
+    <color name="line_bg">#00bba7</color>
+    <color name="line">#ffffff</color>
+    <color name="axis">#ffffff</color>
+    <color name="label">#ffffff</color>
+
 
 </resources>
