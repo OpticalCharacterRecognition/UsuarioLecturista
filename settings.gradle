@@ -1,3 +1,5 @@
 include ':app', ':ParseLoginUI'
 include 'tess-two'
 include ':viewPagerLibrary'
+include ':chartLibrary'
+include ':backend'

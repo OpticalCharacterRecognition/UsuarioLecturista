@@ -11,6 +11,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/ParseLoginUI" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/backend" />
+            <option value="$PROJECT_DIR$/chartLibrary" />
             <option value="$PROJECT_DIR$/tess-two" />
             <option value="$PROJECT_DIR$/viewPagerLibrary" />
           </set>

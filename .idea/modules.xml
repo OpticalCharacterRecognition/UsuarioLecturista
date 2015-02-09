@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/ParseLoginUI/ParseLoginUI.iml" filepath="$PROJECT_DIR$/ParseLoginUI/ParseLoginUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/UsuarioLecturista.iml" filepath="$PROJECT_DIR$/UsuarioLecturista.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/backend.iml" filepath="$PROJECT_DIR$/backend/backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chartLibrary/chartLibrary.iml" filepath="$PROJECT_DIR$/chartLibrary/chartLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/tess-two/tess-two.iml" filepath="$PROJECT_DIR$/tess-two/tess-two.iml" />
       <module fileurl="file://$PROJECT_DIR$/viewPagerLibrary/viewPagerLibrary.iml" filepath="$PROJECT_DIR$/viewPagerLibrary/viewPagerLibrary.iml" />
     </modules>
