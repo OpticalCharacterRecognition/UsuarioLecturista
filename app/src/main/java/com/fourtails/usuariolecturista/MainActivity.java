@@ -125,7 +125,8 @@ public class MainActivity extends ActionBarActivity {
         String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
 
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(IntroActivity.PREF_FIRST_TIME, false);
+        editor.putBoolean(IntroActivity.PREF_FIRST_TIME, false); // is no the first time anymore
+        editor.putBoolean(MeterRegistrationActivity.PREF_METER_REGISTERED, true); // there is one meter registered
         editor.apply();
 
         loadImageInBackground();
@@ -194,9 +195,9 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         String[] frags = new String[]{
-                "1 Nov - 30 Nov 2014",
-                "1 Oct - 31 Oct 2014",
-                "1 Sep - 30 Sep 2014"
+                "1 Feb - 28 Feb 2015",
+                "1 Ene - 31 Ene 2015",
+                "1 Dic - 31 Dic 2014"
         };
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, frags);
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
@@ -537,6 +538,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    // Todo: remove if not used
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

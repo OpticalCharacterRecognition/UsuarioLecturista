@@ -23,7 +23,11 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
-
+    sourceSets {
+        main {
+            assets.srcDirs = ['assets']
+        }
+    }
 }
 
 repositories {
@@ -35,7 +39,8 @@ dependencies {
     compile project(':tess-two')
     compile project(':viewPagerLibrary')
     compile project(':ParseLoginUI')
-
+    compile project(':chartLibrary')
+    compile project(':backend')
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:cardview-v7:21.0.0'
@@ -56,7 +61,10 @@ dependencies {
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     // An interactive indicator to navigate between the different pages of a ViewPager
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-
+    //backend
+    compile 'com.google.http-client:google-http-client-gson:1.19.0'
+    compile 'com.google.http-client:google-http-client-android:1.19.0'
+    compile 'com.google.code.gson:gson:2.3'
+    // Facebook
     provided 'com.facebook.android:facebook-android-sdk:3.21.1'
-
 }

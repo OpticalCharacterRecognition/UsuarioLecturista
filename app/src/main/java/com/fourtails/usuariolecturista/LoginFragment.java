@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 /**
  * Created by Vazh on 9/25/2014.
  */
+@Deprecated
 public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";

@@ -29,24 +29,11 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.fourtails.usuariolecturista.model.CreditCard" />
+            android:value="com.fourtails.usuariolecturista.model.CreditCard,com.fourtails.usuariolecturista.model.Meter,com.fourtails.usuariolecturista.model.RegisteredUser" />
 
-        <activity
-            android:name=".SplashActivity"
-            android:label="@string/app_name">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
         <activity
             android:name=".LoginActivityBack"
-            android:label="@string/title_activity_login">
-
-        </activity>
+            android:label="@string/title_activity_login"></activity>
         <activity
             android:name=".IntermediateActivity"
             android:label="@string/title_activity_intermediate"
@@ -56,11 +43,12 @@
         <activity
             android:name=".ocr.CaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/AppThemeFull"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".ocr.HelpActivity"
-            android:screenOrientation="user">
-            <intent-filter>
+            android:screenOrientation="portrait">
+        <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -69,11 +57,13 @@
         <activity android:name=".ocr.PreferencesActivity" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main_drawer" />
+            android:label="@string/title_activity_main_drawer"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".IntroActivity"
-            android:label="Usuario Lecturista">
-            <intent-filter>
+            android:label="Usuario Lecturista"
+            android:screenOrientation="portrait">
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -82,7 +72,8 @@
         <activity
             android:name=".DispatchActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/title_activity_login"
@@ -91,7 +82,7 @@
             android:name="com.parse.ui.ParseLoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
-            <meta-data
+        <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
                 android:value="true" />
             <meta-data
@@ -100,8 +91,10 @@
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.FACEBOOK_LOGIN_ENABLED"
                 android:value="true" />
-
         </activity>
+        <activity
+            android:name=".MeterRegistrationActivity"
+            android:label="@string/title_activity_meter_registration"></activity>
     </application>
 
 </manifest>

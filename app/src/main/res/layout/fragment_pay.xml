@@ -75,8 +75,7 @@
         android:ems="10"
         android:editable="false"
         android:focusable="false"
-        android:id="@+id/textViewPayCreditCardExpirationDate"
-        android:text=" " />
+        android:id="@+id/textViewPayCreditCardExpirationDate" />
 
     <com.devspark.robototextview.widget.RobotoCheckBox
         style="@style/RobotoCheckBox"
