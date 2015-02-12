@@ -15,15 +15,18 @@ public class Meter extends Model {
     public long balance;
     @Column
     public String modelType;
+    @Column
+    public String urlSafeKey;
 
     public Meter() {
         super();
     }
 
-    public Meter(String accountNumber, long balance, String modelType) {
+    public Meter(String accountNumber, long balance, String modelType, String urlSafeKey) {
         super();
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.modelType = modelType;
+        this.urlSafeKey = urlSafeKey;
     }
 }

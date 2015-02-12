@@ -311,6 +311,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
+     * DatabaseQuery
      * Retrieves the first saved CC from the database
      *
      * @return first saved CC
@@ -321,6 +322,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     /**
+     * DatabaseSave
      * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
      * BackStack, this prevents the back button from going to the AddCreditCardFragment again
      *

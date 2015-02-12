@@ -71,6 +71,9 @@ public class PayAddCreditCardFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Creates a new credit card and sends it to the MainActivity to be saved
+     */
     private void saveNewCreditCard() {
         if (checkBoxAgreedTAC.isChecked()) {
             CreditCard creditCard = new CreditCard(

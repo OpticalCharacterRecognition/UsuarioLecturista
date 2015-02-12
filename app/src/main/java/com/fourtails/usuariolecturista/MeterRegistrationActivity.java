@@ -1,5 +1,6 @@
 package com.fourtails.usuariolecturista;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.activeandroid.query.Select;
 import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUser;
 import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUserResponse;
@@ -18,6 +20,8 @@ import com.appspot.ocr_backend.backend.model.MessagesCreateMeter;
 import com.appspot.ocr_backend.backend.model.MessagesCreateMeterResponse;
 import com.appspot.ocr_backend.backend.model.MessagesCreateUser;
 import com.appspot.ocr_backend.backend.model.MessagesCreateUserResponse;
+import com.appspot.ocr_backend.backend.model.MessagesGetMeters;
+import com.appspot.ocr_backend.backend.model.MessagesGetMetersResponse;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
@@ -46,12 +50,15 @@ public class MeterRegistrationActivity extends ActionBarActivity {
     private String email;
     private String name;
 
+    volatile boolean running;
+
+    private boolean meterExists = false;
+
+    ProgressDialog progressDialog;
+
     @OnClick(R.id.buttonAddMeter)
     public void clickedButtonAddMeter() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
         registerMeter();
-        finish();
     }
 
     @InjectView(R.id.editTextMeterNumber)
@@ -63,21 +70,135 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         setContentView(R.layout.activity_meter_registration);
         ButterKnife.inject(this);
 
-        registerUser();
+        running = true;
+
+        registerUserBackend();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isMeterRegistered = prefs.getBoolean(PREF_METER_REGISTERED, false);
+
         if (isMeterRegistered) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }
+
+        checkIfUserHasMeter();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        running = false;
     }
 
     /**
+     * DatabaseSave
+     * BackendCall
+     * checks if the user already has a meter linked to it
+     *
+     * @return true if it does then it saves it to the database, else it returns false so the app asks for it
+     */
+    private void checkIfUserHasMeter() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected void onPreExecute() {
+                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, "Verificando Parametros", "Por favor espere...", true);
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                try {
+
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(
+                            AndroidHttp.newCompatibleTransport(),
+                            new AndroidJsonFactory(),
+                            null);
+                    Backend service = builder.build();
+
+                    MessagesGetMeters messagesGetMeters = new MessagesGetMeters();
+                    messagesGetMeters.setUser(email);
+
+
+                    MessagesGetMetersResponse response = service.meter().getAllAssignedToUser(messagesGetMeters).execute();
+
+                    if (response.getOk()) {
+                        Log.i("BACKEND", response.toPrettyString());
+                        Meter meter = new Meter(
+                                response.getMeters().get(0).getAccountNumber(),
+                                response.getMeters().get(0).getBalance(),
+                                response.getMeters().get(0).getModel(),
+                                response.getMeters().get(0).getUrlsafeKey()
+                        );
+                        meter.save();
+                        meterExists = true;
+                        return true;
+                    } else if (response.getError().contains("No Meters found under specified criteria")) {
+                        meterExists = false;
+                        return false;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("golocky", e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean transactionResponse) {
+                if (running) {
+                    progressDialog.dismiss();
+                    if (transactionResponse) {
+                        Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        Log.i("BACKEND", "Good-checkIfUserHasMeter");
+                    } else {
+                        Log.i("BACKEND", "Bad-checkIfUserHasMeter");
+                    }
+                }
+            }
+        }.execute();
+
+    }
+
+    /**
+     * DatabaseSave
      * checks where is the user registering from and saves is to the database
      */
     private void registerUser() {
+        // we need to check if the user is already in the database
+        RegisteredUser previouslyRegisteredUser = checkForExistingUser(email);
+        if (previouslyRegisteredUser == null) {
+            RegisteredUser registeredUser = new RegisteredUser(
+                    accountType,
+                    age,
+                    email,
+                    name
+            );
+            registeredUser.save();
+        }
+    }
+
+    /**
+     * DatabaseQuery
+     * We check in our database if the user is already registered
+     *
+     * @param emailAsUsername use the email as username
+     * @return a registered user if exists
+     */
+    private RegisteredUser checkForExistingUser(String emailAsUsername) {
+        return new Select()
+                .from(RegisteredUser.class)
+                .where("Email = ?", emailAsUsername)
+                .executeSingle();
+    }
+
+    /**
+     * fill user info into the global variables
+     */
+    private void fillUserInfo() {
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (ParseFacebookUtils.isLinked(parseUser)) {
             if (ParseFacebookUtils.getSession().isOpened()) {
@@ -97,20 +218,16 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             email = parseUser.getEmail();
             name = parseUser.getUsername();
         }
-        RegisteredUser registeredUser = new RegisteredUser(
-                accountType,
-                age,
-                email,
-                name
-        );
-        registeredUser.save();
-        registerUserBackend();
     }
 
     /**
+     * BackendCall
      * Registers the user on the backend
      */
     private void registerUserBackend() {
+
+        // fill the global variables
+        fillUserInfo();
 
         new AsyncTask<Void, Void, Integer>() {
             @Override
@@ -134,8 +251,11 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
                     if (response.getOk()) {
                         Log.i("BACKEND", response.toPrettyString());
-                        //return GoLocky.TRANSACTION_GET_USER_OK_CODE;
                         return 1;
+                    } else {
+                        if (response.getError().contains("User email already in platform")) {
+                            return 2;
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,9 +267,13 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(Integer transactionResponse) {
                 switch (transactionResponse) {
-                    //case GoLocky.TRANSACTION_GET_USER_OK_CODE:
                     case 1:
+                        registerUser();
                         Log.i("BACKEND", "Good-registerUserBackend");
+                        break;
+                    case 2:
+                        registerUser();
+                        Log.i("BACKEND", "Good-AlreadyExists-registerUserBackend");
                         break;
                     default:
                         Log.i("BACKEND", "Bad-registerUserBackend");
@@ -163,20 +287,30 @@ public class MeterRegistrationActivity extends ActionBarActivity {
      * Registers the meter in the database
      */
     public void registerMeter() {
-        Meter meter = new Meter(
-                meterNumber.getText().toString(),
-                0L,
-                "Cicasa"
-        );
-        meter.save();
-        registerMeterBackend(meter);
+        if (!meterExists) {
+            Meter meter = new Meter(
+                    meterNumber.getText().toString(),
+                    0L,
+                    "Cicasa",
+                    null
+            );
+            registerMeterBackend(meter);
+        }
     }
 
     /**
-     * Tries to register the meter on the backend
+     * DatabaseSave
+     * BackendCall
+     * Tries to register the meter on the backend if successful it saves it into the database
      */
     private void registerMeterBackend(final Meter meter) {
         new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected void onPreExecute() {
+                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, "Registrando el Medidor", "Por favor espere...", true);
+            }
+
             @Override
             protected Integer doInBackground(Void... params) {
                 try {
@@ -209,14 +343,19 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                switch (transactionResponse) {
-                    //case GoLocky.TRANSACTION_GET_USER_OK_CODE:
-                    case 1:
-                        Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
-                        assignMeterToUserBackend(meter.accountNumber);
-                        break;
-                    default:
-                        Log.i("BACKEND-registerMeter", "Bad-registerMeterBackend");
+                if (running) {
+                    switch (transactionResponse) {
+
+                        //case GoLocky.TRANSACTION_GET_USER_OK_CODE:
+                        case 1:
+                            Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
+                            meter.save();
+                            assignMeterToUserBackend(meter.accountNumber);
+                            break;
+                        default:
+                            Log.i("BACKEND-registerMeter", "Bad-registerMeterBackend");
+                    }
+
                 }
             }
         }.execute();
@@ -224,6 +363,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
     }
 
     /**
+     * BackendCall
      * tries to assign the meter to the newly created user
      *
      * @param accountNumber the meterNumber
@@ -249,7 +389,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
                     if (response.getOk()) {
                         Log.i("BACKEND-assignMeter", response.toPrettyString());
-                        //return GoLocky.TRANSACTION_GET_USER_OK_CODE;
                         return 1;
                     }
                 } catch (Exception e) {
@@ -261,13 +400,18 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                switch (transactionResponse) {
-                    //case GoLocky.TRANSACTION_GET_USER_OK_CODE:
-                    case 1:
-                        Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
-                        break;
-                    default:
-                        Log.i("BACKEND-assignMeter", "Bad-assignMeterToUserBackend");
+                if (running) {
+                    progressDialog.dismiss();
+                    switch (transactionResponse) {
+                        case 1:
+                            Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
+                            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        default:
+                            Log.i("BACKEND-assignMeter", "Bad-assignMeterToUserBackend");
+                    }
                 }
             }
         }.execute();
