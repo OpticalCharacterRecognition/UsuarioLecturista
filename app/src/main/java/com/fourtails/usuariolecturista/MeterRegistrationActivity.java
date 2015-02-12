@@ -103,7 +103,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, "Verificando Parametros", "Por favor espere...", true);
+                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.DialogTitleCheckingParameters), getString(R.string.DialogContentPleaseWait), true);
             }
 
             @Override
@@ -308,7 +308,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
             @Override
             protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, "Registrando el Medidor", "Por favor espere...", true);
+                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.dialogTitleRegisterMeterBE), getString(R.string.DialogContentPleaseWait), true);
             }
 
             @Override
@@ -331,7 +331,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
                     if (response.getOk()) {
                         Log.i("BACKEND-registerMeter", response.toPrettyString());
-                        //return GoLocky.TRANSACTION_GET_USER_OK_CODE;
                         return 1;
                     }
                 } catch (Exception e) {
@@ -345,8 +344,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             protected void onPostExecute(Integer transactionResponse) {
                 if (running) {
                     switch (transactionResponse) {
-
-                        //case GoLocky.TRANSACTION_GET_USER_OK_CODE:
                         case 1:
                             Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
                             meter.save();
