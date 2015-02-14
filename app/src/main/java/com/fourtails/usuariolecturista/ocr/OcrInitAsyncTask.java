@@ -100,8 +100,8 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Checking for data installation...");
+        dialog.setTitle("Por favor espere");
+        dialog.setMessage("Verificando datos...");
         dialog.setIndeterminate(false);
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         dialog.setCancelable(false);
@@ -121,12 +121,12 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         // Example Tesseract data filename: "eng.traineddata"
         String destinationFilenameBase = languageCode + ".traineddata";
         boolean isCubeSupported = false;
-        for (String s : CaptureActivity.CUBE_SUPPORTED_LANGUAGES) {
-            if (s.equals(languageCode)) {
-                isCubeSupported = true;
-            }
-        }
-        destinationFilenameBase = "tesseract-ocr-3.02." + languageCode + ".tar";
+//        for (String s : CaptureActivity.CUBE_SUPPORTED_LANGUAGES) {
+//            if (s.equals(languageCode)) {
+//                isCubeSupported = true;
+//            }
+//        }
+        destinationFilenameBase = "tesseract-ocr-3.02." + languageCode;
 
         // Check for, and create if necessary, folder to hold model data
         String destinationDirBase = params[0]; // The storage directory, minus the
@@ -227,7 +227,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         boolean osdInstallSuccess = false;
         if (!osdFile.exists()) {
             // Check assets for language data to install. If not present, download from Internet
-            languageName = "orientation and script detection";
+            languageName = "OSD";
             try {
                 // Check for, and delete, partially-downloaded OSD files
                 String[] badFiles = {CaptureActivity.OSD_FILENAME + ".gz.download",
@@ -427,7 +427,8 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         int unzippedBytes = 0;
         final Integer progressMin = 0;
         int progressMax = 100 - progressMin;
-        publishProgress("Uncompressing data for " + languageName + "...",
+//        publishProgress("Descomprimiendo datos para " + languageName + "...",
+        publishProgress("Descomprimiendo datos " + "...",
                 progressMin.toString());
 
         // If the file is a tar file, just show progress to 50%
@@ -452,7 +453,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
                     + progressMin;
 
             if (percentComplete > percentCompleteLast) {
-                publishProgress("Uncompressing data for " + languageName
+                publishProgress("Descomprimiendo datos "
                         + "...", percentComplete.toString());
                 percentCompleteLast = percentComplete;
             }
@@ -502,7 +503,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         int unzippedBytes = 0;
         final Integer progressMin = 50;
         final int progressMax = 100 - progressMin;
-        publishProgress("Uncompressing data for " + languageName + "...",
+        publishProgress("Descomprimiendo " + "...",
                 progressMin.toString());
 
         // Extract all the files
@@ -525,7 +526,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
                 percentComplete = (int) ((unzippedBytes / (float) uncompressedSize) * progressMax)
                         + progressMin;
                 if (percentComplete > percentCompleteLast) {
-                    publishProgress("Uncompressing data for " + languageName + "...",
+                    publishProgress("Descomprimiendo datos " + "...",
                             percentComplete.toString());
                     percentCompleteLast = percentComplete;
                 }
@@ -602,7 +603,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
                                          File destinationDir, File destinationFile) throws IOException,
             FileNotFoundException {
         // Attempt to open the zip archive
-        publishProgress("Uncompressing data for " + languageName + "...", "0");
+        publishProgress("Descomprimiendo datos" + "...", "0");
         ZipInputStream inputStream = new ZipInputStream(context.getAssets().open(sourceFilename));
 
         // Loop through all the files and folders in the zip archive (but there should just be one)
@@ -634,7 +635,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
                     unzippedSize += count;
                     percentComplete = (int) ((unzippedSize / (long) zippedFileSize) * 100);
                     if (percentComplete > percentCompleteLast) {
-                        publishProgress("Uncompressing data for " + languageName + "...",
+                        publishProgress("Descomprimiendo datos " + "...",
                                 percentComplete.toString(), "0");
                         percentCompleteLast = percentComplete;
                     }

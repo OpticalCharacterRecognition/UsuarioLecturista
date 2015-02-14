@@ -23,10 +23,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.fourtails.usuariolecturista.R;
 import com.googlecode.leptonica.android.ReadFile;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
-import com.fourtails.usuariolecturista.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class to send bitmap data for OCR.
@@ -42,6 +47,11 @@ final class DecodeHandler extends Handler {
     private Bitmap bitmap;
     private static boolean isDecodePending;
     private long timeRequired;
+
+    private int counter = 0;
+    public static String addedResult = "";
+
+    ArrayList<Integer> multipleResults = new ArrayList<>();
 
     DecodeHandler(CaptureActivity activity) {
         this.activity = activity;
@@ -126,9 +136,22 @@ final class DecodeHandler extends Handler {
             sendContinuousOcrFailMessage();
             return;
         }
-        bitmap = source.renderCroppedGreyscaleBitmap();
+        ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
-        OcrResult ocrResult = getOcrResult();
+
+        bitmaps = source.renderCroppedGreyscaleBitmaps2();
+        bitmap = bitmaps.get(0);
+
+//        bitmap = source.renderCroppedGreyscaleBitmap();
+
+
+        OcrResult ocrResult = null;
+        for (Bitmap bitmap1 : bitmaps) {
+            ocrResult = getOcrResult2(bitmap1);
+        }
+
+
+//        OcrResult ocrResult = getOcrResult();
         Handler handler = activity.getHandler();
         if (handler == null) {
             return;
@@ -208,6 +231,149 @@ final class DecodeHandler extends Handler {
         ocrResult.setText(textResult);
         ocrResult.setRecognitionTimeRequired(timeRequired);
         return ocrResult;
+    }
+
+
+    private OcrResult getOcrResult2(Bitmap testBitmap) {
+        OcrResult ocrResult;
+        String textResult;
+        long start = System.currentTimeMillis();
+
+        try {
+            baseApi.setImage(ReadFile.readBitmap(testBitmap));
+            textResult = baseApi.getUTF8Text();
+            timeRequired = System.currentTimeMillis() - start;
+
+            // Check for failure to recognize text
+            if (textResult == null || textResult.equals("")) {
+                return null;
+            }
+            ocrResult = new OcrResult();
+            ocrResult.setWordConfidences(baseApi.wordConfidences());
+            ocrResult.setMeanConfidence(baseApi.meanConfidence());
+            if (ViewfinderView.DRAW_REGION_BOXES) {
+                ocrResult.setRegionBoundingBoxes(baseApi.getRegions().getBoxRects());
+            }
+            if (ViewfinderView.DRAW_TEXTLINE_BOXES) {
+                ocrResult.setTextlineBoundingBoxes(baseApi.getTextlines().getBoxRects());
+            }
+            if (ViewfinderView.DRAW_STRIP_BOXES) {
+                ocrResult.setStripBoundingBoxes(baseApi.getStrips().getBoxRects());
+            }
+
+            // Always get the word bounding boxes--we want it for annotating the bitmap after the user
+            // presses the shutter button, in addition to maybe wanting to draw boxes/words during the
+            // continuous mode recognition.
+            ocrResult.setWordBoundingBoxes(baseApi.getWords().getBoxRects());
+
+
+//      if (ViewfinderView.DRAW_CHARACTER_BOXES || ViewfinderView.DRAW_CHARACTER_TEXT) {
+//        ocrResult.setCharacterBoundingBoxes(baseApi.getCharacters().getBoxRects());
+//      }
+        } catch (RuntimeException e) {
+            Log.e("OcrRecognizeAsyncTask", "Caught RuntimeException in request to Tesseract. Setting state to CONTINUOUS_STOPPED.");
+            e.printStackTrace();
+            try {
+                baseApi.clear();
+                activity.stopHandler();
+            } catch (NullPointerException e1) {
+                // Continue
+            }
+            return null;
+        }
+        timeRequired = System.currentTimeMillis() - start;
+        ocrResult.setBitmap(testBitmap);
+        ocrResult.setText(textResult);
+        ocrResult.setRecognitionTimeRequired(timeRequired);
+
+        evaluateOCRandTryToGetSignificantResult(ocrResult);
+
+
+        return ocrResult;
+    }
+
+    /**
+     * Magic!
+     * Basically we scan every digit and add it into a 5 digit string which then gets evaluated
+     * and set into an array, to see if we can find a significant sample with a result
+     */
+    public void evaluateOCRandTryToGetSignificantResult(OcrResult ocrResult) {
+        String textResult = ocrResult.getText();
+
+
+        if (isIntegerAndIsOneDigit(textResult) && (Integer.parseInt(textResult) <= 9) && ocrResult.getMeanConfidence() > 50) {
+            addedResult = addedResult + textResult;
+        } else {
+            addedResult = addedResult + "E";
+        }
+        counter++;
+        if (counter == 5) {
+            if (multipleResults.size() < 20) {
+                if (isInteger(addedResult)) {
+                    multipleResults.add(Integer.parseInt(addedResult));
+                }
+            } else {
+                getTheMostPopularResult();
+            }
+        }
+        if (counter > 5) {
+            counter = 0;
+            addedResult = "";
+        }
+
+    }
+
+    private void getTheMostPopularResult() {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (Integer i : multipleResults) {
+            Integer count = map.get(i);
+            map.put(i, count != null ? count + 1 : 0);
+        }
+        Integer popular = Collections.max(map.entrySet(),
+                new Comparator<Map.Entry<Integer, Integer>>() {
+                    @Override
+                    public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+                        return o1.getValue().compareTo(o2.getValue());
+                    }
+                }).getKey();
+        int carlos = popular;
+        multipleResults = new ArrayList<>();
+    }
+
+    /**
+     * We only want one digit integers here
+     *
+     * @param s string to evaluate
+     * @return true if integer with one digit
+     */
+    public static boolean isIntegerAndIsOneDigit(String s) {
+        if (s.length() > 1) {
+            return false;
+        }
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
+
+    /**
+     * With this we are going to try to eliminate results with Error in it
+     * like 001E2
+     *
+     * @param s string to evaluate
+     * @return true if integer
+     */
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
 
     private void sendContinuousOcrFailMessage() {

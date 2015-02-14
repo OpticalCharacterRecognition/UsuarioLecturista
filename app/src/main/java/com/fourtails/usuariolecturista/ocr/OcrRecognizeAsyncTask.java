@@ -56,17 +56,17 @@ final class OcrRecognizeAsyncTask extends AsyncTask<Void, Void, Boolean> {
         long start = System.currentTimeMillis();
         Bitmap bitmap = activity.getCameraManager().buildLuminanceSource(data, width, height).renderCroppedGreyscaleBitmap();
         String textResult;
-
-        //      if (PERFORM_FISHER_THRESHOLDING) {
-        //        Pix thresholdedImage = Thresholder.fisherAdaptiveThreshold(ReadFile.readBitmap(bitmap), 48, 48, 0.1F, 2.5F);
-        //        Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
-        //        bitmap = WriteFile.writeBitmap(thresholdedImage);
-        //      }
-        //      if (PERFORM_OTSU_THRESHOLDING) {
-        //        Pix thresholdedImage = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bitmap), 48, 48, 9, 9, 0.1F);
-        //        Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
-        //        bitmap = WriteFile.writeBitmap(thresholdedImage);
-        //      }
+//
+//              if (PERFORM_FISHER_THRESHOLDING) {
+//                Pix thresholdedImage = Thresholder.fisherAdaptiveThreshold(ReadFile.readBitmap(bitmap), 48, 48, 0.1F, 2.5F);
+//                Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+//                bitmap = WriteFile.writeBitmap(thresholdedImage);
+//              }
+//              if (true) {
+//                Pix thresholdedImage = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bitmap), 48, 48, 9, 9, 0.1F);
+//                Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+//                bitmap = WriteFile.writeBitmap(thresholdedImage);
+//              }
         //      if (PERFORM_SOBEL_THRESHOLDING) {
         //        Pix thresholdedImage = Thresholder.sobelEdgeThreshold(ReadFile.readBitmap(bitmap), 64);
         //        Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());

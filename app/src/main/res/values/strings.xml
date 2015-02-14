@@ -41,9 +41,9 @@
 
     <!-- Balance -->
     <string-array name="drop_down_example">
-        <item>1 Nov - 30 Nov 2014</item>
-        <item>1 Oct - 31 Oct 2014</item>
-        <item>1 Sep - 30 Sep 2014</item>
+        <item>1 Ene - 31 Ene 2015</item>
+        <item>1 Feb - 28 Feb 2015</item>
+        <item>1 Mar - 31 Mar 2015</item>
     </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -82,6 +82,11 @@
     <!--Settings Fragment-->
     <string name="toolbarTitleSettingsFragment">Ajustes</string>
 
+    <!-- MeterRegistration fragment -->
+    <string name="toolbarTitleMeterRegistrationFragment">Registro de Medidor</string>
+    <string name="labelMeterNumber">Numero de contrato</string>
+    <string name="btnAdd">Agregar</string>
+
 
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>
@@ -99,9 +104,14 @@
     <string name="intro_final_title">Ahorra tiempo y dinero</string>
     <string name="intro_final_desc">No publicaremos nada sin tu consentimiento</string>
     <string name="btn_facebook_intro">Registrate con Facebook</string>
+    <string name="btn_register_intro">Registrate</string>
     <string name="parse_app_id">vewdKbKAPt6y9ufviEEYHlq62dXhlEAPldiwNi5P</string>
     <string name="parse_client_key">ElCkYKmgcL1RNtZL1qF3YIBSdtNqeEFiTOTQ46n7</string>
     <string name="buttonLabelSettingsLogOut">Terminar Session</string>
+    <string name="title_activity_meter_registration">MeterRegistrationActivity</string>
+    <string name="dialogTitleRegisterMeterBE">Registrando el Medidor</string>
+    <string name="DialogContentPleaseWait">Por favor espere...</string>
+    <string name="DialogTitleCheckingParameters">Verificando Parametros</string>
 
 
 </resources>

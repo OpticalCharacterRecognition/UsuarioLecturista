@@ -24,9 +24,9 @@
         android:layout_height="fill_parent"
         android:layout_centerInParent="true" />
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+    <!--<include-->
+    <!--android:id="@+id/toolbar"-->
+    <!--layout="@layout/toolbar" />-->
 
     <com.fourtails.usuariolecturista.ocr.ViewfinderView
         android:id="@+id/viewfinder_view"
@@ -214,46 +214,50 @@
             android:textColor="@color/status_text"
             android:textSize="14sp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/buttonSettings"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_above="@+id/buttonSettings"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:id="@+id/linearLayout">-->
 
-            <EditText
-                android:id="@+id/editTextContrast"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:numeric="integer|signed"
-                android:text="1" />
+        <!--<EditText-->
+        <!--android:id="@+id/editTextContrast"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:numeric="integer|signed"-->
+        <!--android:text="1"-->
+        <!--android:textColor="@color/whiteWater" />-->
 
-            <EditText
-                android:id="@+id/editTextBrightness"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="false"
-                android:layout_toRightOf="@+id/editTextContrast"
-                android:numeric="integer|signed"
-                android:text="-150" />
+        <!--<EditText-->
+        <!--android:id="@+id/editTextBrightness"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="false"-->
+        <!--android:layout_toRightOf="@+id/editTextContrast"-->
+        <!--android:numeric="integer|signed"-->
+        <!--android:text="-130"-->
+        <!--android:textColor="@color/whiteWater" />-->
 
-            <Button
-                android:id="@+id/buttonCB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/editTextBrightness"
-                android:text="Change" />
+        <!--<Button-->
+        <!--android:id="@+id/buttonCB"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_toRightOf="@+id/editTextBrightness"-->
+        <!--android:text="Change" />-->
 
-            <TextView
-                android:id="@+id/textViewcb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/editTextContrast"
-                android:layout_toRightOf="@+id/shutter_button"
-                android:text="Contrast / Brightness" />
-        </LinearLayout>
+        <!--<TextView-->
+        <!--android:id="@+id/textViewcb"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/editTextContrast"-->
+        <!--android:layout_toRightOf="@+id/shutter_button"-->
+        <!--android:text="Contrast / Brightness"-->
+        <!--android:textColor="@color/whiteWater" />-->
+        <!--</LinearLayout>-->
 
         <Button
             android:id="@+id/buttonSettings"
@@ -263,6 +267,102 @@
             android:layout_toEndOf="@+id/status_view_bottom"
             android:layout_toRightOf="@+id/status_view_bottom"
             android:text="Settings" />
+
+        <ImageView
+            android:layout_width="600dp"
+            android:layout_height="140dp"
+            android:id="@+id/imageViewPreviewCamera"
+            android:scaleType="fitXY"
+            android:layout_above="@+id/buttonSettings"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/textViewSeek1"
+            android:textColor="@color/whiteWater"
+            android:layout_alignTop="@+id/seekBar1"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="0" />
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar1"
+            android:longClickable="false"
+            android:max="100"
+            android:progress="1"
+            android:layout_marginTop="49dp"
+            android:layout_below="@+id/status_view_top"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/textViewSeek1"
+            android:layout_toStartOf="@+id/textViewSeek1" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/textViewSeek"
+            android:textColor="@color/whiteWater"
+            android:text="0"
+            android:layout_above="@+id/textViewSeek1"
+            android:layout_toRightOf="@+id/seekBar1"
+            android:layout_toEndOf="@+id/seekBar1" />
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:max="100"
+            android:progress="1"
+            android:layout_above="@+id/textViewSeek1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/textViewSeek1"
+            android:layout_toStartOf="@+id/textViewSeek1" />
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarBright"
+            android:longClickable="false"
+            android:max="510"
+            android:progress="1"
+            android:layout_below="@+id/textViewSeek1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/textViewSeek1"
+            android:layout_toStartOf="@+id/textViewSeek1" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/textViewSeek2"
+            android:textColor="@color/whiteWater"
+            android:layout_below="@+id/textViewSeek1"
+            android:layout_alignLeft="@+id/textViewSeek1"
+            android:layout_alignStart="@+id/textViewSeek1"
+            android:text="-130" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MEthod"
+            android:id="@+id/textViewMethod"
+            android:layout_below="@+id/textViewSeek2"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/whiteWater" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Threshold"
+            android:id="@+id/switch1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <!--
         <ToggleButton android:id="@+id/torch_button"

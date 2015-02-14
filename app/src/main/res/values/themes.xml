@@ -3,18 +3,21 @@
 
     <style name="AppTheme" parent="AppTheme.Base" />
 
+    <style name="AppThemeFull" parent="AppTheme.Base">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarker</item>
         <item name="android:textColorHighlight">@color/white_locky</item>
         <item name="android:color">@color/white_locky</item>
-        <item name="android:text">@color/teal_locky</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:buttonStyle">@style/ButtonAppTheme</item>
-
-
     </style>
+
 </resources>

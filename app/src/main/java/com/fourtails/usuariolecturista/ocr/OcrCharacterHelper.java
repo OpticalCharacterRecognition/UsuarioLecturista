@@ -356,7 +356,8 @@ public class OcrCharacterHelper {
             return "";
         } // Dutch
         else if (languageCode.equals("eng")) {
-            return "!?@#$%&*()<>_-+=/.,:;'\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return "0123456789";
+            //return "!?@#$%&*()<>_-+=/.,:;'\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         } // English
         else if (languageCode.equals("est")) {
             return "";

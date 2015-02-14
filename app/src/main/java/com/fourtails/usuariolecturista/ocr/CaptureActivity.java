@@ -55,13 +55,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fourtails.usuariolecturista.BalanceFragment;
-import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.ocr.camera.CameraManager;
 import com.fourtails.usuariolecturista.ocr.camera.ShutterButton;
@@ -71,8 +72,6 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
@@ -111,7 +110,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     /**
      * The default page segmentation mode to use.
      */
-    public static final String DEFAULT_PAGE_SEGMENTATION_MODE = "Auto";
+    public static final String DEFAULT_PAGE_SEGMENTATION_MODE = "Single block";
 
     /**
      * Whether to use autofocus by default.
@@ -131,7 +130,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     /**
      * Whether to initially show a looping, real-time OCR display.
      */
-    public static final boolean DEFAULT_TOGGLE_CONTINUOUS = false;
+    public static final boolean DEFAULT_TOGGLE_CONTINUOUS = true;
 
     /**
      * Whether to initially reverse the image returned by the camera.
@@ -141,7 +140,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     /**
      * Whether to enable the use of online translation services be default.
      */
-    public static final boolean DEFAULT_TOGGLE_TRANSLATION = true;
+    public static final boolean DEFAULT_TOGGLE_TRANSLATION = false;
 
     /**
      * Whether the light should be initially activated by default.
@@ -198,7 +197,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     /**
      * Minimum mean confidence score necessary to not reject single-shot OCR result. Currently unused.
      */
-    static final int MINIMUM_MEAN_CONFIDENCE = 0; // 0 means don't reject any scored results
+    static final int MINIMUM_MEAN_CONFIDENCE = 30; // 0 means don't reject any scored results
 
     // Context menu
     private static final int SETTINGS_ID = Menu.FIRST;
@@ -247,12 +246,22 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     private boolean isPaused;
     private static boolean isFirstLaunch; // True if this is the first time the app is being run
 
+    public static ImageView imageViewConstantPreview;
 
-    public static int contrast = 0;
 
-    public static int brightness = 0;
+    public static int contrast = 1;
+
+    public static int brightness = -130;
+
+    public static int seek = 0;
+    public static int seek1 = 0;
+
+    public TextView methodDescTv;
 
     private Button changes;
+
+    public Switch aSwitch;
+    public static boolean isSwitchChecked;
 
     private EditText contrastTV;
     private EditText brightnessTV;
@@ -289,22 +298,99 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
         cameraButtonView = findViewById(R.id.camera_button_view);
         resultView = findViewById(R.id.result_view);
 
-        /**toolbar**/
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // temporal for brightness adjustment
-        brightnessTV = (EditText) findViewById(R.id.editTextBrightness);
-        contrastTV = (EditText) findViewById(R.id.editTextContrast);
-
-        changes = (Button) findViewById(R.id.buttonCB);
-
-        changes.setOnClickListener(new View.OnClickListener() {
+        aSwitch = (Switch) findViewById(R.id.switch1);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                brightness = Integer.parseInt(brightnessTV.getText().toString());
-                contrast = Integer.parseInt(contrastTV.getText().toString());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isSwitchChecked = isChecked;
             }
         });
+
+
+        final TextView seekText = (TextView) findViewById(R.id.textViewSeek);
+        final TextView seek1Text = (TextView) findViewById(R.id.textViewSeek1);
+        final TextView seek2Text = (TextView) findViewById(R.id.textViewSeek2);
+
+        methodDescTv = (TextView) findViewById(R.id.textViewMethod);
+
+        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                seek = progress;
+                seekText.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        SeekBar seekBar1 = (SeekBar) findViewById(R.id.seekBar1);
+        seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                seek1 = progress;
+                seek1Text.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+
+        SeekBar seekBar2 = (SeekBar) findViewById(R.id.seekBarBright);
+        seekBar2.setProgress(255);
+        seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                brightness = progress - 255;
+                seek2Text.setText(String.valueOf(brightness));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        imageViewConstantPreview = (ImageView) findViewById(R.id.imageViewPreviewCamera);
+
+//        /**toolbar**/
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        // temporal for brightness adjustment
+//        brightnessTV = (EditText) findViewById(R.id.editTextBrightness);
+//        contrastTV = (EditText) findViewById(R.id.editTextContrast);
+//
+//        changes = (Button) findViewById(R.id.buttonCB);
+
+//        changes.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                brightness = Integer.parseInt(brightnessTV.getText().toString());
+//                contrast = Integer.parseInt(contrastTV.getText().toString());
+//            }
+//        });
 
         // settings button (remove this? )
         Button settingsBtn = (Button) findViewById(R.id.buttonSettings);
@@ -639,10 +725,10 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     public boolean onCreateOptionsMenu(Menu menu) {
         //    MenuInflater inflater = getMenuInflater();
         //    inflater.inflate(R.menu.options_menu, menu);
-        super.onCreateOptionsMenu(menu);
-        toolbar.inflateMenu(R.menu.global);
-        menu.add(0, SETTINGS_ID, 0, "Settings").setIcon(android.R.drawable.ic_menu_preferences);
-        menu.add(0, ABOUT_ID, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
+//        super.onCreateOptionsMenu(menu);
+//        toolbar.inflateMenu(R.menu.global);
+//        menu.add(0, SETTINGS_ID, 0, "Settings").setIcon(android.R.drawable.ic_menu_preferences);
+//        menu.add(0, ABOUT_ID, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
         return true;
     }
 
@@ -887,52 +973,52 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
             progressView.setVisibility(View.GONE);
             setProgressBarVisibility(false);
         }
-        // if we are capturing a number
-        if (isNumeric(ocrResult.getText())) {
-            int currentReadingValue = Integer.parseInt(ocrResult.getText());
-            SharedPreferences.Editor editor = prefs.edit();
-
-
-            String formattedDate;
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            int lastReadingValue = prefs.getInt(BalanceFragment.PREF_LAST_READING, 0);
-            int totalLitersThisCycle = prefs.getInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0);
-            int zeroValue;
-
-            // this means that its the first time
-            if (lastReadingValue == 0) {
-                zeroValue = currentReadingValue;
-            } else {
-                zeroValue = prefs.getInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, 0);
-            }
-
-
-            // you cant have a lower reading value than your last one
-            if (currentReadingValue < lastReadingValue) {
-                Toast.makeText(this, "Debe de haber un error, el valor es menor al de su ultima lectura", Toast.LENGTH_LONG).show();
-                return true;
-            } else {
-                totalLitersThisCycle = totalLitersThisCycle + currentReadingValue - zeroValue;
-
-                // date thingy
-                Calendar c = Calendar.getInstance();
-                System.out.println("Current time => " + c.getTime());
-                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                formattedDate = df.format(c.getTime());
-
-            }
-
-            // save the preferences
-            editor.putInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, zeroValue).commit(); // the first reading, used as a 0 for the total of liters
-            editor.putInt(BalanceFragment.PREF_LAST_READING, currentReadingValue).commit(); // last reading value (the one we just scanned)
-            editor.putString(BalanceFragment.PREF_LAST_READING_DATE, formattedDate).commit(); // last reading date
-            editor.putInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, totalLitersThisCycle).commit(); // total liters for this cycle
-
-            // we go back to the drawer and go to balance
-            setResult(MainActivity.GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
-            finish();
-        }
+//        // if we are capturing a number
+//        if (isNumeric(ocrResult.getText())) {
+//            int currentReadingValue = Integer.parseInt(ocrResult.getText());
+//            SharedPreferences.Editor editor = prefs.edit();
+//
+//
+//            String formattedDate;
+//
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//            int lastReadingValue = prefs.getInt(BalanceFragment.PREF_LAST_READING, 0);
+//            int totalLitersThisCycle = prefs.getInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0);
+//            int zeroValue;
+//
+//            // this means that its the first time
+//            if (lastReadingValue == 0) {
+//                zeroValue = currentReadingValue;
+//            } else {
+//                zeroValue = prefs.getInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, 0);
+//            }
+//
+//
+//            // you cant have a lower reading value than your last one
+//            if (currentReadingValue < lastReadingValue) {
+//                Toast.makeText(this, "Debe de haber un error, el valor es menor al de su ultima lectura", Toast.LENGTH_LONG).show();
+//                return true;
+//            } else {
+//                totalLitersThisCycle = totalLitersThisCycle + currentReadingValue - zeroValue;
+//
+//                // date thingy
+//                Calendar c = Calendar.getInstance();
+//                System.out.println("Current time => " + c.getTime());
+//                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//                formattedDate = df.format(c.getTime());
+//
+//            }
+//
+//            // save the preferences
+//            editor.putInt(BalanceFragment.PREF_FIRST_READING_FOR_CYCLE, zeroValue).commit(); // the first reading, used as a 0 for the total of liters
+//            editor.putInt(BalanceFragment.PREF_LAST_READING, currentReadingValue).commit(); // last reading value (the one we just scanned)
+//            editor.putString(BalanceFragment.PREF_LAST_READING_DATE, formattedDate).commit(); // last reading date
+//            editor.putInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, totalLitersThisCycle).commit(); // total liters for this cycle
+//
+//            // we go back to the drawer and go to balance
+//            setResult(MainActivity.GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE);
+//            finish();
+//        }
         return true;
     }
 
@@ -944,6 +1030,14 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
     void handleOcrContinuousDecode(OcrResult ocrResult) {
 
         lastResult = ocrResult;
+        imageViewConstantPreview.setImageBitmap(PlanarYUVLuminanceSource.letsDoThis);
+
+        //methodDescTv.setText(PlanarYUVLuminanceSource.methodName);
+        if (DecodeHandler.addedResult.length() > 4) {
+            methodDescTv.setText(DecodeHandler.addedResult);
+
+        }
+
 
         // Send an OcrResultText object to the ViewfinderView for text rendering
         viewfinderView.addResultText(new OcrResultText(ocrResult.getText(),
@@ -958,23 +1052,27 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
 
         Integer meanConfidence = ocrResult.getMeanConfidence();
 
-        if (CONTINUOUS_DISPLAY_RECOGNIZED_TEXT) {
-            // Display the recognized text on the screen
-            statusViewTop.setText(ocrResult.getText());
-            int scaledSize = Math.max(22, 32 - ocrResult.getText().length() / 4);
-            statusViewTop.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
-            statusViewTop.setTextColor(Color.BLACK);
-            statusViewTop.setBackgroundResource(R.color.status_top_text_background);
+        if (meanConfidence > 30) {
 
-            statusViewTop.getBackground().setAlpha(meanConfidence * (255 / 100));
-        }
+            if (CONTINUOUS_DISPLAY_RECOGNIZED_TEXT) {
+                // Display the recognized text on the screen
+                statusViewTop.setText(ocrResult.getText());
+                int scaledSize = Math.max(22, 32 - ocrResult.getText().length() / 4);
+                statusViewTop.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
+                statusViewTop.setTextColor(Color.BLACK);
+                statusViewTop.setBackgroundResource(R.color.status_top_text_background);
 
-        if (CONTINUOUS_DISPLAY_METADATA) {
-            // Display recognition-related metadata at the bottom of the screen
-            long recognitionTimeRequired = ocrResult.getRecognitionTimeRequired();
-            statusViewBottom.setTextSize(14);
-            statusViewBottom.setText("OCR: " + sourceLanguageReadable + " - Mean confidence: " +
-                    meanConfidence.toString() + " - Time required: " + recognitionTimeRequired + " ms");
+                statusViewTop.getBackground().setAlpha(meanConfidence * (255 / 100));
+            }
+
+            if (CONTINUOUS_DISPLAY_METADATA) {
+                // Display recognition-related metadata at the bottom of the screen
+
+                long recognitionTimeRequired = ocrResult.getRecognitionTimeRequired();
+                statusViewBottom.setTextSize(14);
+                statusViewBottom.setText("OCR: " + sourceLanguageReadable + " - Mean confidence: " +
+                        meanConfidence.toString() + " - Time required: " + recognitionTimeRequired + " ms");
+            }
         }
     }
 
@@ -1198,15 +1296,17 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
             }
             if (currentVersion > lastVersion) {
 
-                // Record the last version for which we last displayed the What's New (Help) page
-                prefs.edit().putInt(PreferencesActivity.KEY_HELP_VERSION_SHOWN, currentVersion).commit();
-                Intent intent = new Intent(this, HelpActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                // useless help dialog thing
 
-                // Show the default page on a clean install, and the what's new page on an upgrade.
-                String page = lastVersion == 0 ? HelpActivity.DEFAULT_PAGE : HelpActivity.WHATS_NEW_PAGE;
-                intent.putExtra(HelpActivity.REQUESTED_PAGE_KEY, page);
-                startActivity(intent);
+//                // Record the last version for which we last displayed the What's New (Help) page
+//                prefs.edit().putInt(PreferencesActivity.KEY_HELP_VERSION_SHOWN, currentVersion).commit();
+//                Intent intent = new Intent(this, HelpActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//
+//                // Show the default page on a clean install, and the what's new page on an upgrade.
+//                String page = lastVersion == 0 ? HelpActivity.DEFAULT_PAGE : HelpActivity.WHATS_NEW_PAGE;
+//                intent.putExtra(HelpActivity.REQUESTED_PAGE_KEY, page);
+//                startActivity(intent);
                 return true;
             }
         } catch (PackageManager.NameNotFoundException e) {

@@ -21,6 +21,18 @@ import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.util.Log;
+
+import com.googlecode.leptonica.android.Binarize;
+import com.googlecode.leptonica.android.Pix;
+import com.googlecode.leptonica.android.ReadFile;
+import com.googlecode.leptonica.android.WriteFile;
+
+import java.util.ArrayList;
+
+import Catalano.Imaging.Concurrent.Filters.Grayscale;
+import Catalano.Imaging.Concurrent.Filters.Threshold;
+import Catalano.Imaging.FastBitmap;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,
@@ -34,11 +46,14 @@ import android.graphics.Paint;
  */
 public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
+    public static String methodName;
     private final byte[] yuvData;
     private final int dataWidth;
     private final int dataHeight;
     private final int left;
     private final int top;
+
+    public static Bitmap letsDoThis;
 
     public PlanarYUVLuminanceSource(byte[] yuvData,
                                     int dataWidth,
@@ -142,11 +157,248 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
             inputOffset += dataWidth;
         }
 
+
+        int var = CaptureActivity.seek;
+        int var2 = CaptureActivity.seek1;
+
+
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        bitmap = ConvertToNegative(bitmap);
-        bitmap = changeBitmapContrastBrightness(bitmap, CaptureActivity.contrast, CaptureActivity.brightness);
-        return bitmap;
+
+        FastBitmap fastBitmap = new FastBitmap(bitmap);
+
+
+        Grayscale grayscale = new Grayscale();
+        grayscale.applyInPlace(fastBitmap);
+
+
+//        BrightnessCorrection brightnessCorrection = new BrightnessCorrection(CaptureActivity.brightness);
+//        brightnessCorrection.applyInPlace(fastBitmap);
+
+
+//        LevelsLinear levelsLinear = new LevelsLinear();
+//        levelsLinear.applyInPlace(fastBitmap);
+//
+//        ConservativeSmoothing conservativeSmoothing = new ConservativeSmoothing();
+//        conservativeSmoothing.applyInPlace(fastBitmap);
+
+        // if we want threshold or not
+        if (CaptureActivity.isSwitchChecked) {
+            Threshold threshold = new Threshold(var2);
+            threshold.applyInPlace(fastBitmap);
+        }
+
+
+//        GaussianBlur gaussianBlur = new GaussianBlur(var);
+//        gaussianBlur.applyInPlace(fastBitmap);
+
+
+//
+//        Invert invert = new Invert();
+//        invert.applyInPlace(fastBitmap);
+
+
+//        //CaptureActivity.seek1
+//        HysteresisThreshold threshold = new HysteresisThreshold();
+//        threshold.applyInPlace(fastBitmap);
+
+//        ArtifactsRemoval artifactsRemoval = new ArtifactsRemoval();
+//        artifactsRemoval.applyInPlace(fastBitmap);
+//
+//        HistogramEqualization histogramEqualization = new HistogramEqualization();
+//        histogramEqualization.applyInPlace(fastBitmap);
+
+
+//        HomogenityEdgeDetector homogenityEdgeDetector = new HomogenityEdgeDetector();
+//        homogenityEdgeDetector.applyInPlace(fastBitmap);
+
+//        CannyEdgeDetector cannyEdgeDetector = new CannyEdgeDetector(0, 40);
+//        cannyEdgeDetector.applyInPlace(fastBitmap);
+
+//        Dilatation dilatation = new Dilatation(var);
+//        dilatation.applyInPlace(fastBitmap);
+
+
+//
+//        RosinThreshold threshold = new RosinThreshold();
+//        threshold.applyInPlace(fastBitmap);
+////
+
+//
+//        GaussianBlur gaussianBlur = new GaussianBlur();
+//        gaussianBlur.applyInPlace(fastBitmap);
+
+
+        methodName = "threshold/gaussianBlur";
+
+//        BradleyLocalThreshold bradleyLocalThreshold = new BradleyLocalThreshold();
+//        bradleyLocalThreshold.applyInPlace(fastBitmap);
+
+
+//        bitmap = ConvertToNegative(bitmap);
+        //bitmap = changeBitmapContrastBrightness(bitmap, CaptureActivity.contrast, CaptureActivity.brightness);
+
+        // this one works better with black text and white background, is recommended to do the conversion to negative first and a brightness of -100
+//        Pix thresholdedImage = Binarize.sauvolaBinarizeTiled(ReadFile.readBitmap(bitmap), 7, 0.35f, 20, 20);
+//        Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+//        bitmap = WriteFile.writeBitmap(thresholdedImage);
+//        bitmap = ConvertToNegative(bitmap);
+        // this one works better with white text and black background... i think and about -130 brightness
+//        Pix thresholdedImage2 = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bitmap), 48, 48, 29, 29, 0.3F);
+//        Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+//        bitmap = WriteFile.writeBitmap(thresholdedImage2);
+
+        letsDoThis = fastBitmap.toBitmap();
+
+        return letsDoThis;
+    }
+
+
+    public ArrayList<Bitmap> renderCroppedGreyscaleBitmaps() {
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+        int width = getWidth();
+        int height = getHeight();
+        int[] pixels = new int[width * height];
+        byte[] yuv = yuvData;
+        int inputOffset = top * dataWidth + left;
+
+        for (int y = 0; y < height; y++) {
+            int outputOffset = y * width;
+            for (int x = 0; x < width; x++) {
+                int grey = yuv[inputOffset + x] & 0xff;
+                pixels[outputOffset + x] = 0xFF000000 | (grey * 0x00010101);
+            }
+            inputOffset += dataWidth;
+        }
+
+        int dividedX = dataWidth / 7;
+        int constantX = dataWidth / 7;
+
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        for (int i = 0; i > 6; i++) {
+            int xAdded = 0;
+            Bitmap b1 = Bitmap.createBitmap(bitmap, xAdded, 0, constantX, dataHeight);
+            b1 = changeBitmapContrastBrightness(b1, CaptureActivity.contrast, CaptureActivity.brightness);
+            Pix thresholdedImage2 = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(b1), 48, 48, 29, 29, 0.3F);
+            Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + b1.getWidth() + "x" + b1.getHeight());
+            b1 = WriteFile.writeBitmap(thresholdedImage2);
+
+            dividedX = dividedX + dividedX;
+            xAdded = xAdded + dividedX;
+
+            bitmaps.add(b1);
+        }
+
+
+//        bitmap = ConvertToNegative(bitmap);
+
+        // this one works better with black text and white background, is recommended to do the conversion to negative first and a brightness of -100
+//        Pix thresholdedImage = Binarize.sauvolaBinarizeTiled(ReadFile.readBitmap(bitmap), 7, 0.35f, 20, 20);
+//        Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
+//        bitmap = WriteFile.writeBitmap(thresholdedImage);
+//        bitmap = ConvertToNegative(bitmap);
+        // this one works better with white text and black background... i think and about -130 brightness
+
+
+        letsDoThis = bitmap;
+
+        return bitmaps;
+    }
+
+    /**
+     * test an array of bitmaps
+     *
+     * @return array of bitmaps
+     */
+    public ArrayList<Bitmap> renderCroppedGreyscaleBitmaps2() {
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+        int width = getWidth();
+        int height = getHeight();
+        int[] pixels = new int[width * height];
+        byte[] yuv = yuvData;
+        int inputOffset = top * dataWidth + left;
+
+        for (int y = 0; y < height; y++) {
+            int outputOffset = y * width;
+            for (int x = 0; x < width; x++) {
+                int grey = yuv[inputOffset + x] & 0xff;
+                pixels[outputOffset + x] = 0xFF000000 | (grey * 0x00010101);
+            }
+            inputOffset += dataWidth;
+        }
+
+        // Number of digits on the meter
+        int numberOfDigits = 5;
+
+        int dividedX = width / numberOfDigits;
+        int constantX = width / numberOfDigits;
+
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        FastBitmap fastBitmap = new FastBitmap(bitmap);
+
+        Grayscale grayscale = new Grayscale();
+        grayscale.applyInPlace(fastBitmap);
+
+        int var = CaptureActivity.seek;
+        int var2 = CaptureActivity.seek1;
+        int brightness = CaptureActivity.brightness;
+
+//        BrightnessCorrection brightnessCorrection = new BrightnessCorrection(brightness);
+//        brightnessCorrection.applyInPlace(fastBitmap);
+
+//        LevelsLinear levelsLinear = new LevelsLinear();
+//        levelsLinear.applyInPlace(fastBitmap);
+//
+//        ConservativeSmoothing conservativeSmoothing = new ConservativeSmoothing();
+//        conservativeSmoothing.applyInPlace(fastBitmap);
+
+        //        Invert invert = new Invert();
+//        invert.applyInPlace(fastBitmap);
+
+//
+//        NiblackThreshold threshold = new NiblackThreshold();
+//        threshold.applyInPlace(fastBitmap);
+//
+
+        // if we want threshold or not
+        if (CaptureActivity.isSwitchChecked) {
+            Threshold threshold = new Threshold(var2);
+            threshold.applyInPlace(fastBitmap);
+        }
+//        GaussianBlur gaussianBlur = new GaussianBlur();
+//        gaussianBlur.applyInPlace(fastBitmap);
+
+//        BernsenThreshold bernsenThreshold = new BernsenThreshold();
+//        bernsenThreshold.applyInPlace(fastBitmap);
+
+
+        //methodName = "GaussianBlur/BernsenThreshold";
+
+
+        Bitmap segmentThisBitmap = fastBitmap.toBitmap();
+
+        // we have 5 digits
+        int xAdded = 0;
+
+        for (int i = 0; i < 5; i++) {
+            Bitmap b1 = Bitmap.createBitmap(segmentThisBitmap, xAdded, 0, constantX, height);
+
+            dividedX = dividedX + constantX;
+            xAdded = xAdded + constantX;
+
+            bitmaps.add(b1);
+        }
+
+
+        letsDoThis = segmentThisBitmap;
+
+        return bitmaps;
     }
 
     //TODO merge these 2 methods
