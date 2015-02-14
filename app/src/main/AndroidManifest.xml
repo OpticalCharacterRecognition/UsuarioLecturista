@@ -29,7 +29,7 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.fourtails.usuariolecturista.model.CreditCard,com.fourtails.usuariolecturista.model.Meter,com.fourtails.usuariolecturista.model.RegisteredUser" />
+            android:value="com.fourtails.usuariolecturista.model.CreditCard,com.fourtails.usuariolecturista.model.Meter,com.fourtails.usuariolecturista.model.RegisteredUser,com.fourtails.usuariolecturista.model.ChartReading" />
 
         <activity
             android:name=".LoginActivityBack"

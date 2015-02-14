@@ -7,13 +7,12 @@ import android.content.SharedPreferences;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,6 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.appspot.ocr_backend.backend.Backend;
-import com.appspot.ocr_backend.backend.model.MessagesGetMeter;
-import com.appspot.ocr_backend.backend.model.MessagesGetMeterResponse;
 import com.db.chart.Tools;
 import com.db.chart.listener.OnEntryClickListener;
 import com.db.chart.model.LineSet;
@@ -37,8 +33,6 @@ import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.ocr.CaptureActivity;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -363,58 +357,6 @@ public class BalanceFragment extends Fragment {
 //        final String userAccountName = settings.getString(GoLocky.PREFERENCES_LOGGED_USER_EMAIL, "");
 //
 //        /** get user call so we can get the updated balance (might not want to do this and just add
-//         * the reward amount that we just got)**/
-        new AsyncTask<Void, Void, Integer>() {
-
-            Double balance = 0.0;
-
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
-                    Backend service = builder.build();
-
-                    // First we try to get the user
-//                    MessagesGetUser messagesGetUser = new MessagesGetUser();
-//                    messagesGetUser.setEmail(userAccountName);
-
-                    MessagesGetMeter messagesGetMeter = new MessagesGetMeter();
-                    messagesGetMeter.setAccountNumber("123");
-
-
-                    MessagesGetMeterResponse response = service.meter().get(messagesGetMeter).execute();
-
-
-                    //MessagesGetUserResponse response = service.user().get(messagesGetUser).execute();
-
-                    if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
-                        //return GoLocky.TRANSACTION_GET_USER_OK_CODE;
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("golocky", e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                switch (transactionResponse) {
-                    //case GoLocky.TRANSACTION_GET_USER_OK_CODE:
-                    case 1:
-                        Log.i("BACKEND", "Good");
-                        break;
-                    default:
-                        Log.i("BACKEND", "Bad");
-                }
-            }
-        }.execute();
 
         return view;
     }
@@ -539,6 +481,9 @@ public class BalanceFragment extends Fragment {
         dataSet = new LineSet();
 
         dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[1]);
+
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
 
         dataSet.addPoint("5", 50f);
 
