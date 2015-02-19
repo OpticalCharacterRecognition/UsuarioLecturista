@@ -41,10 +41,11 @@ dependencies {
     compile project(':ParseLoginUI')
     compile project(':chartLibrary')
     compile project(':backend')
+    // Support Libraries
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:cardview-v7:21.0.0'
-    compile 'com.android.support:recyclerview-v7:21.0.0'
+    compile 'com.android.support:cardview-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
     // for the graphs in the home page
     compile 'com.jjoe64:graphview:3.1.3'
     // for the images in general

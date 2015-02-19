@@ -571,37 +571,41 @@ public abstract class ChartView extends RelativeLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        try { // we know this will fail when trying to animate
+            mIsDrawing = true;
+            super.onDraw(canvas);
 
-        mIsDrawing = true;
-        super.onDraw(canvas);
+            if (mReadyToDraw) {
 
-        if (mReadyToDraw) {
+                //long time = System.currentTimeMillis();
 
-            //long time = System.currentTimeMillis();
+                // Draw grid
+                if (style.hasVerticalGrid)
+                    drawVerticalGrid(canvas);
+                if (style.hasHorizontalGrid)
+                    drawHorizontalGrid(canvas);
 
-            // Draw grid
-            if (style.hasVerticalGrid)
-                drawVerticalGrid(canvas);
-            if (style.hasHorizontalGrid)
-                drawHorizontalGrid(canvas);
+                // Draw Axis Y
+                verController.draw(canvas);
 
-            // Draw Axis Y
-            verController.draw(canvas);
+                // Draw data
+                if (!data.isEmpty())
+                    onDrawChart(canvas, data);
 
-            // Draw data
-            if (!data.isEmpty())
-                onDrawChart(canvas, data);
+                // Draw axis X
+                horController.draw(canvas);
 
-            // Draw axis X
-            horController.draw(canvas);
+                if (style.thresholdPaint != null)
+                    drawThresholdLine(canvas);
 
-            if (style.thresholdPaint != null)
-                drawThresholdLine(canvas);
+                //System.out.println("Time drawing "+(System.currentTimeMillis() - time));
+            }
 
-            //System.out.println("Time drawing "+(System.currentTimeMillis() - time));
+            mIsDrawing = false;
+        } catch (Exception e) {
         }
 
-        mIsDrawing = false;
+
     }
 
 
