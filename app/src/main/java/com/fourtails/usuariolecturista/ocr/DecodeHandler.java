@@ -51,7 +51,10 @@ final class DecodeHandler extends Handler {
     private int counter = 0;
     public static String addedResult = "";
 
-    ArrayList<Integer> multipleResults = new ArrayList<>();
+    public static Boolean isScanFinished = false;
+    public static Integer readingValue = 0;
+
+    public static ArrayList<Integer> multipleResults = new ArrayList<>();
 
     DecodeHandler(CaptureActivity activity) {
         this.activity = activity;
@@ -139,19 +142,19 @@ final class DecodeHandler extends Handler {
         ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
 
-        bitmaps = source.renderCroppedGreyscaleBitmaps2();
-        bitmap = bitmaps.get(0);
+//        bitmaps = source.renderCroppedGreyscaleBitmaps2();
+//        bitmap = bitmaps.get(0);
 
-//        bitmap = source.renderCroppedGreyscaleBitmap();
-
-
-        OcrResult ocrResult = null;
-        for (Bitmap bitmap1 : bitmaps) {
-            ocrResult = getOcrResult2(bitmap1);
-        }
+        bitmap = source.renderCroppedGreyscaleBitmap();
 
 
-//        OcrResult ocrResult = getOcrResult();
+//        OcrResult ocrResult = null;
+//        for (Bitmap bitmap1 : bitmaps) {
+//            ocrResult = getOcrResult2(bitmap1);
+//        }
+
+
+        OcrResult ocrResult = getOcrResult();
         Handler handler = activity.getHandler();
         if (handler == null) {
             return;
@@ -230,6 +233,8 @@ final class DecodeHandler extends Handler {
         ocrResult.setBitmap(bitmap);
         ocrResult.setText(textResult);
         ocrResult.setRecognitionTimeRequired(timeRequired);
+        evaluateOCRandTryToGetSignificantResult2(ocrResult);
+
         return ocrResult;
     }
 
@@ -323,6 +328,28 @@ final class DecodeHandler extends Handler {
 
     }
 
+    /**
+     * 222222222222222222222
+     * Magic!
+     * Basically we scan every digit and add it into a 5 digit string which then gets evaluated
+     * and set into an array, to see if we can find a significant sample with a result
+     */
+    public void evaluateOCRandTryToGetSignificantResult2(OcrResult ocrResult) {
+        String textResult = ocrResult.getText();
+
+
+        if (textResult.length() == 5 && isInteger(textResult) && ocrResult.getMeanConfidence() > 40) {
+            if (multipleResults.size() < 20) {
+                multipleResults.add(Integer.parseInt(textResult));
+            } else {
+                getTheMostPopularResult();
+            }
+        }
+    }
+
+    /**
+     * Gets the Most popular result of the sample
+     */
     private void getTheMostPopularResult() {
         Map<Integer, Integer> map = new HashMap<>();
         for (Integer i : multipleResults) {
@@ -336,7 +363,9 @@ final class DecodeHandler extends Handler {
                         return o1.getValue().compareTo(o2.getValue());
                     }
                 }).getKey();
-        int carlos = popular;
+        //CaptureActivity.captureBus.post(popular);
+        isScanFinished = true;
+        readingValue = popular;
         multipleResults = new ArrayList<>();
     }
 

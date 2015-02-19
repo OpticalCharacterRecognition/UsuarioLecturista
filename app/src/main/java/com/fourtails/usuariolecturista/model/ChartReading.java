@@ -4,8 +4,6 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import java.sql.Date;
-
 /**
  * Created by Vazh on 12/2/2015.
  */
@@ -13,20 +11,24 @@ import java.sql.Date;
 public class ChartReading extends Model {
 
     @Column
-    public String day;
+    public int day;
+    @Column
+    public int month;
+    @Column
+    public int year;
     @Column
     public int value;
-    @Column
-    public Date date;
 
     public ChartReading() {
         super();
     }
 
-    public ChartReading(String day, int value, Date date) {
+    public ChartReading(int day, int month, int year, int value) {
         this.day = day;
+        this.month = month;
+        this.year = year;
         this.value = value;
-        this.date = date;
     }
+
 
 }

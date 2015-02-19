@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,13 +33,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
+import com.appspot.ocr_backend.backend.Backend;
+import com.appspot.ocr_backend.backend.model.MessagesNewReading;
+import com.appspot.ocr_backend.backend.model.MessagesNewReadingResponse;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.fourtails.usuariolecturista.model.ChartReading;
 import com.fourtails.usuariolecturista.model.CreditCard;
+import com.fourtails.usuariolecturista.model.Meter;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.squareup.otto.Bus;
@@ -46,6 +55,8 @@ import com.squareup.otto.ThreadEnforcer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -183,6 +194,8 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
+            createDummyReadingsForThisMonth();
+            getReadingsForThisMonth();
             displayView(0);
         }
 
@@ -217,6 +230,47 @@ public class MainActivity extends ActionBarActivity {
         // enabling action bar app icon and behaving it as toggle button
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    /**
+     * This is the reading coming from CaptureActivity
+     *
+     * @param reading from the meter
+     */
+    @Subscribe
+    public void readingReceived(Integer reading) {
+        Toast.makeText(this, reading.toString(), Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "READINGGGGGGGGGGGGGGGGGGGGGGG " + reading.toString());
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
+        ChartReading chartReading = new ChartReading(
+                time.monthDay,
+                time.month,
+                time.year,
+                reading
+        );
+        saveReadingToBackend(chartReading);
+    }
+
+    /**
+     * DatabaseSave
+     * testing purposes only
+     * creates random dummy readings, duh
+     */
+    public void createDummyReadingsForThisMonth() {
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
+        for (int i = 0; i < 10; i++) {
+            Random r = new Random();
+            int randomDay = r.nextInt(28 - 1 + 1) + 1;
+            ChartReading chartReading = new ChartReading(
+                    randomDay,
+                    time.month,
+                    time.year,
+                    i + randomDay
+            );
+            chartReading.save();
+        }
     }
 
     /**
@@ -255,7 +309,7 @@ public class MainActivity extends ActionBarActivity {
      */
     @Subscribe
     public void changeTitle(String string) {
-        if (string.equals(BalanceFragment.TAG)) {
+        if (string.equals(ConsumeFragment.TAG)) {
             enableToolbarSpinner(true);
         } else {
             enableToolbarSpinner(false);
@@ -320,6 +374,30 @@ public class MainActivity extends ActionBarActivity {
         return new Select().from(CreditCard.class).executeSingle();
     }
 
+    /**
+     * DatabaseQuery
+     * Retrieves the first saved Meter from the database
+     *
+     * @return meter
+     */
+    public static Meter checkForSavedMeter() {
+        return new Select().from(Meter.class).executeSingle();
+    }
+
+    /**
+     * DatabaseQuery
+     * gets all the readings for this month
+     * @return >_>
+     */
+    public static List<ChartReading> getReadingsForThisMonth() {
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
+        return new Select()
+                .from(ChartReading.class)
+                .where("month = ?", time.month)
+                .orderBy("day ASC")
+                .execute();
+    }
 
     /**
      * DatabaseSave
@@ -379,7 +457,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new BalanceFragment();
+                fragment = new ConsumeFragment();
                 enableToolbarSpinner(true);
                 break;
             case 1:
@@ -429,6 +507,56 @@ public class MainActivity extends ActionBarActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
+    }
+
+    /**
+     * DatabaseSave
+     * tries to save a reading to the backend
+     *
+     * @param chartReading the last reading from the camera
+     */
+    private void saveReadingToBackend(final ChartReading chartReading) {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(
+                            AndroidHttp.newCompatibleTransport(),
+                            new AndroidJsonFactory(),
+                            null);
+                    Backend service = builder.build();
+
+                    MessagesNewReading messagesNewReading = new MessagesNewReading();
+                    messagesNewReading.setAccountNumber(checkForSavedMeter().accountNumber);
+                    messagesNewReading.setMeasure((long) chartReading.value);
+
+                    MessagesNewReadingResponse response = service.reading().backendNew(messagesNewReading).execute();
+
+                    if (response.getOk()) {
+                        Log.i("BACKEND", response.toPrettyString());
+                        return 1;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                switch (transactionResponse) {
+                    case 1:
+                        chartReading.save();
+                        Log.i("BACKEND", "Good-saveReadingToBackend");
+                        break;
+                    default:
+                        Log.i("BACKEND", "Bad-saveReadingToBackend");
+                }
+            }
+        }.execute();
     }
 
     /**
@@ -554,7 +682,7 @@ public class MainActivity extends ActionBarActivity {
      * start the balance fragment when coming from the OCR activity
      */
     private void startBalanceFragment() {
-        Fragment fragment = new BalanceFragment();
+        Fragment fragment = new ConsumeFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .addToBackStack(null)

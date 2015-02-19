@@ -2,6 +2,7 @@ package com.fourtails.usuariolecturista;
 
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.DashPathEffect;
@@ -12,7 +13,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.text.format.Time;
+import android.support.v7.widget.CardView;
+import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +51,9 @@ import butterknife.OnClick;
  * This is the balance fragment where it shows your metrics for the last reading, this month etc,
  * also calls for a facebook publish
  */
-public class BalanceFragment extends Fragment {
+public class ConsumeFragment extends Fragment {
 
-    public static final String TAG = "BalanceFragment";
+    public static final String TAG = "ConsumeFragment";
 
     public static final String PREF_LAST_READING = "lastReadingPref";
     public static final String PREF_LAST_READING_DATE = "lastReadingDatePref";
@@ -167,13 +170,48 @@ public class BalanceFragment extends Fragment {
     @InjectView(R.id.fabPay)
     FloatingActionButton fabPay;
 
+    @InjectView(R.id.linechartCardView)
+    CardView linechartCardView;
+
+    @InjectView(R.id.card_view)
+    CardView sharedCardView;
+
     @OnClick(R.id.fabPay)
     public void payButtonClicked() {
         Fragment payOptionsFragment = new PayOptionsFragment();
-        MainActivity.bus.post(payOptionsFragment);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            makeAnimationBetweenFragments(payOptionsFragment);
+        } else {
+            MainActivity.bus.post(payOptionsFragment);
+        }
     }
 
-    public BalanceFragment() {
+    /**
+     * This will make a transition with a shared element, in this case the CardView is the shared element
+     *
+     * @param fragment the fragment that will be used to replace this one
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void makeAnimationBetweenFragments(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        assert fragmentManager != null;
+
+        setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
+        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
+
+        fragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
+        fragment.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .addSharedElement(sharedCardView, getResources().getString(R.string.transitionFirstCardView))
+                .commit();
+
+        Log.d(TAG, "fragment added with transition " + fragment.getTag());
+    }
+
+    public ConsumeFragment() {
         // Required empty public constructor
     }
 
@@ -186,9 +224,11 @@ public class BalanceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_balance, container, false);
+        View view = inflater.inflate(R.layout.fragment_consume, container, false);
 
         ButterKnife.inject(this, view);
+
+        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
         //Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
 
@@ -482,10 +522,8 @@ public class BalanceFragment extends Fragment {
 
         dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[1]);
 
-        Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
 
-        dataSet.addPoint("5", 50f);
+        //dataSet.addPoint("5", 50f);
 
         dataSet.setLineColor(this.getResources().getColor(R.color.line))
                 .setLineThickness(Tools.fromDpToPx(3))
@@ -535,12 +573,12 @@ public class BalanceFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putInt(BalanceFragment.PREF_LAST_READING, 0).commit(); // last reading value (the one we just scanned)
-        editor.putString(BalanceFragment.PREF_LAST_READING_DATE, "default").commit(); // last reading date
-        editor.putInt(BalanceFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0).commit(); // total liters for this cycle
+        editor.putInt(ConsumeFragment.PREF_LAST_READING, 0).commit(); // last reading value (the one we just scanned)
+        editor.putString(ConsumeFragment.PREF_LAST_READING_DATE, "default").commit(); // last reading date
+        editor.putInt(ConsumeFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0).commit(); // total liters for this cycle
 
         // Refresh the fragment
-        Fragment fragment = new BalanceFragment();
+        Fragment fragment = new ConsumeFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment).commit();

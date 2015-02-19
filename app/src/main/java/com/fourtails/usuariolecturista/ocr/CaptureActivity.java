@@ -63,15 +63,24 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.ocr.camera.CameraManager;
 import com.fourtails.usuariolecturista.ocr.camera.ShutterButton;
 import com.fourtails.usuariolecturista.ocr.language.LanguageCodeHelper;
 import com.fourtails.usuariolecturista.ocr.language.TranslateAsyncTask;
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
@@ -268,6 +277,8 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
 
     private Toolbar toolbar;
 
+    public static Bus captureBus;
+
     Handler getHandler() {
         return handler;
     }
@@ -280,6 +291,22 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
         return cameraManager;
     }
 
+    Handler handlerCapture = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            ArrayList<Integer> results = DecodeHandler.multipleResults;
+            if (results != null && !results.isEmpty()) {
+
+                Integer finalResult = getTheMostPopularResult(results);
+                MainActivity.bus.post(finalResult);
+                finish();
+
+            }
+
+        }
+    };
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -289,6 +316,9 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
         if (isFirstLaunch) {
             setDefaultPreferences();
         }
+
+        captureBus = new Bus(ThreadEnforcer.MAIN);
+        captureBus.register(this);
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -305,6 +335,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
                 isSwitchChecked = isChecked;
             }
         });
+        handlerCapture.postDelayed(runnable, 20000);
 
 
         final TextView seekText = (TextView) findViewById(R.id.textViewSeek);
@@ -511,6 +542,40 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
         isEngineReady = false;
     }
 
+    /**
+     * Gets the Most popular result of the sample
+     */
+    private Integer getTheMostPopularResult(ArrayList<Integer> results) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (Integer i : results) {
+            Integer count = map.get(i);
+            map.put(i, count != null ? count + 1 : 0);
+        }
+        Integer popular = Collections.max(map.entrySet(),
+                new Comparator<Map.Entry<Integer, Integer>>() {
+                    @Override
+                    public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+                        return o1.getValue().compareTo(o2.getValue());
+                    }
+                }).getKey();
+
+        return popular;
+//        isScanFinished = true;
+//        readingValue = popular;
+//        multipleResults = new ArrayList<>();
+    }
+
+    /**
+     * This reading will come from the DecodeHandler after checking the most popular reading
+     *
+     * @param reading reading from the meter
+     */
+    @Subscribe
+    public void endActivityAndPassTheCapture(Integer reading) {
+        MainActivity.bus.post(reading);
+        finish();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -583,6 +648,7 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
         isPaused = true;
         handler.stop();
         beepManager.playBeepSoundAndVibrate();
+//        handlerCapture.postDelayed(runnable, 10000);
         if (lastResult != null) {
             handleOcrDecode(lastResult);
         } else {
@@ -1073,6 +1139,17 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
                 statusViewBottom.setText("OCR: " + sourceLanguageReadable + " - Mean confidence: " +
                         meanConfidence.toString() + " - Time required: " + recognitionTimeRequired + " ms");
             }
+        }
+
+
+        /**
+         * Magic
+         * Not proud, but had to be done
+         */
+        if (DecodeHandler.isScanFinished) {
+            MainActivity.bus.post(DecodeHandler.readingValue);
+            finish();
+            DecodeHandler.isScanFinished = false;
         }
     }
 

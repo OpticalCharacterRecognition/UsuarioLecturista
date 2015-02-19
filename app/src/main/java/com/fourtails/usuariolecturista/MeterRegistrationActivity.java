@@ -103,7 +103,9 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.DialogTitleCheckingParameters), getString(R.string.DialogContentPleaseWait), true);
+                if (running) {
+                    progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.DialogTitleCheckingParameters), getString(R.string.DialogContentPleaseWait), true);
+                }
             }
 
             @Override
