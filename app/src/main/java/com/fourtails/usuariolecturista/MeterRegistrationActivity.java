@@ -67,28 +67,27 @@ public class MeterRegistrationActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isMeterRegistered = prefs.getBoolean(PREF_METER_REGISTERED, false);
+
+        if (isMeterRegistered) {
+            Intent intent = new Intent(this, ServiceChooserActivity.class);
+            startActivity(intent);
+            finish();
+        }
         setContentView(R.layout.activity_meter_registration);
         ButterKnife.inject(this);
 
         running = true;
 
         registerUserBackend();
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isMeterRegistered = prefs.getBoolean(PREF_METER_REGISTERED, false);
-
-        if (isMeterRegistered) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
         checkIfUserHasMeter();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        progressDialog.dismiss();
         running = false;
     }
 
@@ -152,7 +151,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                 if (running) {
                     progressDialog.dismiss();
                     if (transactionResponse) {
-                        Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                        Intent intent = new Intent(MeterRegistrationActivity.this, ServiceChooserActivity.class);
                         startActivity(intent);
                         finish();
                         Log.i("BACKEND", "Good-checkIfUserHasMeter");
@@ -404,7 +403,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     switch (transactionResponse) {
                         case 1:
                             Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
-                            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                            Intent intent = new Intent(MeterRegistrationActivity.this, ServiceChooserActivity.class);
                             startActivity(intent);
                             finish();
                             break;

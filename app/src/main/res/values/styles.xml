@@ -74,6 +74,14 @@
     </style>
 
     <style name="TextViewIntroTitle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/ocrBlueGrey</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="typeface">roboto_bold</item>
+    </style>
+
+    <style name="TextViewServiceChooser">
         <item name="android:textSize">28sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_width">wrap_content</item>

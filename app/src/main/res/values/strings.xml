@@ -39,12 +39,14 @@
         <item>@drawable/ic_settings_black_24dp</item>
     </array>
 
-    <!-- Balance -->
+    <!-- Readings -->
     <string-array name="drop_down_example">
         <item>1 Ene - 31 Ene 2015</item>
         <item>1 Feb - 28 Feb 2015</item>
         <item>1 Mar - 31 Mar 2015</item>
     </string-array>
+    <string name="toolbarTitleReadings">Lecturas</string>
+
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -110,12 +112,16 @@
     <string name="buttonLabelSettingsLogOut">Terminar Session</string>
     <string name="title_activity_meter_registration">MeterRegistrationActivity</string>
     <string name="dialogTitleRegisterMeterBE">Registrando el Medidor</string>
-    <string name="DialogContentPleaseWait">Por favor espere...</string>
+    <string name="DialogContentPleaseWait">Por favor espere…</string>
     <string name="DialogTitleCheckingParameters">Verificando Parametros</string>
-    <string name="consumeLabelsLastReadingDay">Ultima lectura realizada el dia:</string>
-    <string name="consumeLabelsTotalAmount">Consumo Total:</string>
-    <string name="consumeLabelsLimitDate">Fecha Limite:</string>
+    <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el dia:</string>
+    <string name="readingsLabelsTotalAmount">Consumo Total:</string>
+    <string name="readingsLabelsLimitDate">Fecha Limite:</string>
+    <string name="titleContentServiceChooser">Seleccione su proveedor de servicios</string>
+
+    <!--Transitions-->
     <string name="transitionFirstCardView">transitionFirstCardView</string>
+    <string name="transitionJmas">jmasTransition</string>
 
 
 </resources>

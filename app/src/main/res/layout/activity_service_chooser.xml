@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.fourtails.usuariolecturista.ServiceChooserActivity"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:id="@+id/imageView13"
+        android:src="@drawable/ocr_icon"
+        android:layout_marginTop="30dp" />
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewIntroTitle"
+        android:text="@string/titleContentServiceChooser"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center">
+
+        <com.melnykov.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewJmasIcon"
+            android:transitionName="@string/transitionJmas"
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_colorPressed="@color/colorPrimaryDarker"
+            android:src="@drawable/ic_launcher" />
+
+        <!--<ImageButton-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="80dp"-->
+        <!--android:id="@+id/imageViewJmasIcon"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_weight="1"-->
+        <!--android:transitionName="@string/transitionJmas"-->
+        <!--android:background="@null"-->
+        <!--android:src="@drawable/ic_launcher"-->
+        <!--android:scaleType="fitCenter" />-->
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/imageViewGasIcon"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_launcher"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/imageViewCfeIcon"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_launcher"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+</LinearLayout>

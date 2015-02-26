@@ -66,6 +66,8 @@
     <color name="almostBlackWater">#a0000000</color>
     <color name="greyWater">#ff818181</color>
 
+    <color name="ocrBlueGrey">#607D8B</color>
+
     <!--colors for chart-->
     <color name="line_bg">#00bba7</color>
     <color name="line">#ffffff</color>

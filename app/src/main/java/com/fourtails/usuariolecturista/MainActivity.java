@@ -309,7 +309,7 @@ public class MainActivity extends ActionBarActivity {
      */
     @Subscribe
     public void changeTitle(String string) {
-        if (string.equals(ConsumeFragment.TAG)) {
+        if (string.equals(ReadingsFragment.TAG)) {
             enableToolbarSpinner(true);
         } else {
             enableToolbarSpinner(false);
@@ -457,7 +457,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new ConsumeFragment();
+                fragment = new ReadingsFragment();
                 enableToolbarSpinner(true);
                 break;
             case 1:
@@ -682,7 +682,7 @@ public class MainActivity extends ActionBarActivity {
      * start the balance fragment when coming from the OCR activity
      */
     private void startBalanceFragment() {
-        Fragment fragment = new ConsumeFragment();
+        Fragment fragment = new ReadingsFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .addToBackStack(null)

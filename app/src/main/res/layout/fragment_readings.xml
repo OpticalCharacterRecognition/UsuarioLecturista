@@ -77,7 +77,7 @@
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textView"
                 style="@style/TextViewMainPageLabel"
-                android:text="@string/consumeLabelsLimitDate"
+                android:text="@string/readingsLabelsLimitDate"
                 android:textIsSelectable="false" />
 
             <com.devspark.robototextview.widget.RobotoTextView
@@ -90,7 +90,7 @@
                 android:id="@+id/textView3"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/consumeLabelsTotalAmount" />
+                android:text="@string/readingsLabelsTotalAmount" />
 
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textViewTotalBalance"
@@ -101,7 +101,7 @@
                 android:id="@+id/textView2"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/consumeLabelsLastReadingDay" />
+                android:text="@string/readingsLabelsLastReadingDay" />
 
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textViewLastReadingDate"

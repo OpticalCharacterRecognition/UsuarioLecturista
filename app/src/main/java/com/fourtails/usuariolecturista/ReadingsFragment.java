@@ -51,7 +51,7 @@ import butterknife.OnClick;
  * This is the balance fragment where it shows your metrics for the last reading, this month etc,
  * also calls for a facebook publish
  */
-public class ConsumeFragment extends Fragment {
+public class ReadingsFragment extends Fragment {
 
     public static final String TAG = "ConsumeFragment";
 
@@ -197,7 +197,7 @@ public class ConsumeFragment extends Fragment {
         assert fragmentManager != null;
 
         setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
-        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
+        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.slide_right));
 
         fragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
         fragment.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
@@ -211,7 +211,7 @@ public class ConsumeFragment extends Fragment {
         Log.d(TAG, "fragment added with transition " + fragment.getTag());
     }
 
-    public ConsumeFragment() {
+    public ReadingsFragment() {
         // Required empty public constructor
     }
 
@@ -224,13 +224,12 @@ public class ConsumeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_consume, container, false);
+        View view = inflater.inflate(R.layout.fragment_readings, container, false);
 
         ButterKnife.inject(this, view);
 
         linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-        //Button resetValues = (Button) view.findViewById(R.id.buttonResetValuesForCycle);
 
         // setting the texts
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -242,7 +241,6 @@ public class ConsumeFragment extends Fragment {
 
         lastReading.setText(String.valueOf(lastReadingValue));
 
-        //lastReadingDate.setText(lastReadingDateValue);
 
         totalLitersForCycle.setText(String.valueOf(totalLitersForCycleValue));
 
@@ -260,143 +258,9 @@ public class ConsumeFragment extends Fragment {
         mOldStartY = 0;
         mOldAlpha = -1;
 
-        //mHandler = new Handler();
-
-        //initMenu();
-
         initLineChart();
 
         updateLineChart();
-
-//        resetValues.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                resetPreferencesValuesForReadings();
-//            }
-//        });
-
-        // Normal Graph
-/*
-        GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
-                new GraphView.GraphViewData(1, 2)
-                , new GraphView.GraphViewData(10, 20)
-                , new GraphView.GraphViewData(15, 46)
-                , new GraphView.GraphViewData(30, 30)
-        });
-
-        GraphView graphView = new LineGraphView(
-                this.getActivity() // context
-                , "Consumo" // heading
-        );
-        graphView.getGraphViewStyle().setGridStyle(GraphViewStyle.GridStyle.NONE);
-        graphView.addSeries(exampleSeries); // data
-
-        LinearLayout layout = (LinearLayout) view.findViewById(R.id.layoutBalanceContainer);
-        layout.addView(graphView);
-*/
-
-        /*
-         * Custom Label graph
-		 * use Date as x axis label
-		 */
-//        Random rand = new Random();
-//        int size = 15;
-//
-//        GraphView.GraphViewData[] data = new GraphView.GraphViewData[size];
-//        long now = new Date().getTime();
-//        data = new GraphView.GraphViewData[size];
-//        for (int i = 0; i < size; i++) {
-//            data[i] = new GraphView.GraphViewData(now + (i * 60 * 60 * 24 * 1000), rand.nextInt(20)); // next day
-//        }
-//
-//
-//        GraphViewSeries currentSpend = new GraphViewSeries("consumo actual", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(132, 215, 138), 6), new GraphView.GraphViewData[]{
-//                new GraphView.GraphViewData(1, 2)
-//                , new GraphView.GraphViewData(10, 15)
-//                , new GraphView.GraphViewData(15, 20)
-//                , new GraphView.GraphViewData(20, 27)
-//                , new GraphView.GraphViewData(30, 30)
-//        });
-//
-//        GraphViewSeries proyectedSpend = new GraphViewSeries("consumo proyectado", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(187, 202, 204), 6), new GraphView.GraphViewData[]{
-//                new GraphView.GraphViewData(1, 2)
-//                , new GraphView.GraphViewData(10, 15)
-//                , new GraphView.GraphViewData(15, 20)
-//                , new GraphView.GraphViewData(20, 32)
-//                , new GraphView.GraphViewData(30, 60)
-//        });
-//
-//
-//        GraphViewSeries prepaidBar = new GraphViewSeries("Prepago", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), new GraphView.GraphViewData[]{
-//                new GraphView.GraphViewData(0, 40)
-//                , new GraphView.GraphViewData(30, 40)
-//        });
-//
-//        GraphViewSeries paymentLimit = new GraphViewSeries("Fecha de corte", null, new GraphView.GraphViewData[]{
-//                new GraphView.GraphViewData(25, 60)
-//                , new GraphView.GraphViewData(25, 0)
-//        });
-//
-//
-//        /** determine if line of bar **/
-//        GraphView graphView = new LineGraphView(
-//                this.getActivity()
-//                , "Consumo"
-//        );
-//        //((LineGraphView) graphView).setDrawBackground(true);
-//        ((LineGraphView) graphView).setDrawDataPoints(true);
-//        ((LineGraphView) graphView).setDataPointsRadius(7f);
-//
-//        graphView.addSeries(proyectedSpend); // data
-//        graphView.addSeries(currentSpend); // data
-//        graphView.addSeries(prepaidBar); // data
-//        graphView.addSeries(paymentLimit); // data
-//        // set legend
-//        graphView.setShowLegend(true);
-//        graphView.setLegendAlign(GraphView.LegendAlign.BOTTOM);
-//        graphView.getGraphViewStyle().setLegendBorder(10);
-//        graphView.getGraphViewStyle().setLegendSpacing(10);
-//        graphView.getGraphViewStyle().setLegendWidth(350);
-//        graphView.setHorizontalLabels(new String[]{"1", "10", "15", "20", "25", "30"});
-//        // set view port, start=2, size=40
-//
-//		/*
-//         * date as label formatter
-//		 */
-//       /* final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d");
-//        graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
-//            @Override
-//            public String formatLabel(double value, boolean isValueX) {
-//                if (isValueX) {
-//                    Date d = new Date((long) value);
-//                    return dateFormat.format(d);
-//                }
-//                return null; // let graphview generate Y-axis label for us
-//            }
-//        });*/
-//        LinearLayout layout = (LinearLayout) view.findViewById(R.id.layoutBalanceContainer);
-//        layout.addView(graphView);
-
-
-//        Button button = (Button) view.findViewById(R.id.buttonPaypalTest);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), BalancePaypalActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        textViewBalanceMoney = (TextView) view.findViewById(R.id.textViewBalanceMoney);
-//        textViewBalanceMoneyOut = (TextView) view.findViewById(R.id.textViewBalanceMoneyOutOf);
-//        progressBar = (ProgressBar) view.findViewById(R.id.progressBarBalance);
-//
-//
-//
-//        SharedPreferences settings = getActivity().getApplicationContext().getSharedPreferences(GoLocky.PREFERENCES, 0);
-//        final String userAccountName = settings.getString(GoLocky.PREFERENCES_LOGGED_USER_EMAIL, "");
-//
-//        /** get user call so we can get the updated balance (might not want to do this and just add
 
         return view;
     }
@@ -405,7 +269,7 @@ public class ConsumeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Set title
-        MainActivity.bus.post(TAG);
+        MainActivity.bus.post(getResources().getString(R.string.toolbarTitleReadings));
     }
 
     /**
@@ -573,12 +437,12 @@ public class ConsumeFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putInt(ConsumeFragment.PREF_LAST_READING, 0).commit(); // last reading value (the one we just scanned)
-        editor.putString(ConsumeFragment.PREF_LAST_READING_DATE, "default").commit(); // last reading date
-        editor.putInt(ConsumeFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0).commit(); // total liters for this cycle
+        editor.putInt(ReadingsFragment.PREF_LAST_READING, 0).commit(); // last reading value (the one we just scanned)
+        editor.putString(ReadingsFragment.PREF_LAST_READING_DATE, "default").commit(); // last reading date
+        editor.putInt(ReadingsFragment.PREF_TOTAL_LITERS_FOR_CYCLE, 0).commit(); // total liters for this cycle
 
         // Refresh the fragment
-        Fragment fragment = new ConsumeFragment();
+        Fragment fragment = new ReadingsFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment).commit();
