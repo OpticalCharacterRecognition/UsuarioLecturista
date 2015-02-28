@@ -184,6 +184,7 @@ public class ReadingsFragment extends Fragment {
         } else {
             MainActivity.bus.post(payOptionsFragment);
         }
+        //MainActivity.bus.post(3L);
     }
 
     /**
@@ -197,7 +198,7 @@ public class ReadingsFragment extends Fragment {
         assert fragmentManager != null;
 
         setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
-        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.slide_right));
+        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.explode));
 
         fragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
         fragment.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.fade));
@@ -228,7 +229,7 @@ public class ReadingsFragment extends Fragment {
 
         ButterKnife.inject(this, view);
 
-        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas));
 
 
         // setting the texts
@@ -358,7 +359,7 @@ public class ReadingsFragment extends Fragment {
         mLineChart.setOnClickListener(lineClickListener);
 
         mLineGridPaint = new Paint();
-        mLineGridPaint.setColor(this.getResources().getColor(R.color.colorPrimaryDarker));
+        mLineGridPaint.setColor(this.getResources().getColor(R.color.colorPrimaryDarkerJmas));
         mLineGridPaint.setPathEffect(new DashPathEffect(new float[]{3, 7}, 0));
         mLineGridPaint.setStyle(Paint.Style.STROKE);
         mLineGridPaint.setAntiAlias(true);

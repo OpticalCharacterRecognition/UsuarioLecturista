@@ -1,5 +1,5 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/colorPrimary">
+    android:color="@color/colorPrimaryJmas">
     <item>
         <shape android:shape="oval">
             <solid android:color="?android:colorPrimaryDark" />

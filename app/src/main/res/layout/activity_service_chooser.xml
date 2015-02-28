@@ -29,44 +29,39 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center">
+        android:layout_height="200dp"
+        android:padding="20dp"
+        android:gravity="center"
+        android:layout_gravity="center">
 
         <com.melnykov.fab.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageViewJmasIcon"
+            app:fab_colorNormal="@color/colorPrimaryJmas"
+            app:fab_colorPressed="@color/colorPrimaryDarkerJmas"
             android:transitionName="@string/transitionJmas"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimaryDarker"
             android:src="@drawable/ic_launcher" />
 
-        <!--<ImageButton-->
-        <!--android:layout_width="80dp"-->
-        <!--android:layout_height="80dp"-->
-        <!--android:id="@+id/imageViewJmasIcon"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_weight="1"-->
-        <!--android:transitionName="@string/transitionJmas"-->
-        <!--android:background="@null"-->
-        <!--android:src="@drawable/ic_launcher"-->
-        <!--android:scaleType="fitCenter" />-->
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <com.melnykov.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/imageViewGasIcon"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_launcher"
-            android:layout_weight="1" />
+            app:fab_colorNormal="@color/colorPrimaryGas"
+            app:fab_colorPressed="@color/colorPrimaryDarkerGas"
+            android:src="@drawable/ecogas"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp" />
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <com.melnykov.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/imageViewCfeIcon"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_launcher"
-            android:layout_weight="1" />
+            app:fab_colorNormal="@color/colorPrimaryCfe"
+            app:fab_colorPressed="@color/colorPrimaryDarkerCfe"
+            android:src="@drawable/cfe"
+            android:scaleType="centerCrop" />
     </LinearLayout>
 
 

@@ -56,7 +56,7 @@ public class ContactFragment extends Fragment {
         pager.setPageMargin(pageMargin);
 
         tabs.setViewPager(pager);
-        tabs.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        tabs.setBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas));
         return view;
     }
 

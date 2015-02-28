@@ -33,11 +33,10 @@
 
         <activity
             android:name=".LoginActivityBack"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
         <activity
             android:name=".ServiceChooserActivity"
             android:label="@string/title_activity_intermediate"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
@@ -49,8 +48,8 @@
         <activity
             android:name=".ocr.HelpActivity"
             android:screenOrientation="portrait">
-        <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -64,8 +63,8 @@
             android:name=".IntroActivity"
             android:label="Usuario Lecturista"
             android:screenOrientation="portrait">
-        <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -85,7 +84,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-        <meta-data
+            <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
                 android:value="true" />
             <meta-data
@@ -99,6 +98,10 @@
             android:name=".MeterRegistrationActivity"
             android:label="@string/title_activity_meter_registration"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".utilities.TestActivity"
+            android:label="@string/title_activity_test"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

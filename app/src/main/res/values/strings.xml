@@ -7,6 +7,7 @@
     <string name="title_activity_login">Usuario Lecturista</string>
     <string name="facebook_app_id">1475669572699600</string>
     <string name="title_activity_intermediate">IntermediateActivity</string>
+    <string name="title_activity_service_chooser">ServiceChooserActivity</string>
     <string name="title_activity_main_drawer">MainDrawerActivity</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
@@ -122,6 +123,8 @@
     <!--Transitions-->
     <string name="transitionFirstCardView">transitionFirstCardView</string>
     <string name="transitionJmas">jmasTransition</string>
+    <string name="toastImageUploadError">Hay un problema subiendo la imagen al servidor, por favor intente de nuevo</string>
+    <string name="title_activity_test">TestActivity</string>
 
 
 </resources>

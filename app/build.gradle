@@ -51,13 +51,13 @@ dependencies {
     // for the images in general
     compile 'com.squareup.picasso:picasso:2.4.0'
     // floating action button for prelolipop devices
-    compile 'com.melnykov:floatingactionbutton:1.0.9'
+    compile 'com.melnykov:floatingactionbutton:1.2.0'
     // implementing the Roboto styles
-    compile 'com.github.johnkil.android-robototextview:robototextview:2.2.0'
+    compile 'com.github.johnkil.android-robototextview:robototextview:2.3.0'
     // View "injection" Library
     compile 'com.jakewharton:butterknife:6.0.0'
     // enhanced event bus
-    compile 'com.squareup:otto:1.3.5'
+    compile 'com.squareup:otto:1.3.6'
     // ActiveAndroid ORM (Object Relational Mapper)
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     // An interactive indicator to navigate between the different pages of a ViewPager
@@ -68,4 +68,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     // Facebook
     provided 'com.facebook.android:facebook-android-sdk:3.21.1'
+    // GCS
+    compile 'com.google.http-client:google-http-client-jackson2:1.19.0'
+    compile 'com.google.apis:google-api-services-storage:v1-rev26-1.19.1'
 }

@@ -2,11 +2,14 @@ package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,11 +27,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,17 @@ import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.storage.StorageScopes;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.squareup.otto.Bus;
@@ -54,9 +66,17 @@ import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -65,9 +85,7 @@ import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFIL
 
 
 public class MainActivity extends ActionBarActivity {
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
+    private static final String BUCKET_NAME = "ocr-test-pics";
 
     public static Bus bus;
 
@@ -102,9 +120,17 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
 
+    private Context context;
+
+    public static Bitmap savedBitmap;
+
+    /**
+     * Global instance of the JSON factory.
+     */
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-    Spinner toolbarSpinner;
 
     public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
@@ -120,6 +146,8 @@ public class MainActivity extends ActionBarActivity {
         bus.register(this);
 
         ButterKnife.inject(this);
+
+        context = getApplicationContext();
 
         /**toolBar **/
         setUpToolBar();
@@ -201,36 +229,21 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * sets up the top bar
+     */
     private void setUpToolBar() {
-        toolbarSpinner = (Spinner) toolbar.getChildAt(0);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Usuario Lecturista");
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        String[] frags = new String[]{
-                "1 Feb - 28 Feb 2015",
-                "1 Ene - 31 Ene 2015",
-                "1 Dic - 31 Dic 2014"
-        };
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, frags);
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item_dropdown);
-        //TODO: fix the goddamn arrow on the goddamn spinner >:\
-        toolbarSpinner.setAdapter(spinnerAdapter);
-        toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getApplicationContext(), "thing clicked " + position, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         // enabling action bar app icon and behaving it as toggle button
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
+
+    /**********************************************************************************************
+     *                                                                               Otto bus calls
+     **********************************************************************************************/
 
     /**
      * This is the reading coming from CaptureActivity
@@ -253,37 +266,41 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * DatabaseSave
-     * testing purposes only
-     * creates random dummy readings, duh
+     * Test test test
+     *
+     * @param l
      */
-    public void createDummyReadingsForThisMonth() {
-        Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
-        for (int i = 0; i < 10; i++) {
-            Random r = new Random();
-            int randomDay = r.nextInt(28 - 1 + 1) + 1;
-            ChartReading chartReading = new ChartReading(
-                    randomDay,
-                    time.month,
-                    time.year,
-                    i + randomDay
-            );
-            chartReading.save();
-        }
+    @Subscribe
+    public void testThing(Long l) {
+        uploadFileToGCS();
     }
+
+    /**
+     * DatabaseSave
+     * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
+     * BackStack, this prevents the back button from going to the AddCreditCardFragment again
+     *
+     * @param creditCard CC that is going to be saved on the database
+     */
+    @Subscribe
+    public void saveCreditCardAndGoBackToLists(CreditCard creditCard) {
+        creditCard.save();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.popBackStack();
+        Log.d(TAG, "fragment poped");
+    }
+
 
     /**
      * Bus event called by fragments to change into other fragments
      *
-     * @param fragment
+     * @param fragment that is going to replace the current fragment
      */
     @Subscribe
     public void changeFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         assert fragmentManager != null;
-        enableToolbarSpinner(false);
-
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .addToBackStack(null)
@@ -305,16 +322,11 @@ public class MainActivity extends ActionBarActivity {
      * Every fragment opened from the drawer must call this method to set the
      * correct toolbar title
      *
-     * @param string
+     * @param string the title that we want to show on the toolbar
      */
     @Subscribe
     public void changeTitle(String string) {
-        if (string.equals(ReadingsFragment.TAG)) {
-            enableToolbarSpinner(true);
-        } else {
-            enableToolbarSpinner(false);
             getSupportActionBar().setTitle(string);
-        }
     }
 
     /**
@@ -365,6 +377,21 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
+     * *****************************************************************************************
+     */
+
+    /**
+     * Generates a random Identifier for the image
+     *
+     * @return random id
+     */
+    public String generateIdentifierForImage() {
+        UUID id = UUID.randomUUID();
+        return id.toString();
+    }
+
+
+    /**
      * DatabaseQuery
      * Retrieves the first saved CC from the database
      *
@@ -387,6 +414,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * DatabaseQuery
      * gets all the readings for this month
+     *
      * @return >_>
      */
     public static List<ChartReading> getReadingsForThisMonth() {
@@ -401,19 +429,25 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * DatabaseSave
-     * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
-     * BackStack, this prevents the back button from going to the AddCreditCardFragment again
-     *
-     * @param creditCard CC that is going to be saved on the database
+     * testing purposes only
+     * creates random dummy readings, duh
      */
-    @Subscribe
-    public void saveCreditCardAndGoBackToLists(CreditCard creditCard) {
-        creditCard.save();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        fragmentManager.popBackStack();
-        Log.d(TAG, "fragment poped");
+    public void createDummyReadingsForThisMonth() {
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
+        for (int i = 0; i < 10; i++) {
+            Random r = new Random();
+            int randomDay = r.nextInt(28 - 1 + 1) + 1;
+            ChartReading chartReading = new ChartReading(
+                    randomDay,
+                    time.month,
+                    time.year,
+                    i + randomDay
+            );
+            chartReading.save();
+        }
     }
+
 
     /**
      * Slide menu item click listener
@@ -428,6 +462,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * We want to exit the app on many back pressed
+     */
     @Override
     public void onBackPressed() {
         int fragments = getSupportFragmentManager().getBackStackEntryCount();
@@ -458,23 +495,18 @@ public class MainActivity extends ActionBarActivity {
         switch (position) {
             case 0:
                 fragment = new ReadingsFragment();
-                enableToolbarSpinner(true);
                 break;
             case 1:
                 fragment = new PromotionsFragment();
-                enableToolbarSpinner(false);
                 break;
             case 2:
                 fragment = new NotificationsFragment();
-                enableToolbarSpinner(false);
                 break;
             case 3:
                 fragment = new ContactFragment();
-                enableToolbarSpinner(false);
                 break;
             case 4:
                 fragment = new SettingsFragment();
-                enableToolbarSpinner(false);
             default:
                 break;
         }
@@ -501,12 +533,124 @@ public class MainActivity extends ActionBarActivity {
     private void enableToolbarSpinner(boolean enable) {
         if (enable) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            toolbarSpinner.setVisibility(View.VISIBLE);
         } else {
-            toolbarSpinner.setVisibility(View.GONE);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
+    }
+
+
+    /**
+     * BACKEND call to upload a picture from the camera to Google Cloud Storage
+     * TODO: SECURITY PROBLEM remove the key from assets, find a way to do it
+     */
+    public void uploadFileToGCS() {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+                    // convert key into class File. from inputStream to file. in an aux class.
+                    File file = createFileFromInputStream();
+
+                    NetHttpTransport httpTransport = new NetHttpTransport();
+
+                    String emailAddress = "382197999605-nc5h44q7v54mgn915eqvtd71is4r46jg@developer.gserviceaccount.com";
+
+                    // Google credentials
+                    GoogleCredential credential = new GoogleCredential.Builder().setTransport(httpTransport)
+                            .setJsonFactory(JSON_FACTORY)
+                            .setServiceAccountId(emailAddress)
+                            .setServiceAccountScopes(Collections.singleton(StorageScopes.DEVSTORAGE_FULL_CONTROL))
+                            .setServiceAccountPrivateKeyFromP12File(file)
+                            .build();
+
+                    String imageName = generateIdentifierForImage();
+
+
+                    String URI = "https://storage.googleapis.com/" + BUCKET_NAME + "/" + imageName + ".jpg";
+                    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+                    GenericUrl url = new GenericUrl(URI);
+
+                    // byte array holds the data, in this case the image i want to upload in bytes.
+                    Bitmap bm = savedBitmap.copy(Bitmap.Config.ARGB_8888, false);
+
+                    byte[] byteArray = bitmapToByteArray(bm);
+
+                    HttpContent contentSend = new ByteArrayContent("image/jpeg", byteArray);
+
+                    HttpRequest putRequest = requestFactory.buildPutRequest(url, contentSend);
+
+                    HttpResponse response = putRequest.execute();
+
+                    if (response.isSuccessStatusCode()) {
+                        Log.i("BACKEND", response.getStatusMessage());
+                        return 1;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                    Log.d("debug", "Error in  user profile image uploading", e);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                switch (transactionResponse) {
+                    case 1:
+                        Log.i("BACKEND", "Good-saveReadingToBackend");
+                        break;
+                    default:
+                        Log.i("BACKEND", "Bad-saveReadingToBackend");
+                        Toast.makeText(context, getString(R.string.toastImageUploadError), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * Creates a temporary file that stores the .p12 GCS authentication services
+     * TODO: security concern about the file being on assets.
+     *
+     * @return a p12 file
+     */
+    private File createFileFromInputStream() {
+        File file = null;
+        try {
+            // we take the key and put it in a temporary file
+            AssetManager am = context.getAssets();
+            InputStream inputStream = am.open("privatekey.p12"); //you should not put the key in assets in prod version.
+
+            file = File.createTempFile("tempKeyFile", "p12");
+
+            OutputStream outputStream = new FileOutputStream(file);
+            byte buffer[] = new byte[1024];
+            int length = 0;
+
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+
+        } catch (IOException e) {
+            Log.e(TAG, "Cant create a file from input stream");
+        }
+        return file;
+    }
+
+    /**
+     * Bitmap to array method
+     *
+     * @param bitmap bitmap to convert
+     * @return
+     */
+    public static byte[] bitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, baos);
+        return baos.toByteArray();
     }
 
     /**

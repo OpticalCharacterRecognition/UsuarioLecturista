@@ -1142,15 +1142,15 @@ public final class CaptureActivity extends ActionBarActivity implements SurfaceH
         }
 
 
-        /**
-         * Magic
-         * Not proud, but had to be done
-         */
-        if (DecodeHandler.isScanFinished) {
-            MainActivity.bus.post(DecodeHandler.readingValue);
-            finish();
-            DecodeHandler.isScanFinished = false;
-        }
+//        /**
+//         * Magic
+//         * Not proud, but had to be done
+//         */
+//        if (DecodeHandler.isScanFinished) {
+//            MainActivity.bus.post(DecodeHandler.readingValue);
+//            finish();
+//            DecodeHandler.isScanFinished = false;
+//        }
     }
 
     /**

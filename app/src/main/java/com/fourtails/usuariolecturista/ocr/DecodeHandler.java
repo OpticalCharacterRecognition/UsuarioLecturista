@@ -166,7 +166,7 @@ final class DecodeHandler extends Handler {
             } catch (NullPointerException e) {
                 activity.stopHandler();
             } finally {
-                bitmap.recycle();
+                //bitmap.recycle();
                 baseApi.clear();
             }
             return;

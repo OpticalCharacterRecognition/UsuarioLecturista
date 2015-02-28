@@ -27,7 +27,7 @@
 
     <style name="TextViewPromotionsLabel">
         <item name="android:textSize">28sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimaryJmas</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="typeface">roboto_bold</item>
@@ -83,7 +83,7 @@
 
     <style name="TextViewServiceChooser">
         <item name="android:textSize">28sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimaryJmas</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="typeface">roboto_bold</item>

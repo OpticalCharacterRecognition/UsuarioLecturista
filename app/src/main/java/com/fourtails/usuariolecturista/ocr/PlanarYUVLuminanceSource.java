@@ -23,6 +23,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.fourtails.usuariolecturista.MainActivity;
 import com.googlecode.leptonica.android.Binarize;
 import com.googlecode.leptonica.android.Pix;
 import com.googlecode.leptonica.android.ReadFile;
@@ -249,6 +250,8 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
 //        bitmap = WriteFile.writeBitmap(thresholdedImage2);
 
         letsDoThis = fastBitmap.toBitmap();
+        MainActivity.savedBitmap = fastBitmap.toBitmap();
+
 
         return letsDoThis;
     }
