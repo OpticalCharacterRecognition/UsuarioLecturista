@@ -262,7 +262,7 @@ public class MainActivity extends ActionBarActivity {
                 time.year,
                 reading
         );
-        saveReadingToBackend(chartReading);
+        //saveReadingToBackend(chartReading);
     }
 
     /**
@@ -674,9 +674,9 @@ public class MainActivity extends ActionBarActivity {
 
                     MessagesNewReading messagesNewReading = new MessagesNewReading();
                     messagesNewReading.setAccountNumber(checkForSavedMeter().accountNumber);
-                    messagesNewReading.setMeasure((long) chartReading.value);
+                    //messagesNewReading.setImageName((long) chartReading.value);
 
-                    MessagesNewReadingResponse response = service.reading().backendNew(messagesNewReading).execute();
+                    MessagesNewReadingResponse response = service.reading().newImage(messagesNewReading).execute();
 
                     if (response.getOk()) {
                         Log.i("BACKEND", response.toPrettyString());
