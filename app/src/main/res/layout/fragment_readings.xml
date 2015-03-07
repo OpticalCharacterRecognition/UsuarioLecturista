@@ -20,7 +20,7 @@
             android:layout_height="175dp"
             android:layout_margin="10dp"
             android:layout_weight=".30"
-            android:background="@color/colorPrimaryJmas"
+            android:background="@color/colorPrimaryJmas600"
             chart:chart_axisBorderSpacing="0dp"
             chart:chart_axisColor="@color/axis"
             chart:chart_labelColor="@color/label"

@@ -58,13 +58,22 @@
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
 
-    <color name="colorPrimaryJmas">#00BFA5</color>
+    <color name="colorPrimaryJmas100">#B2DFDB</color>
+    <color name="colorPrimaryJmas200">#80CBC4</color>
+    <color name="colorPrimaryJmas">#4DB6AC</color>
+    <!--300-->
+    <color name="colorPrimaryJmas400">#26A69A</color>
+    <color name="colorPrimaryJmas500">#009688</color>
+    <color name="colorPrimaryJmas600">#00897B</color>
+    <color name="colorPrimaryJmas700">#00796B</color>
+    <color name="colorPrimaryJmas800">#00695C</color>
     <color name="colorPrimaryDarkerJmas">#004D40</color>
     <color name="drawerOver">#B2DFDB</color>
     <color name="whiteWater">#F5F5F5</color>
     <color name="blackWater">#f3000000</color>
     <color name="almostBlackWater">#a0000000</color>
     <color name="greyWater">#ff818181</color>
+    <color name="greyWater300">#E0E0E0</color>
 
     <color name="colorPrimaryGas">#00BCD4</color>
     <color name="colorPrimaryDarkerGas">#00838F</color>
@@ -75,7 +84,8 @@
     <color name="ocrBlueGrey">#607D8B</color>
 
     <!--colors for chart-->
-    <color name="line_bg">#00bba7</color>
+    <color name="line_bg">#26A69A</color>
+    <!--400-->
     <color name="line">#ffffff</color>
     <color name="axis">#ffffff</color>
     <color name="label">#ffffff</color>

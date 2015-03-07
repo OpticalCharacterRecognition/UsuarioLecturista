@@ -37,19 +37,14 @@
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_equalizer_black_24dp</item>
-        <item>@drawable/ic_new_releases_black_24dp</item>
-        <item>@drawable/ic_notifications_black_24dp</item>
-        <item>@drawable/ic_gps_fixed_black_24dp</item>
-        <item>@drawable/ic_settings_black_24dp</item>
+        <item>@drawable/ic_equalizer_grey600_24dp</item>
+        <item>@drawable/ic_new_releases_grey600_24dp</item>
+        <item>@drawable/ic_notifications_grey600_24dp</item>
+        <item>@drawable/ic_gps_fixed_grey600_24dp</item>
+        <item>@drawable/ic_settings_grey600_24dp</item>
     </array>
 
     <!-- Readings -->
-    <!--<string-array name="drop_down_example">-->
-    <!--<item>1 Ene - 31 Ene 2015</item>-->
-    <!--<item>1 Feb - 28 Feb 2015</item>-->
-    <!--<item>1 Mar - 31 Mar 2015</item>-->
-    <!--</string-array>-->
     <string name="toolbarTitleReadings">Lecturas</string>
     <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el dia:</string>
     <string name="readingsLabelsTotalAmount">Litros consumidos:</string>

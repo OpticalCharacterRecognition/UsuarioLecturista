@@ -216,7 +216,7 @@ public class ReadingsFragment extends Fragment {
 
         ButterKnife.inject(this, view);
 
-        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas));
+        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
         /** Chart things **/
         mNewInstance = false;
@@ -342,11 +342,11 @@ public class ReadingsFragment extends Fragment {
         mLineChart.setOnClickListener(lineClickListener);
 
         mLineGridPaint = new Paint();
-        mLineGridPaint.setColor(this.getResources().getColor(R.color.colorPrimaryDarkerJmas));
-        mLineGridPaint.setPathEffect(new DashPathEffect(new float[]{3, 7}, 0));
+        mLineGridPaint.setColor(this.getResources().getColor(R.color.colorPrimaryJmas400));
+        mLineGridPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
         mLineGridPaint.setStyle(Paint.Style.STROKE);
         mLineGridPaint.setAntiAlias(true);
-        mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
+        mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.5f));
     }
 
     private void updateLineChart() {
@@ -390,7 +390,7 @@ public class ReadingsFragment extends Fragment {
                 .setSmooth(true)
                 .setDashed(true)
                 .setDots(true)
-                .setDotsColor(this.getResources().getColor(R.color.line_bg))
+                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
                 .setDotsRadius(Tools.fromDpToPx(5))
                 .setDotsStrokeThickness(Tools.fromDpToPx(2))
                 .setDotsStrokeColor(this.getResources().getColor(R.color.line));
@@ -483,7 +483,7 @@ public class ReadingsFragment extends Fragment {
                 .setSmooth(true)
                 .setDashed(true)
                 .setDots(true)
-                .setDotsColor(this.getResources().getColor(R.color.line_bg))
+                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
                 .setDotsRadius(Tools.fromDpToPx(5))
                 .setDotsStrokeThickness(Tools.fromDpToPx(2))
                 .setDotsStrokeColor(this.getResources().getColor(R.color.line));

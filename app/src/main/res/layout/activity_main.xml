@@ -71,12 +71,12 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/imageViewDrawer"
             android:layout_gravity="start"
-            android:background="@color/white_locky"
+            android:background="@color/whiteWater"
             android:choiceMode="singleChoice"
             android:clickable="false"
             android:divider="@android:color/transparent"
-            android:dividerHeight="10dp"
             android:drawSelectorOnTop="false"
-            android:listSelector="@drawable/list_selector" />
+            android:listSelector="@drawable/list_selector"
+            android:dividerHeight="10dp" />
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>
