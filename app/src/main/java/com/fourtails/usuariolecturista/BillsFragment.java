@@ -1,9 +1,9 @@
 package com.fourtails.usuariolecturista;
 
+
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -33,7 +33,6 @@ import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.db.chart.view.animation.style.DashAnimation;
-import com.fourtails.usuariolecturista.ocr.CaptureActivity;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -46,12 +45,11 @@ import butterknife.OnClick;
 
 
 /**
- * This is the balance fragment where it shows your metrics for the last reading, this month etc,
- * also calls for a facebook publish
+ * A simple {@link Fragment} subclass.
  */
-public class ReadingsFragment extends Fragment {
+public class BillsFragment extends Fragment {
 
-    public static final String TAG = "ReadingsFragment";
+    public static final String TAG = "BillsFragment";
 
     /**
      * Charts ***********************************************************************************
@@ -167,56 +165,63 @@ public class ReadingsFragment extends Fragment {
 
     private boolean mNewInstance;
 
-    @InjectView(R.id.lineChartReadings)
+    @InjectView(R.id.lineChartBills)
     LineChartView mLineChart;
 
     /**
      * Injected views and clickListeners ********************************************************
      */
-    @InjectView(R.id.fabScan)
-    FloatingActionButton fabScan;
 
-    @OnClick(R.id.fabScan)
-    public void scanButtonClicked() {
-        Intent ocrCaptureActivity = new Intent(getActivity(), CaptureActivity.class);
-        MainActivity.bus.post(ocrCaptureActivity);
-    }
+    @InjectView(R.id.fabPay)
+    FloatingActionButton fabPay;
 
-    @InjectView(R.id.fabChangeGraph)
-    FloatingActionButton fabChangeGraph;
+    @InjectView(R.id.fabChangeGraphBills)
+    FloatingActionButton fabChangeGraphBills;
 
-    @InjectView(R.id.cardViewReadings)
-    CardView linechartCardView;
+    @InjectView(R.id.cardViewBills)
+    CardView lineChartCardViewBills;
 
-    @InjectView(R.id.cardViewReadingsBottom)
+    @InjectView(R.id.cardViewBillsBottom)
     CardView sharedCardView;
 
-    @OnClick(R.id.fabChangeGraph)
+    @OnClick(R.id.fabPay)
+    public void payButtonClicked() {
+        Fragment payOptionsFragment = new PayOptionsFragment();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            makeAnimationBetweenFragments(
+                    payOptionsFragment, sharedCardView,
+                    getResources().getString(R.string.transitionFirstCardView),
+                    android.R.transition.fade, // Exit Transition
+                    android.R.transition.move);  // Enter Transition
+        } else {
+            MainActivity.bus.post(payOptionsFragment);
+        }
+    }
+
+
+    @OnClick(R.id.fabChangeGraphBills)
     public void changeGraphClicked() {
         if (!isAnimationRunning) {
-            fabChangeGraph.setEnabled(false);
+            fabChangeGraphBills.setEnabled(false);
             isAnimationRunning = true;
             hideChartThenMakeTransition();
         }
     }
 
-    public ReadingsFragment() {
+
+    public BillsFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_readings, container, false);
-
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_bills, container, false);
         ButterKnife.inject(this, view);
 
-        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas));
+        lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas));
 
         /** Chart things **/
         mNewInstance = false;
@@ -246,35 +251,66 @@ public class ReadingsFragment extends Fragment {
         }, 500);
 
         return view;
+
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         // Set title
-        MainActivity.bus.post(getResources().getString(R.string.toolbarTitleReadings));
+        MainActivity.bus.post(getResources().getString(R.string.toolbarTitleBills));
     }
-
 
     /**
-     * we need to know when the day ends this month
-     *
-     * @return an string array of the days
+     * Hides the chart then after 500ms makes a transition
      */
-    public String[] getDaysToShowOnCalendar() {
-        List<String> days = new ArrayList<>();
-        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-        int divider = maxDay / 5;
-        for (int i = 1; i < maxDay; i = i + divider) {
-            days.add(String.valueOf(i));
-        }
-        days.add(String.valueOf(maxDay));
-
-        String[] stringArray = days.toArray(new String[days.size()]);
-
-        return stringArray;
+    private void hideChartThenMakeTransition() {
+        mLineChart.dismiss(getAnimation(false).setEndAction(mMakeTransition));
     }
 
+    /**
+     * Sets up a fragment and passes the parameters to make a shared element transition
+     */
+    private void changeGraphClickedAction() {
+        Fragment readingsFragment = new ReadingsFragment();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            makeAnimationBetweenFragments(readingsFragment, fabChangeGraphBills,
+                    getResources().getString(R.string.transitionReadingsToBills),
+                    android.R.transition.fade, // Exit Transition
+                    android.R.transition.move); // Enter Transition
+        } else {
+            MainActivity.bus.post(readingsFragment);
+        }
+        fabChangeGraphBills.setEnabled(true);
+        isAnimationRunning = false;
+    }
+
+    /**
+     * This will make a transition with a shared element, in this case the CardView is the shared element
+     *
+     * @param fragment   the fragment that will be used to replace this one
+     * @param sharedView the shared element between the fragments
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void makeAnimationBetweenFragments(Fragment fragment, View sharedView, String sharedTransitionName, int exitTransition, int enterTransition) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        assert fragmentManager != null;
+
+        setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
+        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(exitTransition));
+
+        fragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
+        fragment.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(enterTransition));
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .addSharedElement(sharedView, sharedTransitionName)
+                .commit();
+
+        Log.d(TAG, "fragment added with transition " + fragment.getTag());
+    }
 
     /**
      * Chart things
@@ -411,62 +447,35 @@ public class ReadingsFragment extends Fragment {
         mLineChart.animateSet(0, new DashAnimation());
     }
 
+    /**
+     * we need to know when the day ends this month
+     *
+     * @return an string array of the days
+     */
+    public String[] getDaysToShowOnCalendar() {
+        List<String> days = new ArrayList<>();
+        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+        int divider = maxDay / 5;
+        for (int i = 1; i < maxDay; i = i + divider) {
+            days.add(String.valueOf(i));
+        }
+        days.add(String.valueOf(maxDay));
+
+        String[] stringArray = days.toArray(new String[days.size()]);
+
+        return stringArray;
+    }
+
+    private void addPoint() {
+        float[] thing = {0f, 25f, 26f, 39f, 42f, 30f, 100f};
+        mLineChart.updateValues(0, thing);
+        mLineChart.notifyDataUpdate();
+
+    }
+
     private void hideChart() {
         mLineChart.dismiss(getAnimation(false).setEndAction(mExitEndAction));
     }
-
-    /**
-     * Hides the chart then after 500ms makes a transition
-     */
-    private void hideChartThenMakeTransition() {
-        mLineChart.dismiss(getAnimation(false).setEndAction(mMakeTransition));
-    }
-
-
-    /**
-     * Sets up a fragment and passes the parameters to make a shared element transition
-     */
-    public void changeGraphClickedAction() {
-        Fragment billsFragment = new BillsFragment();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            makeAnimationBetweenFragments(
-                    billsFragment, fabChangeGraph,
-                    getResources().getString(R.string.transitionFirstCardView),
-                    android.R.transition.fade, // Exit Transition
-                    android.R.transition.move); // Enter Transition
-        } else {
-            MainActivity.bus.post(billsFragment);
-        }
-        fabChangeGraph.setEnabled(true);
-        isAnimationRunning = false;
-    }
-
-    /**
-     * This will make a transition with a shared element, in this case the CardView is the shared element
-     *
-     * @param fragment   the fragment that will be used to replace this one
-     * @param sharedView the shared element between the fragments
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void makeAnimationBetweenFragments(Fragment fragment, View sharedView, String sharedTransitionName, int exitTransition, int enterTransition) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        assert fragmentManager != null;
-
-        setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
-        setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(exitTransition));
-
-        fragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.trans_test));
-        fragment.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(enterTransition));
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .addToBackStack(null)
-                .addSharedElement(sharedView, sharedTransitionName)
-                .commit();
-
-        Log.d(TAG, "fragment added with transition " + fragment.getTag());
-    }
-
 
     /**
      * This will be executed by mExitEndAction because we first need to show a dismiss animation
@@ -502,13 +511,6 @@ public class ReadingsFragment extends Fragment {
 
         //addPoint();
 
-    }
-
-
-    private void addPoint() {
-        float[] thing = {0f, 25f, 26f, 39f, 42f, 30f, 100f};
-        mLineChart.updateValues(0, thing);
-        mLineChart.notifyDataUpdate();
 
     }
 
@@ -526,5 +528,4 @@ public class ReadingsFragment extends Fragment {
                     .setOverlap(mOldOverlapFactor, mOldOverlapOrder)
                     .setStartPoint(mOldStartX, mOldStartY);
     }
-
 }

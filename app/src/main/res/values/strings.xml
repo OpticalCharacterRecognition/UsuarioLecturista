@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">UsuarioLecturista</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Usuario Lecturista</string>
-    <string name="facebook_app_id">1475669572699600</string>
     <string name="title_activity_intermediate">IntermediateActivity</string>
     <string name="title_activity_service_chooser">ServiceChooserActivity</string>
     <string name="title_activity_main_drawer">MainDrawerActivity</string>
@@ -20,10 +18,16 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
 
+    <!--Parse-->
+    <string name="parse_app_id">vewdKbKAPt6y9ufviEEYHlq62dXhlEAPldiwNi5P</string>
+    <string name="parse_client_key">ElCkYKmgcL1RNtZL1qF3YIBSdtNqeEFiTOTQ46n7</string>
+    <string name="facebook_app_id">1475669572699600</string>
+
+
     <!-- GOLOCKY STUFF FOR TESTING MODIFY THIS -->
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
-        <item>Consumo</item>
+        <item>Lecturas</item>
         <item>Promociones</item>
         <item>Notificaciones</item>
         <item>Contacto</item>
@@ -41,12 +45,20 @@
     </array>
 
     <!-- Readings -->
-    <string-array name="drop_down_example">
-        <item>1 Ene - 31 Ene 2015</item>
-        <item>1 Feb - 28 Feb 2015</item>
-        <item>1 Mar - 31 Mar 2015</item>
-    </string-array>
+    <!--<string-array name="drop_down_example">-->
+    <!--<item>1 Ene - 31 Ene 2015</item>-->
+    <!--<item>1 Feb - 28 Feb 2015</item>-->
+    <!--<item>1 Mar - 31 Mar 2015</item>-->
+    <!--</string-array>-->
     <string name="toolbarTitleReadings">Lecturas</string>
+    <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el dia:</string>
+    <string name="readingsLabelsTotalAmount">Litros consumidos:</string>
+    <string name="readingsLabelsLimitDate">Fecha Limite:</string>
+
+    <!--Bills-->
+    <string name="toolbarTitleBills">Facturas</string>
+    <string name="billsLabelsLastBillAmount">Total ultima factura:</string>
+    <string name="billsLabelsSomething">3</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -108,23 +120,23 @@
     <string name="intro_final_desc">No publicaremos nada sin tu consentimiento</string>
     <string name="btn_facebook_intro">Registrate con Facebook</string>
     <string name="btn_register_intro">Registrate</string>
-    <string name="parse_app_id">vewdKbKAPt6y9ufviEEYHlq62dXhlEAPldiwNi5P</string>
-    <string name="parse_client_key">ElCkYKmgcL1RNtZL1qF3YIBSdtNqeEFiTOTQ46n7</string>
+
     <string name="buttonLabelSettingsLogOut">Terminar Session</string>
     <string name="title_activity_meter_registration">MeterRegistrationActivity</string>
     <string name="dialogTitleRegisterMeterBE">Registrando el Medidor</string>
     <string name="DialogContentPleaseWait">Por favor espere…</string>
     <string name="DialogTitleCheckingParameters">Verificando Parametros</string>
-    <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el dia:</string>
-    <string name="readingsLabelsTotalAmount">Consumo Total:</string>
-    <string name="readingsLabelsLimitDate">Fecha Limite:</string>
+
     <string name="titleContentServiceChooser">Seleccione su proveedor de servicios</string>
 
     <!--Transitions-->
     <string name="transitionFirstCardView">transitionFirstCardView</string>
     <string name="transitionJmas">jmasTransition</string>
+    <string name="transitionReadingsToBills">readingsToBillsTransition</string>
+
+
+    <!--misc-->
     <string name="toastImageUploadError">Hay un problema subiendo la imagen al servidor, por favor intente de nuevo</string>
     <string name="title_activity_test">TestActivity</string>
-
 
 </resources>

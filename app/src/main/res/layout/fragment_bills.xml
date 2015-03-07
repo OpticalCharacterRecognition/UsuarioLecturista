@@ -4,18 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.vazh.android.golocky.app.balance.BalanceFragment">
-
+    tools:context="com.fourtails.usuariolecturista.BillsFragment">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardViewReadings"
+        android:id="@+id/cardViewBills"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:transitionName="@string/transitionJmas">
 
         <com.db.chart.view.LineChartView xmlns:chart="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/lineChartReadings"
+            android:id="@+id/lineChartBills"
             android:layout_width="match_parent"
             android:layout_height="175dp"
             android:layout_margin="10dp"
@@ -28,10 +27,10 @@
     </android.support.v7.widget.CardView>
 
     <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fabChangeGraph"
+        android:id="@+id/fabChangeGraphBills"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/cardViewReadings"
+        android:layout_alignBottom="@+id/cardViewBills"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
@@ -41,15 +40,14 @@
         android:transitionName="@string/transitionReadingsToBills"
         android:layout_marginBottom="-25dp" />
 
-
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewReadingsBottom"
+        android:id="@+id/cardViewBillsBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/cardViewReadings"
+        android:layout_below="@+id/cardViewBills"
         android:layout_marginBottom="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -71,7 +69,7 @@
                 android:textIsSelectable="false" />
 
             <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewBillingDate"
+                android:id="@+id/textViewBillingDateBills"
                 style="@style/TextViewMainPage"
                 android:text="26 de Febrero 2015"
                 android:textIsSelectable="true" />
@@ -80,33 +78,21 @@
                 android:id="@+id/textView3"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/readingsLabelsTotalAmount" />
+                android:text="@string/billsLabelsLastBillAmount" />
 
             <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewTotalBalance"
+                android:id="@+id/textViewTotalBalanceBills"
                 style="@style/TextViewMainPage"
-                android:text="100 lts" />
-
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textView2"
-                style="@style/TextViewMainPageLabel"
-                android:layout_marginTop="10dp"
-                android:text="@string/readingsLabelsLastReadingDay" />
-
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewLastReadingDate"
-                style="@style/TextViewMainPage"
-                android:text="2 de Febrero 2015" />
+                android:text="$100.00" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-    <!--Scan button-->
     <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fabScan"
+        android:id="@+id/fabPay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_camera_alt_white_24dp"
+        android:src="@drawable/ic_payment_white_24dp"
         fab:fab_colorNormal="@color/colorPrimaryJmas"
         fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
         android:layout_alignParentBottom="true"
