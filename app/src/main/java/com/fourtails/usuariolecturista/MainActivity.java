@@ -170,8 +170,6 @@ public class MainActivity extends ActionBarActivity {
 
         loadImageInBackground();
 
-        textViewFacebookName.setText(facebookName);
-
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
         // adding nav drawer items to array
@@ -326,7 +324,7 @@ public class MainActivity extends ActionBarActivity {
      */
     @Subscribe
     public void changeTitle(String string) {
-            getSupportActionBar().setTitle(string);
+        getSupportActionBar().setTitle(string);
     }
 
     /**
@@ -708,19 +706,30 @@ public class MainActivity extends ActionBarActivity {
      * then we call the other method with picasso to load it
      */
     public void loadImageInBackground() {
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        if (ParseFacebookUtils.isLinked(parseUser)) {
-            if (ParseFacebookUtils.getSession().isOpened()) {
-                Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
-                    @Override
-                    public void onCompleted(GraphUser user, Response response) {
-                        if (user != null) {
-                            loadImageInBackground(user.getId());
+        final ParseUser parseUser = ParseUser.getCurrentUser();
+        if (parseUser != null) {
+            if (ParseFacebookUtils.isLinked(parseUser)) {
+                if (ParseFacebookUtils.getSession().isOpened()) {
+                    Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
+                        @Override
+                        public void onCompleted(GraphUser user, Response response) {
+                            if (user != null) {
+                                loadImageInBackground(user.getId());
+                                textViewFacebookName.setText(parseUser.getUsername());
+                            }
                         }
-                    }
-                }).executeAsync();
+                    }).executeAsync();
+                }
+            } else {
+                textViewFacebookName.setText(parseUser.getUsername());
+                Picasso.with(this)
+                        .load(R.drawable.ic_person_grey600_48dp)
+                        .transform(new CircleTransform())
+                        .into(imageViewFacebookProfilePic);
             }
+
         }
+
     }
 
     /**
