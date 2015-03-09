@@ -35,8 +35,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
         android:src="@drawable/ic_history_white_24dp"
-        fab:fab_colorNormal="@color/colorPrimaryJmas"
-        fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
+        fab:fab_colorNormal="@color/colorJmasBlueReadings"
+        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker"
         android:transitionName="@string/transitionReadingsToBills"
         android:layout_marginBottom="-25dp" />
 

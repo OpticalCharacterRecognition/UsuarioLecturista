@@ -11,8 +11,7 @@
         android:id="@+id/cardViewReadings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:transitionName="@string/transitionJmas">
+        android:layout_margin="10dp">
 
         <com.db.chart.view.LineChartView xmlns:chart="http://schemas.android.com/apk/res-auto"
             android:id="@+id/lineChartReadings"
@@ -20,7 +19,7 @@
             android:layout_height="175dp"
             android:layout_margin="10dp"
             android:layout_weight=".30"
-            android:background="@color/colorPrimaryJmas600"
+            android:background="@color/colorJmasBlueReadings"
             chart:chart_axisBorderSpacing="0dp"
             chart:chart_axisColor="@color/axis"
             chart:chart_labelColor="@color/label"
@@ -38,7 +37,7 @@
         android:src="@drawable/ic_history_white_24dp"
         fab:fab_colorNormal="@color/colorPrimaryJmas"
         fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
-        android:transitionName="@string/transitionReadingsToBills"
+        android:transitionName="@string/transitionJmas"
         android:layout_marginBottom="-25dp" />
 
 

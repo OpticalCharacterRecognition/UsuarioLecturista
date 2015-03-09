@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.Time;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -490,6 +491,8 @@ public class MainActivity extends ActionBarActivity {
     private void displayView(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
+        int fragmentExitTransition;
+        int fragmentEnterTransition;
         switch (position) {
             case 0:
                 fragment = new ReadingsFragment();
@@ -510,6 +513,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (fragment != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                fragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.explode));
+                fragment.setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+            }
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .addToBackStack(null)

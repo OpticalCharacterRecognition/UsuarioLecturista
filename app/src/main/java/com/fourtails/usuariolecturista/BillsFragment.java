@@ -275,7 +275,8 @@ public class BillsFragment extends Fragment {
     private void changeGraphClickedAction() {
         Fragment readingsFragment = new ReadingsFragment();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            makeAnimationBetweenFragments(readingsFragment, fabChangeGraphBills,
+            makeAnimationBetweenFragments(
+                    readingsFragment, fabChangeGraphBills,
                     getResources().getString(R.string.transitionReadingsToBills),
                     android.R.transition.fade, // Exit Transition
                     android.R.transition.move); // Enter Transition
@@ -390,17 +391,17 @@ public class BillsFragment extends Fragment {
         mLineChart.reset();
 
         LineSet dataSet = new LineSet();
-//        dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[0]);
-//        //dataSet.addPoints(lineLabels, lineValues[0]);
-//        dataSet.setDots(true)
-//                .setDotsColor(this.getResources().getColor(R.color.line_bg))
-//                .setDotsRadius(Tools.fromDpToPx(5))
-//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                .setDotsStrokeColor(this.getResources().getColor(R.color.line))
-//                .setLineColor(this.getResources().getColor(R.color.line))
-//                .setLineThickness(Tools.fromDpToPx(3))
-//                .beginAt(1).endAt(lineLabels.length - 1);
-//        mLineChart.addData(dataSet);
+        dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[1]);
+        //dataSet.addPoints(lineLabels, lineValues[0]);
+        dataSet.setDots(true)
+                .setDotsColor(this.getResources().getColor(R.color.line_bg))
+                .setDotsRadius(Tools.fromDpToPx(5))
+                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+                .setDotsStrokeColor(this.getResources().getColor(R.color.line))
+                .setLineColor(this.getResources().getColor(R.color.line))
+                .setLineThickness(Tools.fromDpToPx(3))
+                .beginAt(1).endAt(getDaysToShowOnCalendar().length - 1);
+        mLineChart.addData(dataSet);
 
         dataSet = new LineSet();
 //        we will need to wait for the developer to implement this functionality
@@ -421,16 +422,16 @@ public class BillsFragment extends Fragment {
 
         //dataSet.addPoint("5", 50f);
 
-        dataSet.setLineColor(this.getResources().getColor(R.color.line))
-                .setLineThickness(Tools.fromDpToPx(3))
-                .setSmooth(true)
-                .setDashed(true)
-                .setDots(true)
-                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
-                .setDotsRadius(Tools.fromDpToPx(5))
-                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
-        mLineChart.addData(dataSet);
+//        dataSet.setLineColor(this.getResources().getColor(R.color.line))
+//                .setLineThickness(Tools.fromDpToPx(3))
+//                .setSmooth(true)
+//                .setDashed(true)
+//                .setDots(true)
+//                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
+//                .setDotsRadius(Tools.fromDpToPx(5))
+//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+//                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
+//        mLineChart.addData(dataSet);
 
         mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
                 .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)

@@ -216,7 +216,7 @@ public class ReadingsFragment extends Fragment {
 
         ButterKnife.inject(this, view);
 
-        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
+        linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorJmasBlueReadings));
 
         /** Chart things **/
         mNewInstance = false;
@@ -431,7 +431,7 @@ public class ReadingsFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             makeAnimationBetweenFragments(
                     billsFragment, fabChangeGraph,
-                    getResources().getString(R.string.transitionFirstCardView),
+                    getResources().getString(R.string.transitionReadingsToBills),
                     android.R.transition.fade, // Exit Transition
                     android.R.transition.move); // Enter Transition
         } else {
