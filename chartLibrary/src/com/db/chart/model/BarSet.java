@@ -19,16 +19,27 @@ package com.db.chart.model;
 import android.util.Log;
 
 /**
- * Data model containing a set of {@link Bar} to be used by {@link BarChartView}.
+ * Data model containing a set of {@link Bar} to be used by {@link com.db.chart.view.BaseBarChartView}.
  */
 public class BarSet extends ChartSet {
 
 
-    private static final String TAG = "com.db.chart.model.BarSet";
+    private static final String TAG = "chart.model.BarSet";
 
 
     public BarSet() {
         super();
+    }
+
+    public BarSet(String[] labels, float[] values) {
+        super();
+
+        if (labels.length != values.length)
+            Log.e(TAG, "Arrays size doesn't match.", new IllegalArgumentException());
+
+        int nEntries = labels.length;
+        for (int i = 0; i < nEntries; i++)
+            addBar(labels[i], values[i]);
     }
 
 
@@ -39,17 +50,6 @@ public class BarSet extends ChartSet {
 
     public void addBar(Bar point) {
         this.addEntry(point);
-    }
-
-
-    public void addBars(String[] labels, float[] values) {
-
-        if (labels.length != values.length)
-            Log.e(TAG, "Arrays size doesn't match.", new IllegalArgumentException());
-
-        int nEntries = labels.length;
-        for (int i = 0; i < nEntries; i++)
-            addBar(labels[i], values[i]);
     }
 
 	

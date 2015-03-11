@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.db.chart.Tools;
 import com.db.chart.listener.OnEntryClickListener;
 import com.db.chart.model.LineSet;
+import com.db.chart.model.Point;
 import com.db.chart.view.LineChartView;
 import com.db.chart.view.XController;
 import com.db.chart.view.YController;
@@ -390,34 +391,40 @@ public class BillsFragment extends Fragment {
 
         mLineChart.reset();
 
+//        LineSet dataSet = new LineSet(getDaysToShowOnCalendar(), lineValues[1]);
+//        //dataSet.addPoints(lineLabels, lineValues[0]);
+//        dataSet.setDotsColor(this.getResources().getColor(R.color.line_bg))
+//                .setDotsRadius(Tools.fromDpToPx(5))
+//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+//                .setDotsStrokeColor(this.getResources().getColor(R.color.line))
+//                .setColor(this.getResources().getColor(R.color.line))
+//                .setThickness(Tools.fromDpToPx(3))
+//                .beginAt(1).endAt(getDaysToShowOnCalendar().length - 1);
+//        mLineChart.addData(dataSet);
+
+        // this will change the dots color making the "Unpaid" ones in red
         LineSet dataSet = new LineSet();
-        dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[1]);
-        //dataSet.addPoints(lineLabels, lineValues[0]);
-        dataSet.setDots(true)
-                .setDotsColor(this.getResources().getColor(R.color.line_bg))
-                .setDotsRadius(Tools.fromDpToPx(5))
+
+        String[] days = getDaysToShowOnCalendar();
+        Point point;
+        for (int i = 0; i < 5; i++) {
+            point = new Point(days[i], lineValues[1][i]);
+            if (i > 2) {
+                point.setColor(this.getResources().getColor(R.color.red_300));
+            } else {
+                point.setColor(this.getResources().getColor(R.color.colorJmasBlueReadings));
+            }
+            dataSet.addPoint(point);
+        }
+        dataSet.setDotsRadius(Tools.fromDpToPx(5))
                 .setDotsStrokeThickness(Tools.fromDpToPx(2))
                 .setDotsStrokeColor(this.getResources().getColor(R.color.line))
-                .setLineColor(this.getResources().getColor(R.color.line))
-                .setLineThickness(Tools.fromDpToPx(3))
+                .setThickness(Tools.fromDpToPx(3))
+                .setColor(this.getResources().getColor(R.color.whiteWater))
+                .setDashed(true)
                 .beginAt(1).endAt(getDaysToShowOnCalendar().length - 1);
         mLineChart.addData(dataSet);
 
-        dataSet = new LineSet();
-//        we will need to wait for the developer to implement this functionality
-//        String[] days = getDaysToShowOnCalendar();
-//        Point point;
-//        for (int i = 0; i < 5; i++) {
-//            point = new Point(days[i], lineValues[1][i]);
-//            if (i == 3) {
-//                point.setColor(this.getResources().getColor(R.color.blue_balance));
-//            } else {
-//                point.setColor(this.getResources().getColor(R.color.whiteWater));
-//            }
-//            dataSet.addPoint(point);
-//        }
-
-        dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[1]);
 
 
         //dataSet.addPoint("5", 50f);
@@ -440,7 +447,6 @@ public class BillsFragment extends Fragment {
                 .setYAxis(false)
                 .setYLabels(YController.LabelPosition.OUTSIDE)
                 .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
-                .setLabelsMetric(" lts")
                 .show(getAnimation(true).setEndAction(null))
         //.show()
         ;
@@ -483,16 +489,14 @@ public class BillsFragment extends Fragment {
      */
     private void updateChart() {
         mLineChart.reset();
-        LineSet dataSet = new LineSet();
         float[] newlineValues = {0, 25f, 26f, 39f, 42f, 30f, 30f};
         String[] newLabels = {"1", "7", "13", "19", "25", "30", "5"};
-        dataSet.addPoints(newLabels, newlineValues);
+        LineSet dataSet = new LineSet(newLabels, newlineValues);
 
-        dataSet.setLineColor(this.getResources().getColor(R.color.line))
-                .setLineThickness(Tools.fromDpToPx(3))
+        dataSet.setColor(this.getResources().getColor(R.color.line))
+                .setThickness(Tools.fromDpToPx(3))
                 .setSmooth(true)
                 .setDashed(true)
-                .setDots(true)
                 .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
                 .setDotsRadius(Tools.fromDpToPx(5))
                 .setDotsStrokeThickness(Tools.fromDpToPx(2))
@@ -506,7 +510,6 @@ public class BillsFragment extends Fragment {
                 .setYAxis(false)
                 .setYLabels(YController.LabelPosition.OUTSIDE)
                 .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
-                .setLabelsMetric(" lts")
                 .show(getAnimation(true).setEndAction(mAnimatePoint));
         mLineChart.animateSet(0, new DashAnimation());
 

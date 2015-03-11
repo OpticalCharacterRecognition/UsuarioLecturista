@@ -33,6 +33,7 @@ import com.db.chart.Tools;
 import com.db.chart.model.ChartEntry;
 import com.db.chart.model.ChartSet;
 import com.db.chart.model.LineSet;
+import com.db.chart.model.Point;
 import com.db.williamchart.R;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class LineChartView extends ChartView {
     public LineChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        setOrientation(Orientation.VERTICAL);
         mStyle = new Style(context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.ChartAttrs, 0, 0));
         sRegionRadius = (float) getResources()
@@ -66,6 +68,8 @@ public class LineChartView extends ChartView {
 
     public LineChartView(Context context) {
         super(context);
+
+        setOrientation(Orientation.VERTICAL);
         mStyle = new Style();
     }
 
@@ -84,8 +88,7 @@ public class LineChartView extends ChartView {
     /**
      * Method responsible to draw a line with the parsed screen points.
      *
-     * @param canvas       The canvas to draw on.
-     * @param screenPoints The parsed screen points ready to be used/drawn.
+     * @param canvas The canvas to draw on.
      */
     @Override
     public void onDrawChart(Canvas canvas, ArrayList<ChartSet> data) {
@@ -98,9 +101,9 @@ public class LineChartView extends ChartView {
 
             if (lineSet.isVisible()) {
 
-                mStyle.mLinePaint.setColor(lineSet.getLineColor());
-                mStyle.mLinePaint.setStrokeWidth(lineSet.getLineThickness());
-                handleAlpha(mStyle.mLinePaint, lineSet.getAlpha());
+                mStyle.mLinePaint.setColor(lineSet.getColor());
+                mStyle.mLinePaint.setStrokeWidth(lineSet.getThickness());
+                applyAlpha(mStyle.mLinePaint, lineSet.getAlpha());
 
                 if (lineSet.isDashed())
                     mStyle.mLinePaint
@@ -115,8 +118,7 @@ public class LineChartView extends ChartView {
                     drawSmoothLine(canvas, lineSet);
 
                 //Draw points
-                if (lineSet.hasDots())
-                    drawPoints(canvas, lineSet);
+                drawPoints(canvas, lineSet);
             }
         }
 
@@ -128,36 +130,42 @@ public class LineChartView extends ChartView {
      */
     private void drawPoints(Canvas canvas, LineSet set) {
 
-        Bitmap dotsBitmap = null;
-        float dotsBitmapWidthCenter = 0;
-        float dotsBitmapHeightCenter = 0;
-        if (set.getDotsDrawable() != null) {
-            dotsBitmap = Tools.drawableToBitmap(set.getDotsDrawable());
-            dotsBitmapWidthCenter = dotsBitmap.getWidth() / 2;
-            dotsBitmapHeightCenter = dotsBitmap.getHeight() / 2;
-        }
-
-        mStyle.mDotsPaint.setColor(set.getDotsColor());
-        handleAlpha(mStyle.mDotsPaint, set.getAlpha());
-        mStyle.mDotsStrokePaint.setStrokeWidth(set.getDotsStrokeThickness());
-        mStyle.mDotsStrokePaint.setColor(set.getDotsStrokeColor());
-        handleAlpha(mStyle.mDotsStrokePaint, set.getAlpha());
-
-        Path path = new Path();
         int begin = set.getBegin();
         int end = set.getEnd();
+        Point dot;
         for (int i = begin; i < end; i++) {
-            path.addCircle(set.getEntry(i).getX(), set.getEntry(i).getY(), set.getDotsRadius(), Path.Direction.CW);
-            if (dotsBitmap != null)
-                canvas.drawBitmap(dotsBitmap, set.getEntry(i).getX() - dotsBitmapWidthCenter, set.getEntry(i).getY() - dotsBitmapHeightCenter, mStyle.mDotsPaint);
+
+            dot = (Point) set.getEntry(i);
+
+            if (dot.isVisible()) {
+
+                // Style dot
+                mStyle.mDotsPaint.setColor(dot.getColor());
+                applyAlpha(mStyle.mDotsPaint, set.getAlpha());
+
+                // Draw dot
+                canvas.drawCircle(dot.getX(), dot.getY(), dot.getRadius(), mStyle.mDotsPaint);
+
+                //Draw dots stroke
+                if (dot.hasStroke()) {
+
+                    // Style stroke
+                    mStyle.mDotsStrokePaint.setStrokeWidth(dot.getStrokeThickness());
+                    mStyle.mDotsStrokePaint.setColor(dot.getStrokeColor());
+                    applyAlpha(mStyle.mDotsStrokePaint, set.getAlpha());
+
+                    canvas.drawCircle(dot.getX(), dot.getY(), dot.getRadius(), mStyle.mDotsStrokePaint);
+                }
+
+                // Draw drawable
+                if (dot.getDrawable() != null) {
+                    Bitmap dotsBitmap = Tools.drawableToBitmap(dot.getDrawable());
+                    canvas.drawBitmap(dotsBitmap, dot.getX() - dotsBitmap.getWidth() / 2,
+                            dot.getY() - dotsBitmap.getHeight() / 2, mStyle.mDotsPaint);
+                }
+            }
         }
 
-        //Draw dots fill
-        canvas.drawPath(path, mStyle.mDotsPaint);
-
-        //Draw dots stroke
-        if (set.hasDotsStroke())
-            canvas.drawPath(path, mStyle.mDotsStrokePaint);
     }
 
 
@@ -305,13 +313,25 @@ public class LineChartView extends ChartView {
                             set.getGradientPositions(),
                             Shader.TileMode.MIRROR));
 
-        path.lineTo(set.getEntry(set.size() - 1).getX(), innerChartBottom);
-        path.lineTo(set.getEntry(0).getX(), innerChartBottom);
+        path.lineTo(set.getEntry(set.getEnd() - 1).getX(), innerChartBottom);
+        path.lineTo(set.getEntry(set.getBegin()).getX(), innerChartBottom);
         path.close();
         canvas.drawPath(path, mStyle.mFillPaint);
     }
 
 
+    /**
+     * (Optional) To be overridden in order for each chart to define its own clickable regions.
+     * This way, classes extending ChartView will only define their clickable regions.
+     * <p/>
+     * Important: the returned vector must match the order of the data passed
+     * by the user. This ensures that onTouchEvent will return the correct index.
+     *
+     * @param data {@link java.util.ArrayList} of {@link com.db.chart.model.ChartSet}
+     *             to use while defining each region of a {@link com.db.chart.view.BarChartView}
+     * @return {@link java.util.ArrayList} of {@link android.graphics.Region} with regions
+     * where click will be detected
+     */
     @Override
     public ArrayList<ArrayList<Region>> defineRegions(ArrayList<ChartSet> data) {
 
@@ -339,13 +359,10 @@ public class LineChartView extends ChartView {
     }
 
 
-    private void handleAlpha(Paint paint, float alpha) {
+    private void applyAlpha(Paint paint, float alpha) {
 
         paint.setAlpha((int) (alpha * 255));
-        paint.setShadowLayer(
-                mStyle.mShadowRadius,
-                mStyle.mShadowDx,
-                mStyle.mShadowDy,
+        paint.setShadowLayer(mStyle.mShadowRadius, mStyle.mShadowDx, mStyle.mShadowDy,
                 Color.argb(((int) (alpha * 255) < mStyle.mAlpha)
                                 ? (int) (alpha * 255)
                                 : mStyle.mAlpha,
@@ -371,6 +388,23 @@ public class LineChartView extends ChartView {
 
 
     /**
+     * @param radius
+     * @param dx
+     * @param dy
+     * @param color
+     * @return
+     */
+    public LineChartView setShadow(float radius, float dx, float dy, int color) {
+
+        mStyle.mShadowRadius = radius;
+        mStyle.mShadowDx = dx;
+        mStyle.mShadowDy = dy;
+        mStyle.mShadowColor = color;
+        return this;
+    }
+
+
+    /**
      * Class responsible to style the LineChart!
      * Can be instantiated with or without attributes.
      */
@@ -389,10 +423,10 @@ public class LineChartView extends ChartView {
         /**
          * Shadow variables
          */
-        private final int mShadowColor;
-        private final float mShadowRadius;
-        private final float mShadowDx;
-        private final float mShadowDy;
+        private int mShadowColor;
+        private float mShadowRadius;
+        private float mShadowDx;
+        private float mShadowDy;
 
         /**
          * Shadow color
