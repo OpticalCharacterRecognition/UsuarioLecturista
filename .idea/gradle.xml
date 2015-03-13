@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/backend" />
             <option value="$PROJECT_DIR$/chartLibrary" />
+            <option value="$PROJECT_DIR$/facebook-sdk" />
+            <option value="$PROJECT_DIR$/facebook-sdk/facebook" />
             <option value="$PROJECT_DIR$/tess-two" />
             <option value="$PROJECT_DIR$/viewPagerLibrary" />
           </set>

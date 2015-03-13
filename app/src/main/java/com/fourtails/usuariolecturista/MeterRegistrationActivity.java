@@ -70,24 +70,28 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isMeterRegistered = prefs.getBoolean(PREF_METER_REGISTERED, false);
 
+        running = true;
+
         if (isMeterRegistered) {
             Intent intent = new Intent(this, ServiceChooserActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+            setContentView(R.layout.activity_meter_registration);
+            ButterKnife.inject(this);
+            fillUserInfoThenRegister();
         }
-        setContentView(R.layout.activity_meter_registration);
-        ButterKnife.inject(this);
 
-        running = true;
 
-        registerUserBackend();
-        checkIfUserHasMeter();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressDialog.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
         running = false;
     }
 
@@ -135,8 +139,13 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                         meter.save();
                         meterExists = true;
                         return true;
-                    } else if (response.getError().contains("No Meters found under specified criteria")) {
-                        meterExists = false;
+                    } else {
+                        if (response.getError().contains("No Meters found under specified criteria")) {
+                            meterExists = false;
+                        }
+                        if (response.getError().contains("User does not exist")) {
+                            meterExists = false;
+                        }
                         return false;
                     }
                 } catch (Exception e) {
@@ -180,6 +189,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             );
             registeredUser.save();
         }
+        checkIfUserHasMeter();
     }
 
     /**
@@ -199,7 +209,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
     /**
      * fill user info into the global variables
      */
-    private void fillUserInfo() {
+    private void fillUserInfoThenRegister() {
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (ParseFacebookUtils.isLinked(parseUser)) {
             if (ParseFacebookUtils.getSession().isOpened()) {
@@ -210,6 +220,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                             age = 30L; //user.getBirthday() test this
                             email = user.getName() + "@test.com";
                             name = user.getName();
+                            registerUserBackend();
                         }
                     }
                 }).executeAsync();
@@ -218,6 +229,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             age = 30L;
             email = parseUser.getEmail();
             name = parseUser.getUsername();
+            registerUserBackend();
         }
     }
 
@@ -226,10 +238,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
      * Registers the user on the backend
      */
     private void registerUserBackend() {
-
-        // fill the global variables
-        fillUserInfo();
-
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {

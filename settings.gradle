@@ -1,5 +1,9 @@
-include ':app', ':ParseLoginUI'
+include ':app'
+include ':ParseLoginUI'
 include 'tess-two'
 include ':viewPagerLibrary'
 include ':chartLibrary'
 include ':backend'
+
+// Facebook SDK
+include 'facebook-sdk:facebook'

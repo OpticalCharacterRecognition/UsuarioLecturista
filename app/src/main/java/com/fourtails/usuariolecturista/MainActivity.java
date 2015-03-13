@@ -150,6 +150,9 @@ public class MainActivity extends ActionBarActivity {
 
         context = getApplicationContext();
 
+        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+
+
         /**toolBar **/
         setUpToolBar();
 
@@ -722,13 +725,13 @@ public class MainActivity extends ActionBarActivity {
                         public void onCompleted(GraphUser user, Response response) {
                             if (user != null) {
                                 loadImageInBackground(user.getId());
-                                textViewFacebookName.setText(parseUser.getUsername());
+                                textViewFacebookName.setText(parseUser.get("name").toString());
                             }
                         }
                     }).executeAsync();
                 }
             } else {
-                textViewFacebookName.setText(parseUser.getUsername());
+                textViewFacebookName.setText(parseUser.get("name").toString());
                 Picasso.with(this)
                         .load(R.drawable.ic_person_grey600_48dp)
                         .transform(new CircleTransform())
@@ -752,12 +755,12 @@ public class MainActivity extends ActionBarActivity {
                 Picasso.with(MainActivity.this)
                         .load("https://graph.facebook.com/"
                                 + facebookId + "/picture?type=large")
-                        .placeholder(R.drawable.ic_titular)
+                        .placeholder(R.drawable.ic_person_grey600_48dp)
                         .transform(new CircleTransform())
-                        .error(R.drawable.ic_titular)
+                        .error(R.drawable.ic_person_grey600_48dp)
                         .into(imageViewFacebookProfilePic);
             }
-        }, 1000);
+        }, 500);
 
     }
 

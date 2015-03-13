@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.activeandroid.ActiveAndroid;
 import com.parse.Parse;
-import com.parse.ParseFacebookUtils;
 
 
 /**
@@ -23,7 +22,8 @@ public class FirstApplication extends Application {
 
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 
-        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+        // If we try to initialize this here the fb login doesn't work :S
+        //ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
 
 //
 //        // Optional - If you don't want to allow Twitter login, you can
