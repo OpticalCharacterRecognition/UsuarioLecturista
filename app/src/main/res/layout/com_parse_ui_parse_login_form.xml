@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/parse_login_button"
-            style="@style/RobotoButton"
+            style="@style/RobotoButtonOCR"
             android:layout_weight="0.5"
             android:text="@string/com_parse_ui_parse_login_button_label" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/parse_signup_button"
-            style="@style/RobotoButton"
+            style="@style/RobotoButtonOCR"
             android:layout_marginLeft="@dimen/com_parse_ui_small_horizontal_spacing"
             android:layout_weight="0.5"
             android:text="@string/com_parse_ui_parse_signup_button_label" />

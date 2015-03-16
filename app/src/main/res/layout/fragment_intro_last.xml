@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView11"
-        android:src="@drawable/login4"
+        android:src="@drawable/logo"
         android:layout_marginBottom="20dp" />
 
     <com.devspark.robototextview.widget.RobotoTextView
@@ -33,6 +33,7 @@
         app:typeface="roboto_bold"
         android:textSize="19sp"
         android:padding="5dp"
+        android:background="@drawable/custom_button_ocr"
         android:layout_marginBottom="20dp" />
 
 </LinearLayout>

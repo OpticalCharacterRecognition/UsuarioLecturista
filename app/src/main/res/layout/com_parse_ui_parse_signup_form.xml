@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/create_account"
-        style="@style/RobotoButton"
+        style="@style/RobotoButtonOCR"
         android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
         android:text="@string/com_parse_ui_create_account_button_label" />
 

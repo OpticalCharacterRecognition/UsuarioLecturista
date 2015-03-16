@@ -58,6 +58,9 @@
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
 
+    <color name="colorPrimaryOCR">#0074ae</color>
+    <color name="colorPrimaryOCRDarker">#006799</color>
+
     <color name="colorPrimaryJmas100">#B2DFDB</color>
     <color name="colorPrimaryJmas200">#80CBC4</color>
     <color name="colorPrimaryJmas">@color/teal_300</color>

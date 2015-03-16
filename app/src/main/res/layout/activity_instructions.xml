@@ -12,7 +12,7 @@
 
     <com.viewpagerindicator.CirclePageIndicator
         android:id="@+id/indicator"
-        app:fillColor="@color/colorPrimaryJmas"
+        app:fillColor="@color/colorPrimaryOCR"
         app:strokeColor="@color/greyWater"
         android:padding="10dip"
         android:layout_height="wrap_content"

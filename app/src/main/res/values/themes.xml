@@ -9,9 +9,23 @@
     </style>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/colorPrimaryOCR</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryOCRDarker</item>
+        <item name="android:textColorHighlight">@color/white_locky</item>
+        <item name="android:colorAccent">@color/orange_400</item>
+        <item name="android:color">@color/white_locky</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:buttonStyle">@style/ButtonAppTheme</item>
+    </style>
+
+    <style name="AppTheme.BaseJmas" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/colorPrimaryJmas</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkerJmas</item>
         <item name="android:textColorHighlight">@color/white_locky</item>
+        <item name="android:colorAccent">@color/orange_400</item>
         <item name="android:color">@color/white_locky</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>

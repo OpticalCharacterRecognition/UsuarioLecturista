@@ -75,7 +75,7 @@
 
     <style name="TextViewIntroTitle">
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/ocrBlueGrey</item>
+        <item name="android:textColor">@color/colorPrimaryOCR</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="typeface">roboto_bold</item>
@@ -83,7 +83,7 @@
 
     <style name="TextViewServiceChooser">
         <item name="android:textSize">28sp</item>
-        <item name="android:textColor">@color/colorPrimaryJmas</item>
+        <item name="android:textColor">@color/colorPrimaryOCR</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="typeface">roboto_bold</item>
@@ -103,6 +103,13 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="RobotoButtonOCR">
+        <item name="typeface">roboto_medium</item>
+        <item name="android:textColor">@color/whiteWater</item>
+        <item name="android:background">@drawable/custom_button_ocr</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="RobotoCheckBox">
         <item name="typeface">roboto_medium</item>
         <item name="android:textColor">@color/blackWater</item>
@@ -118,6 +125,7 @@
     <style name="RobotoEditTextLogin">
         <item name="typeface">roboto_medium</item>
         <item name="android:textColor">@color/blackWater</item>
+        <item name="android:color">@color/colorPrimaryOCR</item>
         <item name="android:textSize">18sp</item>
     </style>
 

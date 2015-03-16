@@ -60,6 +60,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main_drawer"
+            android:theme="@style/AppTheme.BaseJmas"
             android:screenOrientation="portrait" />
         <activity
             android:name=".IntroActivity"
