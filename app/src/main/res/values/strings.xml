@@ -121,6 +121,7 @@
     <string name="dialogTitleRegisterMeterBE">Registrando el Medidor</string>
     <string name="DialogContentPleaseWait">Por favor espere…</string>
     <string name="DialogTitleCheckingParameters">Verificando Parametros</string>
+    <string name="DialogTitleRegisteringUser">Registrando Usuario</string>
 
     <string name="titleContentServiceChooser">Seleccione su proveedor de servicios</string>
 

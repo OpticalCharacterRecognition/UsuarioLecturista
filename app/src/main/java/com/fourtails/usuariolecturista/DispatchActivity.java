@@ -31,6 +31,6 @@ public class DispatchActivity extends ParseLoginDispatchActivity {
 
     @Override
     protected Class<?> getTargetClass() {
-        return MeterRegistrationActivity.class;
+        return ServiceChooserActivity.class;
     }
 }

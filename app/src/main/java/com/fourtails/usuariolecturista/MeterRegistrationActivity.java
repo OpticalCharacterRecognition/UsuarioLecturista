@@ -12,25 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.activeandroid.query.Select;
 import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUser;
 import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUserResponse;
 import com.appspot.ocr_backend.backend.model.MessagesCreateMeter;
 import com.appspot.ocr_backend.backend.model.MessagesCreateMeterResponse;
-import com.appspot.ocr_backend.backend.model.MessagesCreateUser;
-import com.appspot.ocr_backend.backend.model.MessagesCreateUserResponse;
 import com.appspot.ocr_backend.backend.model.MessagesGetMeters;
 import com.appspot.ocr_backend.backend.model.MessagesGetMetersResponse;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
 import com.fourtails.usuariolecturista.model.Meter;
-import com.fourtails.usuariolecturista.model.RegisteredUser;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,18 +34,15 @@ import butterknife.OnClick;
  */
 public class MeterRegistrationActivity extends ActionBarActivity {
 
-    public static final String PREF_METER_REGISTERED = "meterNotAddedPref";
-
-    private String accountType = "Facebook";
-    private long age;
-    private String email;
-    private String name;
 
     volatile boolean running;
 
     private boolean meterExists = false;
 
     ProgressDialog progressDialog;
+
+    String emailAsUserIdFromActivity;
+
 
     @OnClick(R.id.buttonAddMeter)
     public void clickedButtonAddMeter() {
@@ -67,22 +55,14 @@ public class MeterRegistrationActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isMeterRegistered = prefs.getBoolean(PREF_METER_REGISTERED, false);
-
         running = true;
+        setContentView(R.layout.activity_meter_registration);
+        ButterKnife.inject(this);
 
-        if (isMeterRegistered) {
-            Intent intent = new Intent(this, ServiceChooserActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
-            setContentView(R.layout.activity_meter_registration);
-            ButterKnife.inject(this);
-            fillUserInfoThenRegister();
-        }
+        emailAsUserIdFromActivity = getIntent().getExtras().getString(ServiceChooserActivity.EXRA_USER_EMAIL);
 
+
+        checkIfUserHasMeter();
 
     }
 
@@ -123,7 +103,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetMeters messagesGetMeters = new MessagesGetMeters();
-                    messagesGetMeters.setUser(email);
+                    messagesGetMeters.setUser(emailAsUserIdFromActivity);
 
 
                     MessagesGetMetersResponse response = service.meter().getAllAssignedToUser(messagesGetMeters).execute();
@@ -160,7 +140,8 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                 if (running) {
                     progressDialog.dismiss();
                     if (transactionResponse) {
-                        Intent intent = new Intent(MeterRegistrationActivity.this, ServiceChooserActivity.class);
+                        setSharedPrefJmasMeterRegisteredTrue();
+                        Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                         Log.i("BACKEND", "Good-checkIfUserHasMeter");
@@ -173,124 +154,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
     }
 
-    /**
-     * DatabaseSave
-     * checks where is the user registering from and saves is to the database
-     */
-    private void registerUser() {
-        // we need to check if the user is already in the database
-        RegisteredUser previouslyRegisteredUser = checkForExistingUser(email);
-        if (previouslyRegisteredUser == null) {
-            RegisteredUser registeredUser = new RegisteredUser(
-                    accountType,
-                    age,
-                    email,
-                    name
-            );
-            registeredUser.save();
-        }
-        checkIfUserHasMeter();
-    }
-
-    /**
-     * DatabaseQuery
-     * We check in our database if the user is already registered
-     *
-     * @param emailAsUsername use the email as username
-     * @return a registered user if exists
-     */
-    private RegisteredUser checkForExistingUser(String emailAsUsername) {
-        return new Select()
-                .from(RegisteredUser.class)
-                .where("Email = ?", emailAsUsername)
-                .executeSingle();
-    }
-
-    /**
-     * fill user info into the global variables
-     */
-    private void fillUserInfoThenRegister() {
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        if (ParseFacebookUtils.isLinked(parseUser)) {
-            if (ParseFacebookUtils.getSession().isOpened()) {
-                Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
-                    @Override
-                    public void onCompleted(GraphUser user, Response response) {
-                        if (user != null) {
-                            age = 30L; //user.getBirthday() test this
-                            email = user.getName() + "@test.com";
-                            name = user.getName();
-                            registerUserBackend();
-                        }
-                    }
-                }).executeAsync();
-            }
-        } else { // todo: some of this is dummy data, must change it
-            age = 30L;
-            email = parseUser.getEmail();
-            name = parseUser.getUsername();
-            registerUserBackend();
-        }
-    }
-
-    /**
-     * BackendCall
-     * Registers the user on the backend
-     */
-    private void registerUserBackend() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
-                    Backend service = builder.build();
-
-                    MessagesCreateUser messagesCreateUser = new MessagesCreateUser();
-                    messagesCreateUser.setAccountType(accountType);
-                    messagesCreateUser.setAge(age);
-                    messagesCreateUser.setEmail(email);
-                    messagesCreateUser.setName(name);
-
-                    MessagesCreateUserResponse response = service.user().create(messagesCreateUser).execute();
-
-                    if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
-                        return 1;
-                    } else {
-                        if (response.getError().contains("User email already in platform")) {
-                            return 2;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("golocky", e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                switch (transactionResponse) {
-                    case 1:
-                        registerUser();
-                        Log.i("BACKEND", "Good-registerUserBackend");
-                        break;
-                    case 2:
-                        registerUser();
-                        Log.i("BACKEND", "Good-AlreadyExists-registerUserBackend");
-                        break;
-                    default:
-                        Log.i("BACKEND", "Bad-registerUserBackend");
-                }
-            }
-        }.execute();
-
-    }
 
     /**
      * Registers the meter in the database
@@ -389,7 +252,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
                     MessagesAssignMeterToUser messagesAssignMeterToUser = new MessagesAssignMeterToUser();
                     messagesAssignMeterToUser.setAccountNumber(accountNumber);
-                    messagesAssignMeterToUser.setEmail(email);
+                    messagesAssignMeterToUser.setEmail(emailAsUserIdFromActivity);
 
                     MessagesAssignMeterToUserResponse response = service.meter().assignToUser(messagesAssignMeterToUser).execute();
 
@@ -411,7 +274,8 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     switch (transactionResponse) {
                         case 1:
                             Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
-                            Intent intent = new Intent(MeterRegistrationActivity.this, ServiceChooserActivity.class);
+                            setSharedPrefJmasMeterRegisteredTrue();
+                            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                             break;
@@ -422,6 +286,13 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             }
         }.execute();
 
+    }
+
+    public void setSharedPrefJmasMeterRegisteredTrue() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(ServiceChooserActivity.PREF_METER_JMAS_REGISTERED, true); // there is one meter registered
+        editor.apply();
     }
 
 

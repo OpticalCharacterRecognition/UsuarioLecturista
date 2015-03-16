@@ -169,7 +169,6 @@ public class MainActivity extends ActionBarActivity {
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(IntroActivity.PREF_FIRST_TIME, false); // is no the first time anymore
-        editor.putBoolean(MeterRegistrationActivity.PREF_METER_REGISTERED, true); // there is one meter registered
         editor.apply();
 
         loadImageInBackground();
