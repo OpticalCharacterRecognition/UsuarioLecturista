@@ -34,7 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
-        android:src="@drawable/ic_history_white_24dp"
+        android:src="@drawable/ic_local_atm_white_24dp"
         fab:fab_colorNormal="@color/colorPrimaryJmas"
         fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
         android:transitionName="@string/transitionJmas"
