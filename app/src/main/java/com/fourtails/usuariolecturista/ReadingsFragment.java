@@ -33,7 +33,7 @@ import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.db.chart.view.animation.style.DashAnimation;
-import com.fourtails.usuariolecturista.ocr.CaptureActivity;
+import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -178,8 +178,9 @@ public class ReadingsFragment extends Fragment {
 
     @OnClick(R.id.fabScan)
     public void scanButtonClicked() {
-        Intent ocrCaptureActivity = new Intent(getActivity(), CaptureActivity.class);
-        MainActivity.bus.post(ocrCaptureActivity);
+//        Intent ocrCaptureActivity = new Intent(getActivity(), CaptureActivity.class);
+        Intent cameraActivity = new Intent(getActivity(), CameraScreenActivity.class);
+        MainActivity.bus.post(cameraActivity);
     }
 
     @InjectView(R.id.fabChangeGraph)

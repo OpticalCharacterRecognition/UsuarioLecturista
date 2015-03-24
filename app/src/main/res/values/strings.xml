@@ -97,6 +97,12 @@
     <string name="labelMeterNumber">Numero de contrato</string>
     <string name="btnAdd">Agregar</string>
 
+    <!--Camera-->
+    <string name="no_image">No hay imagen para mostrar</string>
+    <string name="camera_sorry">Lo sentimos, no es posible accesar a la camara en este momento</string>
+    <string name="camera_message_uploading">Subiendo imagen al servidor…</string>
+    <string name="camera_message_upload_finished">Imagen transferida con exito.</string>
+
 
     <string-array name="drop_down_credit_card_type">
         <item>VISA</item>
