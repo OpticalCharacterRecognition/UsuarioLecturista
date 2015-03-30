@@ -24,8 +24,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class CameraScreenActivity extends Activity implements
-        DemoCameraFragment.Contract {
-    DemoCameraFragment frag = null;
+        CameraFragment.Contract {
+    CameraFragment frag = null;
 
 
     @OnClick(R.id.buttonRed)
@@ -54,7 +54,7 @@ public class CameraScreenActivity extends Activity implements
         ButterKnife.inject(this);
 
 
-        frag = (DemoCameraFragment) getFragmentManager().findFragmentById(R.id.camera_preview);
+        frag = (CameraFragment) getFragmentManager().findFragmentById(R.id.camera_preview);
     }
 
     @Override

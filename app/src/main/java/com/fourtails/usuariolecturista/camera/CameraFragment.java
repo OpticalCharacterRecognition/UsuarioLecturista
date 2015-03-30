@@ -27,14 +27,13 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 
-import com.commonsware.cwac.camera.CameraFragment;
 import com.commonsware.cwac.camera.CameraHost;
 import com.commonsware.cwac.camera.CameraUtils;
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 import com.fourtails.usuariolecturista.R;
 
-public class DemoCameraFragment extends CameraFragment implements
+public class CameraFragment extends com.commonsware.cwac.camera.CameraFragment implements
         OnSeekBarChangeListener {
     private static final String KEY_USE_FFC =
             "com.commonsware.cwac.camera.demo.USE_FFC";
@@ -46,8 +45,8 @@ public class DemoCameraFragment extends CameraFragment implements
     public static int kindOfPic = 0;
 
 
-    static DemoCameraFragment newInstance(boolean useFFC) {
-        DemoCameraFragment f = new DemoCameraFragment();
+    static CameraFragment newInstance(boolean useFFC) {
+        CameraFragment f = new CameraFragment();
         Bundle args = new Bundle();
 
         args.putBoolean(KEY_USE_FFC, useFFC);
@@ -202,7 +201,7 @@ public class DemoCameraFragment extends CameraFragment implements
 
             if (doesZoomReallyWork() && parameters.getMaxZoom() > 0) {
                 zoom.setMax(parameters.getMaxZoom());
-                zoom.setOnSeekBarChangeListener(DemoCameraFragment.this);
+                zoom.setOnSeekBarChangeListener(CameraFragment.this);
             } else {
                 zoom.setEnabled(false);
             }

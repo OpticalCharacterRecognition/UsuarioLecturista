@@ -4,7 +4,7 @@
 
     <fragment
         android:id="@+id/camera_preview"
-        android:name="com.fourtails.usuariolecturista.camera.DemoCameraFragment"
+        android:name="com.fourtails.usuariolecturista.camera.CameraFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
