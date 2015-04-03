@@ -37,6 +37,9 @@ import butterknife.OnClick;
  */
 public class ServiceChooserActivity extends Activity {
 
+    private static final String TAG = "ServiceChooserActivity";
+
+
     public static final String PREF_METER_JMAS_REGISTERED = "meterJMASNotAddedPref";
     public static final String EXRA_USER_EMAIL = "userEmailSetAsExtra";
     public static final String EXTRA_SERVICE_TYPE = "extraServiceTypeForApp";
@@ -176,20 +179,24 @@ public class ServiceChooserActivity extends Activity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                if (running) {
-                    progressDialog.dismiss();
-                    switch (transactionResponse) {
-                        case 1:
-                            registerUser();
-                            Log.i("BACKEND", "Good-registerUserBackend");
-                            break;
-                        case 2:
-                            registerUser();
-                            Log.i("BACKEND", "Good-AlreadyExists-registerUserBackend");
-                            break;
-                        default:
-                            Log.i("BACKEND", "Bad-registerUserBackend");
+                if (transactionResponse != null) {
+                    if (running) {
+                        progressDialog.dismiss();
+                        switch (transactionResponse) {
+                            case 1:
+                                registerUser();
+                                Log.i("BACKEND", "Good-registerUserBackend");
+                                break;
+                            case 2:
+                                registerUser();
+                                Log.i("BACKEND", "Good-AlreadyExists-registerUserBackend");
+                                break;
+                            default:
+                                Log.i("BACKEND", "Bad-registerUserBackend");
+                        }
                     }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-registerUserBackend");
                 }
             }
         }.execute();

@@ -32,6 +32,9 @@ android {
 
 repositories {
     maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+    maven {
+        url "https://repo.commonsware.com.s3.amazonaws.com"
+    }
 }
 
 dependencies {
@@ -67,8 +70,12 @@ dependencies {
     compile 'com.google.http-client:google-http-client-android:1.19.0'
     compile 'com.google.code.gson:gson:2.3'
     // Facebook
-    provided 'com.facebook.android:facebook-android-sdk:3.21.1'
+    compile 'com.facebook.android:facebook-android-sdk:3.23.0'
+    // Parse
+    compile 'com.parse.bolts:bolts-android:1.+'
     // GCS
     compile 'com.google.http-client:google-http-client-jackson2:1.19.0'
     compile 'com.google.apis:google-api-services-storage:v1-rev26-1.19.1'
+    // Camera
+    compile 'com.commonsware.cwac:camera:0.6.+'
 }

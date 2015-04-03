@@ -6,6 +6,7 @@
     android:orientation="vertical"
     tools:context="com.fourtails.usuariolecturista.BillsFragment">
 
+
     <android.support.v7.widget.CardView
         android:id="@+id/cardViewBills"
         android:layout_width="match_parent"
@@ -23,7 +24,8 @@
             chart:chart_axisBorderSpacing="0dp"
             chart:chart_axisColor="@color/axis"
             chart:chart_labelColor="@color/label"
-            chart:chart_typeface="Roboto-Regular.ttf" />
+            chart:chart_typeface="Roboto-Regular.ttf"
+            android:padding="5dp" />
     </android.support.v7.widget.CardView>
 
     <com.melnykov.fab.FloatingActionButton
@@ -38,7 +40,7 @@
         fab:fab_colorNormal="@color/colorJmasBlueReadings"
         fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker"
         android:transitionName="@string/transitionReadingsToBills"
-        android:layout_marginBottom="-25dp" />
+        android:layout_marginBottom="-40dp" />
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -71,7 +73,7 @@
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textViewBillingDateBills"
                 style="@style/TextViewMainPage"
-                android:text="26 de Febrero 2015"
+                android:text="26 de Abril 2015"
                 android:textIsSelectable="true" />
 
             <com.devspark.robototextview.widget.RobotoTextView
@@ -83,7 +85,18 @@
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textViewTotalBalanceBills"
                 style="@style/TextViewMainPage"
-                android:text="$100.00" />
+                android:text="" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/textView4"
+                style="@style/TextViewMainPageLabel"
+                android:layout_marginTop="10dp"
+                android:text="@string/billsLabelsLastBillStatus" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/textViewBillsStatus"
+                style="@style/TextViewMainPage"
+                android:text="" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -100,6 +113,14 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="25dp"
         android:layout_marginRight="20dp" />
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewIntroDesc"
+        android:text="@string/billsLabelsNoBillsToShow"
+        android:id="@+id/textViewNoBillsMsg"
+        android:layout_above="@+id/fabChangeGraphBills"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="48dp" />
 
 
 </RelativeLayout>

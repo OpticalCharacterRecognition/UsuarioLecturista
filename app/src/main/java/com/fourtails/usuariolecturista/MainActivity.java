@@ -2,6 +2,7 @@ package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,18 +35,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.appspot.ocr_backend.backend.Backend;
-import com.appspot.ocr_backend.backend.model.MessagesNewReading;
-import com.appspot.ocr_backend.backend.model.MessagesNewReadingResponse;
+import com.appspot.ocr_backend.backend.model.MessagesBill;
+import com.appspot.ocr_backend.backend.model.MessagesGetBills;
+import com.appspot.ocr_backend.backend.model.MessagesGetBillsResponse;
+import com.appspot.ocr_backend.backend.model.MessagesGetReadings;
+import com.appspot.ocr_backend.backend.model.MessagesGetReadingsResponse;
+import com.appspot.ocr_backend.backend.model.MessagesReading;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.fourtails.usuariolecturista.model.ChartBill;
 import com.fourtails.usuariolecturista.model.ChartReading;
 import com.fourtails.usuariolecturista.model.CreditCard;
 import com.fourtails.usuariolecturista.model.Meter;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
+import com.fourtails.usuariolecturista.utilities.CheckNetwork;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -59,6 +68,7 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.storage.StorageScopes;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
@@ -76,13 +86,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import static com.fourtails.usuariolecturista.LoginFragment.PREF_FACEBOOK_PROFILE_NAME;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -135,6 +142,7 @@ public class MainActivity extends ActionBarActivity {
 
     public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
+    ProgressDialog progressDialog;
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("AppCompatMethod")
@@ -164,9 +172,6 @@ public class MainActivity extends ActionBarActivity {
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //String facebookId = prefs.getString(PREF_FACEBOOK_PROFILE_ID, "");
-        String facebookName = prefs.getString(PREF_FACEBOOK_PROFILE_NAME, "");
-
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(IntroActivity.PREF_FIRST_TIME, false); // is no the first time anymore
         editor.apply();
@@ -223,10 +228,9 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            createDummyReadingsForThisMonth();
-            getReadingsForThisMonth();
             displayView(0);
         }
+        getReadingsFromBackend();
 
     }
 
@@ -235,46 +239,24 @@ public class MainActivity extends ActionBarActivity {
      */
     private void setUpToolBar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Usuario Lecturista");
+        getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_login));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         // enabling action bar app icon and behaving it as toggle button
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    /**********************************************************************************************
-     *                                                                               Otto bus calls
-     **********************************************************************************************/
-
     /**
-     * This is the reading coming from CaptureActivity
-     *
-     * @param reading from the meter
+     * *******************************************************************************************
+     * Otto bus calls
+     * ********************************************************************************************
      */
+
     @Subscribe
-    public void readingReceived(Integer reading) {
-        Toast.makeText(this, reading.toString(), Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "READINGGGGGGGGGGGGGGGGGGGGGGG " + reading.toString());
-        Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
-        ChartReading chartReading = new ChartReading(
-                time.monthDay,
-                time.month,
-                time.year,
-                reading
-        );
-        //saveReadingToBackend(chartReading);
+    public void imageCaptured(byte[] image) {
+        uploadFileToGCS(image);
     }
 
-    /**
-     * Test test test
-     *
-     * @param l
-     */
-    @Subscribe
-    public void testThing(Long l) {
-        uploadFileToGCS();
-    }
 
     /**
      * DatabaseSave
@@ -412,43 +394,6 @@ public class MainActivity extends ActionBarActivity {
         return new Select().from(Meter.class).executeSingle();
     }
 
-    /**
-     * DatabaseQuery
-     * gets all the readings for this month
-     *
-     * @return >_>
-     */
-    public static List<ChartReading> getReadingsForThisMonth() {
-        Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
-        return new Select()
-                .from(ChartReading.class)
-                .where("month = ?", time.month)
-                .orderBy("day ASC")
-                .execute();
-    }
-
-    /**
-     * DatabaseSave
-     * testing purposes only
-     * creates random dummy readings, duh
-     */
-    public void createDummyReadingsForThisMonth() {
-        Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
-        for (int i = 0; i < 10; i++) {
-            Random r = new Random();
-            int randomDay = r.nextInt(28 - 1 + 1) + 1;
-            ChartReading chartReading = new ChartReading(
-                    randomDay,
-                    time.month,
-                    time.year,
-                    i + randomDay
-            );
-            chartReading.save();
-        }
-    }
-
 
     /**
      * Slide menu item click listener
@@ -550,9 +495,16 @@ public class MainActivity extends ActionBarActivity {
     /**
      * BACKEND call to upload a picture from the camera to Google Cloud Storage
      * TODO: SECURITY PROBLEM remove the key from assets, find a way to do it
+     *
+     * @param image
      */
-    public void uploadFileToGCS() {
+    public void uploadFileToGCS(final byte[] image) {
         new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected void onPreExecute() {
+                Toast.makeText(context, getString(R.string.camera_message_uploading), Toast.LENGTH_SHORT).show();
+            }
+
             @Override
             protected Integer doInBackground(Void... params) {
                 try {
@@ -579,12 +531,7 @@ public class MainActivity extends ActionBarActivity {
 
                     GenericUrl url = new GenericUrl(URI);
 
-                    // byte array holds the data, in this case the image i want to upload in bytes.
-                    Bitmap bm = savedBitmap.copy(Bitmap.Config.ARGB_8888, false);
-
-                    byte[] byteArray = bitmapToByteArray(bm);
-
-                    HttpContent contentSend = new ByteArrayContent("image/jpeg", byteArray);
+                    HttpContent contentSend = new ByteArrayContent("image/jpeg", image);
 
                     HttpRequest putRequest = requestFactory.buildPutRequest(url, contentSend);
 
@@ -604,14 +551,19 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                switch (transactionResponse) {
-                    case 1:
-                        Log.i("BACKEND", "Good-saveReadingToBackend");
-                        break;
-                    default:
-                        Log.i("BACKEND", "Bad-saveReadingToBackend");
-                        Toast.makeText(context, getString(R.string.toastImageUploadError), Toast.LENGTH_SHORT).show();
+                if (transactionResponse != null) {
+                    switch (transactionResponse) {
+                        case 1:
+                            Log.i("BACKEND", "Good-uploadFileToGCS");
+                            Toast.makeText(context, getString(R.string.camera_message_upload_finished), Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-uploadFileToGCS");
+                            Toast.makeText(context, getString(R.string.toastImageUploadError), Toast.LENGTH_SHORT).show();
 
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-uploadFileToGCS");
                 }
             }
         }.execute();
@@ -660,32 +612,84 @@ public class MainActivity extends ActionBarActivity {
         return baos.toByteArray();
     }
 
+//    /**
+//     * DatabaseSave
+//     * tries to save a reading to the backend
+//     *
+//     * @param chartReading the last reading from the camera
+//     */
+//    private void saveReadingToBackend(final ChartReading chartReading) {
+//        new AsyncTask<Void, Void, Integer>() {
+//            @Override
+//            protected Integer doInBackground(Void... params) {
+//                try {
+//
+//                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+//                    Backend service = builder.build();
+//
+//                    MessagesNewReading messagesNewReading = new MessagesNewReading();
+//                    messagesNewReading.setAccountNumber(checkForSavedMeter().accountNumber);
+//                    //messagesNewReading.setImageName((long) chartReading.value);
+//
+//                    MessagesNewReadingResponse response = service.reading().newImage(messagesNewReading).execute();
+//
+//                    if (response.getOk()) {
+//                        Log.i("BACKEND", response.toPrettyString());
+//                        return 1;
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Log.e(TAG, e.getMessage());
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Integer transactionResponse) {
+//                if (transactionResponse != null) {
+//                    switch (transactionResponse) {
+//                        case 1:
+//                            chartReading.save();
+//                            Log.i("BACKEND", "Good-saveReadingToBackend");
+//                            break;
+//                        default:
+//                            Log.i("BACKEND", "Bad-saveReadingToBackend");
+//                    }
+//                } else {
+//                    Log.e(TAG, "BackendError - Unknown-saveReadingToBackend");
+//                }
+//            }
+//        }.execute();
+//    }
+
     /**
      * DatabaseSave
-     * tries to save a reading to the backend
-     *
-     * @param chartReading the last reading from the camera
+     * BackendCall
+     * tries to get the readings from the backend
+     * onPostExecute calls for the bills on backend
+     * TODO: ask for a period of time on the backend, we can't just go and get all the readings ever
      */
-    private void saveReadingToBackend(final ChartReading chartReading) {
+    private void getReadingsFromBackend() {
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
                 try {
-
+                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
+                        return 99;
+                    }
                     // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
+                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
                     Backend service = builder.build();
 
-                    MessagesNewReading messagesNewReading = new MessagesNewReading();
-                    messagesNewReading.setAccountNumber(checkForSavedMeter().accountNumber);
-                    //messagesNewReading.setImageName((long) chartReading.value);
+                    MessagesGetReadings messagesGetReadings = new MessagesGetReadings();
+                    messagesGetReadings.setAccountNumber("1");
 
-                    MessagesNewReadingResponse response = service.reading().newImage(messagesNewReading).execute();
+                    MessagesGetReadingsResponse response = service.reading().get(messagesGetReadings).execute();
 
                     if (response.getOk()) {
+                        List<MessagesReading> readingsArray = response.getReadings();
+                        eraseReadingsDataFromLocalDB();
+                        populateDBWithReadings(readingsArray);
                         Log.i("BACKEND", response.toPrettyString());
                         return 1;
                     }
@@ -698,16 +702,263 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                switch (transactionResponse) {
-                    case 1:
-                        chartReading.save();
-                        Log.i("BACKEND", "Good-saveReadingToBackend");
-                        break;
-                    default:
-                        Log.i("BACKEND", "Bad-saveReadingToBackend");
+                if (transactionResponse != null) {
+                    switch (transactionResponse) {
+                        case 1:
+                            getPaidBillsFromBackend();
+                            Log.i("BACKEND", "Good-getReadingsFromBackend");
+                            break;
+                        case 99:
+                            Log.i("ERROR", "NO INTERNET");
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-getReadingsFromBackend");
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-getReadingsFromBackend");
                 }
             }
         }.execute();
+    }
+
+    /**
+     * DatabaseSave
+     * BackendCall
+     * tries to get the bills from the backend
+     * TODO: ask for all the readings on the backend, no matter the status.
+     */
+    private void getPaidBillsFromBackend() {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
+                        return 99;
+                    }
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+                    Backend service = builder.build();
+
+                    MessagesGetBills messagesGetBills = new MessagesGetBills();
+                    messagesGetBills.setAccountNumber("1");
+                    messagesGetBills.setStatus("Paid");
+
+                    MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
+
+                    if (response.getOk()) {
+                        List<MessagesBill> billsArray = response.getBills();
+                        eraseBillsDataFromLocalDB();
+                        populateDBWithBills(billsArray);
+                        Log.i("BACKEND", response.toPrettyString());
+                        return 1;
+                    } else {
+                        if (response.getError().contains("No Bills found under specified criteria")) {
+                            eraseBillsDataFromLocalDB();
+                            return 2;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                if (transactionResponse != null) {
+                    switch (transactionResponse) {
+                        case 1:
+                            getUnPaidBillsFromBackend();
+                            Log.i("BACKEND", "Good-getPaidBillsFromBackend");
+                            break;
+                        case 99:
+                            Log.i("ERROR", "NO INTERNET");
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-getPaidBillsFromBackend");
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-getPaidBillsFromBackend");
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * DatabaseSave
+     * BackendCall
+     * tries to get the bills from the backend
+     * TODO: ask for all the readings on the backend, no matter the status.
+     */
+    private void getUnPaidBillsFromBackend() {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
+                        return 99;
+                    }
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+                    Backend service = builder.build();
+
+                    MessagesGetBills messagesGetBills = new MessagesGetBills();
+                    messagesGetBills.setAccountNumber("1");
+                    messagesGetBills.setStatus("Unpaid");
+
+                    MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
+
+                    if (response.getOk()) {
+                        List<MessagesBill> billsArray = response.getBills();
+                        populateDBWithBills(billsArray);
+                        Log.i("BACKEND", response.toPrettyString());
+                        return 1;
+                    } else {
+                        if (response.getError().contains("No Bills found under specified criteria")) {
+                            return 2;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                if (transactionResponse != null) {
+                    switch (transactionResponse) {
+                        case 1:
+                            ReadingsFragment.readingsBus.post(1);
+                            Log.i("BACKEND", "Good-getUnPaidBillsFromBackend");
+                            break;
+                        case 2:
+                            ReadingsFragment.readingsBus.post(2);
+                            Log.i("BACKEND", "Good-NoBills-getUnPaidBillsFromBackend");
+                            break;
+                        case 99:
+                            ReadingsFragment.readingsBus.post(2);
+                            Log.i("ERROR", "NO INTERNET");
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-getUnPaidBillsFromBackend");
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-getUnPaidBillsFromBackend");
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * Database save
+     * This will attempt to save the readings from the backend to the
+     *
+     * @param readingsArray they array from the backend
+     */
+    private void populateDBWithReadings(List<MessagesReading> readingsArray) {
+        Time time = new Time();
+
+        ActiveAndroid.beginTransaction();
+        try {
+            for (MessagesReading readings : readingsArray) {
+                DateTime dateTime = readings.getCreationDate();
+                time.set(dateTime.getValue());
+
+                ChartReading chartReading = new ChartReading(
+                        time.monthDay,
+                        time.month,
+                        time.year,
+                        readings.getCreationDate(),
+                        readings.getMeasure(),
+                        readings.getUrlsafeKey(),
+                        readings.getAccountNumber());
+                chartReading.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, "there was an error saving to the database, most likely the data doesn't have" +
+                    "the needed fields from the database or they are null");
+        } finally {
+            ActiveAndroid.endTransaction();
+        }
+    }
+
+    /**
+     * same as readings
+     *
+     * @param billsArray from the backend
+     */
+    private void populateDBWithBills(List<MessagesBill> billsArray) {
+        Time time = new Time();
+
+        ActiveAndroid.beginTransaction();
+        try {
+            for (MessagesBill bills : billsArray) {
+                DateTime dateTime = bills.getCreationDate();
+                time.set(dateTime.getValue());
+
+                ChartBill chartBill = new ChartBill(
+                        time.monthDay,
+                        time.month,
+                        time.year,
+                        bills.getCreationDate(),
+                        bills.getAmount(),
+                        bills.getBalance(),
+                        bills.getUrlsafeKey(),
+                        bills.getAccountNumber(),
+                        bills.getStatus());
+                chartBill.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, "there was an error saving to the database, most likely the data doesn't have" +
+                    "the needed fields from the database or they are null");
+        } finally {
+            ActiveAndroid.endTransaction();
+        }
+
+    }
+
+
+    /**
+     * Database erase
+     * Erases the db so we don't have to check if the reading already exists and don't put duplicates
+     */
+    private void eraseReadingsDataFromLocalDB() {
+        List<ChartReading> tempList = new Select().from(ChartReading.class).execute();
+        if (tempList != null && tempList.size() > 0) {
+            ActiveAndroid.beginTransaction();
+            try {
+                new Delete().from(ChartReading.class).execute();
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                Log.e(TAG, "error deleting existing db");
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+        }
+
+    }
+
+    /**
+     * see top
+     */
+    private void eraseBillsDataFromLocalDB() {
+        List<ChartReading> tempList = new Select().from(ChartBill.class).execute();
+        if (tempList != null && tempList.size() > 0) {
+            ActiveAndroid.beginTransaction();
+            try {
+                new Delete().from(ChartBill.class).execute();
+                ActiveAndroid.setTransactionSuccessful();
+            } catch (Exception e) {
+                Log.e(TAG, "error deleting existing db");
+            } finally {
+                ActiveAndroid.endTransaction();
+            }
+        }
     }
 
     /**

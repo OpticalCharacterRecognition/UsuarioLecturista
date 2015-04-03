@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
+import android.text.format.Time;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.activeandroid.query.Select;
 import com.db.chart.Tools;
 import com.db.chart.listener.OnEntryClickListener;
 import com.db.chart.model.LineSet;
@@ -34,10 +36,11 @@ import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.db.chart.view.animation.style.DashAnimation;
+import com.fourtails.usuariolecturista.model.ChartBill;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -87,10 +90,6 @@ public class BillsFragment extends Fragment {
     /**
      * Line
      */
-    private static int LINE_MAX = 100;
-    private static int LINE_MIN = 0;
-    private final static float[][] lineValues = {{0, 25f, 26f, 39f, 42f, 0f, 70f},
-            {0, 25f, 26f, 39f, 42f, 60f}};
     //private static LineChartView mLineChart;
     private Paint mLineGridPaint;
     private TextView mLineTooltip;
@@ -117,20 +116,6 @@ public class BillsFragment extends Fragment {
 
     private Handler mHandler;
 
-
-    /**
-     * This will run the update after 500ms, it fires after a dismiss on the chart
-     */
-    private final Runnable mExitEndAction = new Runnable() {
-        @Override
-        public void run() {
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    updateChart();
-                }
-            }, 500);
-        }
-    };
 
     /**
      * This will run the update after 50ms, it fires after a dismiss on the chart and will attempt
@@ -164,8 +149,6 @@ public class BillsFragment extends Fragment {
 
     private boolean isAnimationRunning = false;
 
-    private boolean mNewInstance;
-
     @InjectView(R.id.lineChartBills)
     LineChartView mLineChart;
 
@@ -184,6 +167,17 @@ public class BillsFragment extends Fragment {
 
     @InjectView(R.id.cardViewBillsBottom)
     CardView sharedCardView;
+
+    @InjectView(R.id.textViewNoBillsMsg)
+    TextView textViewNoBills;
+
+    @InjectView(R.id.textViewTotalBalanceBills)
+    TextView textViewTotalBalanceBills;
+
+    @InjectView(R.id.textViewBillsStatus)
+    TextView textViewBillsStatus;
+
+    private float[] chartValues;
 
     @OnClick(R.id.fabPay)
     public void payButtonClicked() {
@@ -224,8 +218,9 @@ public class BillsFragment extends Fragment {
 
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
+        textViewNoBills.setVisibility(View.GONE);
+
         /** Chart things **/
-        mNewInstance = false;
         mCurrOverlapFactor = .5f;
         mCurrEasing = new QuintEaseOut();
         mCurrStartX = -1;
@@ -247,7 +242,7 @@ public class BillsFragment extends Fragment {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateLineChart();
+                checkBillsFromLocalDB();
             }
         }, 500);
 
@@ -261,6 +256,75 @@ public class BillsFragment extends Fragment {
         super.onResume();
         // Set title
         MainActivity.bus.post(getResources().getString(R.string.toolbarTitleBills));
+    }
+
+    /**
+     * TODO: get the unpaid bills in a different array
+     */
+    public void checkBillsFromLocalDB() {
+        List<ChartBill> bills = getBillsForThisMonthRange(2);
+        if (bills != null) {
+            Collections.reverse(bills); // The list comes with the latest value first, so for chart purposes we reverse it
+            double highestReading = 0;
+            double lowestReading = Integer.MAX_VALUE;
+            List<String> xAxisDays = new ArrayList<>();
+            chartValues = new float[bills.size()];
+            String lastReadingDate = "";
+            String lastBillStatus = "";
+            double lastBillAmount = 0.0;
+            int j = 0;
+            for (ChartBill i : bills) {
+                if (i.amount > highestReading) {
+                    highestReading = i.amount;
+                }
+                if (i.amount < lowestReading) {
+                    lowestReading = i.amount;
+                }
+                xAxisDays.add(String.valueOf(i.day + 1) + "/" + String.valueOf(i.month + 1));
+                chartValues[j++] = (float) i.amount;
+                lastReadingDate = i.day + " / " + i.month + " / " + i.year;
+                lastBillStatus = i.status;
+                lastBillAmount = i.amount;
+            }
+            String[] xAxisDaysArray = xAxisDays.toArray(new String[xAxisDays.size()]);
+            updateUi(lastBillAmount, lastBillStatus);
+            updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
+            //fabChangeGraph.setEnabled(true);
+
+        } else {
+            lineChartCardViewBills.setVisibility(View.GONE);
+            textViewNoBills.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateUi(double lastBillAmount, String lastBillStatus) {
+        textViewTotalBalanceBills.setText("$" + String.valueOf(lastBillAmount));
+        String statusTranslate = "";
+        if (lastBillStatus.equalsIgnoreCase("Paid")) {
+            statusTranslate = "Pagada";
+        } else if (lastBillStatus.equalsIgnoreCase("UnPaid")) {
+            statusTranslate = "No Pagada";
+        } else {
+            statusTranslate = "Desconocido";
+        }
+        textViewBillsStatus.setText(statusTranslate);
+        mLineChart.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * DatabaseQuery
+     * gets all the readings for this month range
+     *
+     * @return >_>
+     */
+    public static List<ChartBill> getBillsForThisMonthRange(int range) {
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
+        return new Select()
+                .from(ChartBill.class)
+//                .where("month >= ?", time.month - range)
+//                .and("year = ?", time.year)
+                .execute();
     }
 
     /**
@@ -325,7 +389,7 @@ public class BillsFragment extends Fragment {
     private void showLineTooltip(int setIndex, int entryIndex, Rect rect) {
 
         mLineTooltip = (TextView) getActivity().getLayoutInflater().inflate(R.layout.circular_tooltip, null);
-        mLineTooltip.setText(Integer.toString((int) lineValues[setIndex][entryIndex]));
+        mLineTooltip.setText(Integer.toString((int) chartValues[entryIndex]));
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) Tools.fromDpToPx(35), (int) Tools.fromDpToPx(35));
         layoutParams.leftMargin = rect.centerX() - layoutParams.width / 2;
@@ -387,28 +451,20 @@ public class BillsFragment extends Fragment {
         mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.5f));
     }
 
-    private void updateLineChart() {
+    private void updateLineChart(String[] xAxisDaysArray, float[] chartValues, double lowestReading, double highestReading) {
 
+        int spacing = (int) ((highestReading - lowestReading) / xAxisDaysArray.length);
+        if (spacing == 0) {
+            spacing = 1;
+        }
         mLineChart.reset();
-
-//        LineSet dataSet = new LineSet(getDaysToShowOnCalendar(), lineValues[1]);
-//        //dataSet.addPoints(lineLabels, lineValues[0]);
-//        dataSet.setDotsColor(this.getResources().getColor(R.color.line_bg))
-//                .setDotsRadius(Tools.fromDpToPx(5))
-//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                .setDotsStrokeColor(this.getResources().getColor(R.color.line))
-//                .setColor(this.getResources().getColor(R.color.line))
-//                .setThickness(Tools.fromDpToPx(3))
-//                .beginAt(1).endAt(getDaysToShowOnCalendar().length - 1);
-//        mLineChart.addData(dataSet);
 
         // this will change the dots color making the "Unpaid" ones in red
         LineSet dataSet = new LineSet();
 
-        String[] days = getDaysToShowOnCalendar();
         Point point;
-        for (int i = 0; i < 5; i++) {
-            point = new Point(days[i], lineValues[1][i]);
+        for (int i = 0; i < xAxisDaysArray.length; i++) {
+            point = new Point(xAxisDaysArray[i], chartValues[i]);
             if (i > 2) {
                 point.setColor(this.getResources().getColor(R.color.red_300));
             } else {
@@ -421,24 +477,10 @@ public class BillsFragment extends Fragment {
                 .setDotsStrokeColor(this.getResources().getColor(R.color.line))
                 .setThickness(Tools.fromDpToPx(3))
                 .setColor(this.getResources().getColor(R.color.whiteWater))
-                .setDashed(true)
-                .beginAt(1).endAt(getDaysToShowOnCalendar().length - 1);
+                .setDashed(true);
         mLineChart.addData(dataSet);
 
 
-
-        //dataSet.addPoint("5", 50f);
-
-//        dataSet.setLineColor(this.getResources().getColor(R.color.line))
-//                .setLineThickness(Tools.fromDpToPx(3))
-//                .setSmooth(true)
-//                .setDashed(true)
-//                .setDots(true)
-//                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
-//                .setDotsRadius(Tools.fromDpToPx(5))
-//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
-//        mLineChart.addData(dataSet);
 
         mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
                 .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
@@ -446,75 +488,17 @@ public class BillsFragment extends Fragment {
                 .setXLabels(XController.LabelPosition.OUTSIDE)
                 .setYAxis(false)
                 .setYLabels(YController.LabelPosition.OUTSIDE)
-                .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
+                .setAxisBorderValues((int) lowestReading, (int) highestReading, spacing)
                 .show(getAnimation(true).setEndAction(null))
-        //.show()
         ;
 
         mLineChart.animateSet(0, new DashAnimation());
-    }
-
-    /**
-     * we need to know when the day ends this month
-     *
-     * @return an string array of the days
-     */
-    public String[] getDaysToShowOnCalendar() {
-        List<String> days = new ArrayList<>();
-        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-        int divider = maxDay / 5;
-        for (int i = 1; i < maxDay; i = i + divider) {
-            days.add(String.valueOf(i));
-        }
-        days.add(String.valueOf(maxDay));
-
-        String[] stringArray = days.toArray(new String[days.size()]);
-
-        return stringArray;
     }
 
     private void addPoint() {
         float[] thing = {0f, 25f, 26f, 39f, 42f, 30f, 100f};
         mLineChart.updateValues(0, thing);
         mLineChart.notifyDataUpdate();
-
-    }
-
-    private void hideChart() {
-        mLineChart.dismiss(getAnimation(false).setEndAction(mExitEndAction));
-    }
-
-    /**
-     * This will be executed by mExitEndAction because we first need to show a dismiss animation
-     */
-    private void updateChart() {
-        mLineChart.reset();
-        float[] newlineValues = {0, 25f, 26f, 39f, 42f, 30f, 30f};
-        String[] newLabels = {"1", "7", "13", "19", "25", "30", "5"};
-        LineSet dataSet = new LineSet(newLabels, newlineValues);
-
-        dataSet.setColor(this.getResources().getColor(R.color.line))
-                .setThickness(Tools.fromDpToPx(3))
-                .setSmooth(true)
-                .setDashed(true)
-                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
-                .setDotsRadius(Tools.fromDpToPx(5))
-                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
-        mLineChart.addData(dataSet);
-
-        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
-                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
-                .setXAxis(false)
-                .setXLabels(XController.LabelPosition.OUTSIDE)
-                .setYAxis(false)
-                .setYLabels(YController.LabelPosition.OUTSIDE)
-                .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
-                .show(getAnimation(true).setEndAction(mAnimatePoint));
-        mLineChart.animateSet(0, new DashAnimation());
-
-        //addPoint();
-
 
     }
 

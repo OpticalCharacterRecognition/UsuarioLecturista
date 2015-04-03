@@ -46,22 +46,25 @@
 
     <!-- Readings -->
     <string name="toolbarTitleReadings">Lecturas</string>
-    <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el dia:</string>
-    <string name="readingsLabelsTotalAmount">Litros consumidos:</string>
+    <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el día:</string>
+    <string name="readingsLabelsTotalAmount">Litros consumidos este periodo:</string>
     <string name="readingsLabelsLimitDate">Fecha Limite:</string>
+    <string name="readingsLabelsNoReadingsToShow">No hay lecturas para mostrar</string>
 
     <!--Bills-->
     <string name="toolbarTitleBills">Facturas</string>
     <string name="billsLabelsLastBillAmount">Total ultima factura:</string>
+    <string name="billsLabelsLastBillStatus">Estado:</string>
     <string name="billsLabelsSomething">3</string>
+    <string name="billsLabelsNoBillsToShow">No hay facturas para mostrar</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- PayOptions -->
     <string name="textAddCreditCard">Agregar tarjeta</string>
-    <string name="labelPayInOxxo">Pague en el Oxxo con este codigo de barras</string>
-    <string name="labelPaymentOptionDesc">Seleccione una opcion para pagar:</string>
+    <string name="labelPayInOxxo">Pague en el Oxxo con este código de barras</string>
+    <string name="labelPaymentOptionDesc">Seleccione una opción para pagar:</string>
     <string name="toolbarTitlePayOptions">Opciones de Pago</string>
 
     <!-- Add Credit Card -->
@@ -69,9 +72,9 @@
     <string name="labelCreditCardNumber">Numero de Tarjeta</string>
     <string name="labelNameOnCreditCard">Nombre que aparece en la Tarjeta</string>
     <string name="labelSecurityCode">CCV</string>
-    <string name="labelExpirationDate">Fecha de Expiracion</string>
+    <string name="labelExpirationDate">Fecha de Expiración</string>
     <string name="labelButtonAddCard">Agregar</string>
-    <string name="labelCheckBoxAgreedWithCCTAC">Estoy de acuerdo con los terminos y condiciones</string>
+    <string name="labelCheckBoxAgreedWithCCTAC">Estoy de acuerdo con los términos y condiciones</string>
     <string name="toolbarTitleAddCreditCard">Agregar Tarjeta</string>
 
     <!-- Pay Fragment -->
@@ -84,7 +87,7 @@
 
     <!-- Notifications fragment -->
     <string name="toolbarTitleNotificationsFragment">Notificaciones</string>
-    <string name="infoNotificationsFragmentSwipe">Desliza para eliminar la notificacion</string>
+    <string name="infoNotificationsFragmentSwipe">Desliza para eliminar la notificación</string>
 
     <!-- Contact fragment -->
     <string name="toolbarTitleContactFragment">Contacto</string>
@@ -99,9 +102,9 @@
 
     <!--Camera-->
     <string name="no_image">No hay imagen para mostrar</string>
-    <string name="camera_sorry">Lo sentimos, no es posible accesar a la camara en este momento</string>
+    <string name="camera_sorry">Lo sentimos, no es posible accesar a la cámara en este momento</string>
     <string name="camera_message_uploading">Subiendo imagen al servidor…</string>
-    <string name="camera_message_upload_finished">Imagen transferida con exito.</string>
+    <string name="camera_message_upload_finished">Imagen transferida con éxito.</string>
 
 
     <string-array name="drop_down_credit_card_type">
@@ -113,20 +116,20 @@
     <!--Intro-->
     <string name="title_activity_instructions">InstructionsActivity</string>
     <string name="intro_welcome_title">Te damos la bienvenida!</string>
-    <string name="intro_welcome_desc">Desliza para obtener informacion acerca de la aplicacion.</string>
+    <string name="intro_welcome_desc">Desliza para obtener información acerca de la aplicación.</string>
     <string name="intro_meter_title">Consulta tu consumo actual tomando foto de tu medidor.</string>
     <string name="intro_pay_title">Paga tu recibo en linea.</string>
-    <string name="intro_promotion_title">Obten promociones exclusivas como descuentos al prepagar</string>
+    <string name="intro_promotion_title">Obtén promociones exclusivas como descuentos al pre-pagar</string>
     <string name="intro_final_title">Ahorra tiempo y dinero</string>
     <string name="intro_final_desc">No publicaremos nada sin tu consentimiento</string>
     <string name="btn_facebook_intro">Registrate con Facebook</string>
     <string name="btn_register_intro">Registrate</string>
 
-    <string name="buttonLabelSettingsLogOut">Terminar Session</string>
+    <string name="buttonLabelSettingsLogOut">Terminar Sesión</string>
     <string name="title_activity_meter_registration">MeterRegistrationActivity</string>
     <string name="dialogTitleRegisterMeterBE">Registrando el Medidor</string>
     <string name="DialogContentPleaseWait">Por favor espere…</string>
-    <string name="DialogTitleCheckingParameters">Verificando Parametros</string>
+    <string name="DialogTitleCheckingParameters">Verificando Parámetros</string>
     <string name="DialogTitleRegisteringUser">Registrando Usuario</string>
 
     <string name="titleContentServiceChooser">Seleccione su proveedor de servicios</string>

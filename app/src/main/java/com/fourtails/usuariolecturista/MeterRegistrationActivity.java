@@ -34,6 +34,8 @@ import butterknife.OnClick;
  */
 public class MeterRegistrationActivity extends ActionBarActivity {
 
+    private static final String TAG = "MeterRegistration";
+
 
     volatile boolean running;
 
@@ -80,7 +82,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
      * BackendCall
      * checks if the user already has a meter linked to it
      *
-     * @return true if it does then it saves it to the database, else it returns false so the app asks for it
      */
     private void checkIfUserHasMeter() {
         new AsyncTask<Void, Void, Boolean>() {
@@ -137,17 +138,21 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Boolean transactionResponse) {
-                if (running) {
-                    progressDialog.dismiss();
-                    if (transactionResponse) {
-                        setSharedPrefJmasMeterRegisteredTrue();
-                        Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        Log.i("BACKEND", "Good-checkIfUserHasMeter");
-                    } else {
-                        Log.i("BACKEND", "Bad-checkIfUserHasMeter");
+                if (transactionResponse != null) {
+                    if (running) {
+                        progressDialog.dismiss();
+                        if (transactionResponse) {
+                            setSharedPrefJmasMeterRegisteredTrue();
+                            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            Log.i("BACKEND", "Good-checkIfUserHasMeter");
+                        } else {
+                            Log.i("BACKEND", "Bad-checkIfUserHasMeter");
+                        }
                     }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-checkIfUserHasMeter");
                 }
             }
         }.execute();
@@ -196,8 +201,6 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
                     MessagesCreateMeter messagesCreateMeter = new MessagesCreateMeter();
                     messagesCreateMeter.setAccountNumber(meter.accountNumber);
-                    messagesCreateMeter.setBalance(meter.balance);
-                    messagesCreateMeter.setModel(meter.modelType);
 
                     MessagesCreateMeterResponse response = service.meter().create(messagesCreateMeter).execute();
 
@@ -214,17 +217,20 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                if (running) {
-                    switch (transactionResponse) {
-                        case 1:
-                            Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
-                            meter.save();
-                            assignMeterToUserBackend(meter.accountNumber);
-                            break;
-                        default:
-                            Log.i("BACKEND-registerMeter", "Bad-registerMeterBackend");
+                if (transactionResponse != null) {
+                    if (running) {
+                        switch (transactionResponse) {
+                            case 1:
+                                Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
+                                meter.save();
+                                assignMeterToUserBackend(meter.accountNumber);
+                                break;
+                            default:
+                                Log.i("BACKEND-registerMeter", "Bad-registerMeterBackend");
+                        }
+                    } else {
+                        Log.e(TAG, "BackendError - Unknown-registerMeterBackend");
                     }
-
                 }
             }
         }.execute();
@@ -269,19 +275,25 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Integer transactionResponse) {
-                if (running) {
-                    progressDialog.dismiss();
-                    switch (transactionResponse) {
-                        case 1:
-                            Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
-                            setSharedPrefJmasMeterRegisteredTrue();
-                            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                            break;
-                        default:
-                            Log.i("BACKEND-assignMeter", "Bad-assignMeterToUserBackend");
+
+                if (transactionResponse != null) {
+
+                    if (running) {
+                        progressDialog.dismiss();
+                        switch (transactionResponse) {
+                            case 1:
+                                Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
+                                setSharedPrefJmasMeterRegisteredTrue();
+                                Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                                break;
+                            default:
+                                Log.i("BACKEND-assignMeter", "Bad-assignMeterToUserBackend");
+                        }
                     }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-assignMeterToUserBackend");
                 }
             }
         }.execute();

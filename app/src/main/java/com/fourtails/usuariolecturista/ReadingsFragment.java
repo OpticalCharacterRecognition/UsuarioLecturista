@@ -1,5 +1,7 @@
 package com.fourtails.usuariolecturista;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -13,6 +15,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
+import android.text.format.Time;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +23,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.activeandroid.query.Select;
 import com.db.chart.Tools;
 import com.db.chart.listener.OnEntryClickListener;
 import com.db.chart.model.LineSet;
@@ -34,10 +39,15 @@ import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
+import com.fourtails.usuariolecturista.model.ChartReading;
 import com.melnykov.fab.FloatingActionButton;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -52,6 +62,8 @@ import butterknife.OnClick;
 public class ReadingsFragment extends Fragment {
 
     public static final String TAG = "ReadingsFragment";
+
+    public static Bus readingsBus;
 
     /**
      * Charts ***********************************************************************************
@@ -88,11 +100,6 @@ public class ReadingsFragment extends Fragment {
     /**
      * Line
      */
-    private static int LINE_MAX = 100;
-    private static int LINE_MIN = 0;
-    private final static float[][] lineValues = {{0, 25f, 26f, 39f, 42f, 0f, 70f},
-            {0, 25f, 26f, 39f, 42f, 60f}};
-    //private static LineChartView mLineChart;
     private Paint mLineGridPaint;
     private TextView mLineTooltip;
 
@@ -119,19 +126,19 @@ public class ReadingsFragment extends Fragment {
     private Handler mHandler;
 
 
-    /**
-     * This will run the update after 500ms, it fires after a dismiss on the chart
-     */
-    private final Runnable mExitEndAction = new Runnable() {
-        @Override
-        public void run() {
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    updateChart();
-                }
-            }, 500);
-        }
-    };
+//    /**
+//     * This will run the update after 500ms, it fires after a dismiss on the chart
+//     */
+//    private final Runnable mExitEndAction = new Runnable() {
+//        @Override
+//        public void run() {
+//            mHandler.postDelayed(new Runnable() {
+//                public void run() {
+//                    updateChart();
+//                }
+//            }, 500);
+//        }
+//    };
 
     /**
      * This will run the update after 50ms, it fires after a dismiss on the chart and will attempt
@@ -149,23 +156,21 @@ public class ReadingsFragment extends Fragment {
     };
 
 
-    /**
-     * fires after the drawing of the last chart
-     */
-    private final Runnable mAnimatePoint = new Runnable() {
-        @Override
-        public void run() {
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    addPoint();
-                }
-            }, 500);
-        }
-    };
+//    /**
+//     * fires after the drawing of the last chart
+//     */
+//    private final Runnable mAnimatePoint = new Runnable() {
+//        @Override
+//        public void run() {
+//            mHandler.postDelayed(new Runnable() {
+//                public void run() {
+//                    addPoint();
+//                }
+//            }, 500);
+//        }
+//    };
 
     private boolean isAnimationRunning = false;
-
-    private boolean mNewInstance;
 
     @InjectView(R.id.lineChartReadings)
     LineChartView mLineChart;
@@ -192,6 +197,24 @@ public class ReadingsFragment extends Fragment {
     @InjectView(R.id.cardViewReadingsBottom)
     CardView sharedCardView;
 
+    @InjectView(R.id.progressBarReadings)
+    ProgressBar progressBar;
+
+    @InjectView(R.id.textViewNoReadingsMsg)
+    TextView textViewNoReadings;
+
+    @InjectView(R.id.textViewTotalReadingsForThisPeriod)
+    TextView textViewTotalLitersForThisPeriod;
+
+    @InjectView(R.id.textViewLastReadingDate)
+    TextView textViewLastReadingDate;
+
+    private int mShortAnimationDuration;
+
+    private float[] chartValues;
+
+    public static boolean ranAtleastOnce = false;
+
     @OnClick(R.id.fabChangeGraph)
     public void changeGraphClicked() {
         if (!isAnimationRunning) {
@@ -217,10 +240,15 @@ public class ReadingsFragment extends Fragment {
 
         ButterKnife.inject(this, view);
 
+        readingsBus = new Bus(ThreadEnforcer.MAIN);
+        readingsBus.register(this);
+
         linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorJmasBlueReadings));
 
+        fabChangeGraph.setEnabled(false);
+        textViewNoReadings.setVisibility(View.GONE);
+
         /** Chart things **/
-        mNewInstance = false;
         mCurrOverlapFactor = .5f;
         mCurrEasing = new QuintEaseOut();
         mCurrStartX = -1;
@@ -242,9 +270,13 @@ public class ReadingsFragment extends Fragment {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateLineChart();
+                //updateLineChart();
             }
         }, 500);
+
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
 
         return view;
     }
@@ -254,6 +286,134 @@ public class ReadingsFragment extends Fragment {
         super.onResume();
         // Set title
         MainActivity.bus.post(getResources().getString(R.string.toolbarTitleReadings));
+        if (ranAtleastOnce) {
+            checkReadingsFromLocalDB(3);
+        }
+    }
+
+    /**
+     * Main Activity will call us when it finishes to get he data from the backend
+     *
+     * @param action just because we need an object to make the otto call
+     */
+    @Subscribe
+    public void checkReadingsFromLocalDB(Integer action) {
+        List<ChartReading> readings = getReadingsForThisMonthRange(2);
+        if (readings != null) {
+            Collections.reverse(readings); // The list comes with the latest value first, so for chart purposes we reverse it
+            long highestReading = 0;
+            long lowestReading = Integer.MAX_VALUE;
+            List<String> xAxisDays = new ArrayList<>();
+            chartValues = new float[readings.size()];
+            String lastReadingDate = "";
+            int j = 0;
+            for (ChartReading i : readings) {
+                if (i.value > highestReading) {
+                    highestReading = i.value;
+                }
+                if (i.value < lowestReading) {
+                    lowestReading = i.value;
+                }
+                xAxisDays.add(String.valueOf(i.day + 1) + "/" + String.valueOf(i.month + 1));
+                chartValues[j++] = i.value;
+                lastReadingDate = i.day + " / " + i.month + " / " + i.year;
+            }
+            String[] xAxisDaysArray = xAxisDays.toArray(new String[xAxisDays.size()]);
+            long totalForThisPeriod = highestReading - lowestReading;
+            updateUi(totalForThisPeriod, lastReadingDate);
+            updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
+            fabChangeGraph.setEnabled(true);
+            ranAtleastOnce = true;
+        } else {
+            progressBar.setVisibility(View.GONE);
+            textViewNoReadings.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Will basically hide with a fade the indeterminate progress bar and will show the cardView
+     * and the chart
+     */
+    private void updateUi(long totalForThisPeriod, String lastReadingDate) {
+        crossfade();
+        textViewTotalLitersForThisPeriod.setText(String.valueOf(totalForThisPeriod) + " lts");
+        textViewLastReadingDate.setText(lastReadingDate);
+        mLineChart.setVisibility(View.VISIBLE);
+    }
+
+    private void updateLineChart(String[] xAxisDaysArray, float[] valuesArray, long lowestReading, long highestReading) {
+        int spacing = (int) ((highestReading - lowestReading) / xAxisDaysArray.length);
+        if (spacing == 0) {
+            spacing = 1;
+        }
+        mLineChart.reset();
+
+        LineSet dataSet = new LineSet(xAxisDaysArray, valuesArray);
+
+        dataSet.setColor(this.getResources().getColor(R.color.line))
+                .setThickness(Tools.fromDpToPx(3))
+                .setSmooth(true)
+                .setDashed(true)
+                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
+                .setDotsRadius(Tools.fromDpToPx(5))
+                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
+        mLineChart.addData(dataSet);
+
+        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
+                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
+                .setXAxis(false)
+                .setXLabels(XController.LabelPosition.OUTSIDE)
+                .setYAxis(false)
+                .setYLabels(YController.LabelPosition.OUTSIDE)
+                .setAxisBorderValues((int) lowestReading, (int) highestReading, spacing)
+                .show(getAnimation(true).setEndAction(null))
+        ;
+
+        mLineChart.animateSet(0, new DashAnimation());
+    }
+
+    /**
+     * DatabaseQuery
+     * gets all the readings for this month range
+     *
+     * @return >_>
+     */
+    public static List<ChartReading> getReadingsForThisMonthRange(int range) {
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
+        return new Select()
+                .from(ChartReading.class)
+//                .where("month >= ?", time.month - range)
+//                .and("year = ?", time.year)
+                .execute();
+    }
+
+    private void crossfade() {
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        linechartCardView.setAlpha(0f);
+        linechartCardView.setVisibility(View.VISIBLE);
+
+        // Animate the content view to 100% opacity, and clear any animation
+        // listener set on the view.
+        linechartCardView.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
+
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+        progressBar.animate()
+                .alpha(0f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
 
@@ -288,7 +448,7 @@ public class ReadingsFragment extends Fragment {
     private void showLineTooltip(int setIndex, int entryIndex, Rect rect) {
 
         mLineTooltip = (TextView) getActivity().getLayoutInflater().inflate(R.layout.circular_tooltip, null);
-        mLineTooltip.setText(Integer.toString((int) lineValues[setIndex][entryIndex]));
+        mLineTooltip.setText(Integer.toString((int) chartValues[entryIndex]));
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) Tools.fromDpToPx(35), (int) Tools.fromDpToPx(35));
         layoutParams.leftMargin = rect.centerX() - layoutParams.width / 2;
@@ -350,68 +510,9 @@ public class ReadingsFragment extends Fragment {
         mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.5f));
     }
 
-    private void updateLineChart() {
-
-        mLineChart.reset();
-
-        LineSet dataSet = new LineSet();
-//        dataSet.addPoints(getDaysToShowOnCalendar(), lineValues[0]);
-//        //dataSet.addPoints(lineLabels, lineValues[0]);
-//        dataSet.setDots(true)
-//                .setDotsColor(this.getResources().getColor(R.color.line_bg))
-//                .setDotsRadius(Tools.fromDpToPx(5))
-//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                .setDotsStrokeColor(this.getResources().getColor(R.color.line))
-//                .setLineColor(this.getResources().getColor(R.color.line))
-//                .setLineThickness(Tools.fromDpToPx(3))
-//                .beginAt(1).endAt(lineLabels.length - 1);
-//        mLineChart.addData(dataSet);
-
-//        we will need to wait for the developer to implement this functionality
-//        String[] days = getDaysToShowOnCalendar();
-//        Point point;
-//        for (int i = 0; i < 5; i++) {
-//            point = new Point(days[i], lineValues[1][i]);
-//            if (i == 3) {
-//                point.setColor(this.getResources().getColor(R.color.blue_balance));
-//            } else {
-//                point.setColor(this.getResources().getColor(R.color.whiteWater));
-//            }
-//            dataSet.addPoint(point);
-//        }
-
-        dataSet = new LineSet(getDaysToShowOnCalendar(), lineValues[1]);
-
-
-        //dataSet.addPoint("5", 50f);
-
-        dataSet.setColor(this.getResources().getColor(R.color.line))
-                .setThickness(Tools.fromDpToPx(3))
-                .setSmooth(true)
-                .setDashed(true)
-                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
-                .setDotsRadius(Tools.fromDpToPx(5))
-                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
-        mLineChart.addData(dataSet);
-
-        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
-                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
-                .setXAxis(false)
-                .setXLabels(XController.LabelPosition.OUTSIDE)
-                .setYAxis(false)
-                .setYLabels(YController.LabelPosition.OUTSIDE)
-                .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
-                .show(getAnimation(true).setEndAction(null))
-        //.show()
-        ;
-
-        mLineChart.animateSet(0, new DashAnimation());
-    }
-
-    private void hideChart() {
-        mLineChart.dismiss(getAnimation(false).setEndAction(mExitEndAction));
-    }
+//    private void hideChart() {
+//        mLineChart.dismiss(getAnimation(false).setEndAction(mExitEndAction));
+//    }
 
     /**
      * Hides the chart then after 500ms makes a transition
@@ -466,46 +567,46 @@ public class ReadingsFragment extends Fragment {
     }
 
 
-    /**
-     * This will be executed by mExitEndAction because we first need to show a dismiss animation
-     */
-    private void updateChart() {
-        mLineChart.reset();
-        float[] newlineValues = {0, 25f, 26f, 39f, 42f, 30f, 30f};
-        String[] newLabels = {"1", "7", "13", "19", "25", "30", "5"};
-        LineSet dataSet = new LineSet(newLabels, newlineValues);
-
-        dataSet.setColor(this.getResources().getColor(R.color.line))
-                .setThickness(Tools.fromDpToPx(3))
-                .setSmooth(true)
-                .setDashed(true)
-                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
-                .setDotsRadius(Tools.fromDpToPx(5))
-                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
-        mLineChart.addData(dataSet);
-
-        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
-                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
-                .setXAxis(false)
-                .setXLabels(XController.LabelPosition.OUTSIDE)
-                .setYAxis(false)
-                .setYLabels(YController.LabelPosition.OUTSIDE)
-                .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
-                .show(getAnimation(true).setEndAction(mAnimatePoint));
-        mLineChart.animateSet(0, new DashAnimation());
-
-        //addPoint();
-
-    }
-
-
-    private void addPoint() {
-        float[] thing = {0f, 25f, 26f, 39f, 42f, 30f, 100f};
-        mLineChart.updateValues(0, thing);
-        mLineChart.notifyDataUpdate();
-
-    }
+//    /**
+//     * This will be executed by mExitEndAction because we first need to show a dismiss animation
+//     */
+//    private void updateChart() {
+//        mLineChart.reset();
+//        float[] newlineValues = {0, 25f, 26f, 39f, 42f, 30f, 30f};
+//        String[] newLabels = {"1", "7", "13", "19", "25", "30", "5"};
+//        LineSet dataSet = new LineSet(newLabels, newlineValues);
+//
+//        dataSet.setColor(this.getResources().getColor(R.color.line))
+//                .setThickness(Tools.fromDpToPx(3))
+//                .setSmooth(true)
+//                .setDashed(true)
+//                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
+//                .setDotsRadius(Tools.fromDpToPx(5))
+//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+//                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
+//        mLineChart.addData(dataSet);
+//
+//        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
+//                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
+//                .setXAxis(false)
+//                .setXLabels(XController.LabelPosition.OUTSIDE)
+//                .setYAxis(false)
+//                .setYLabels(YController.LabelPosition.OUTSIDE)
+//                .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
+//                .show(getAnimation(true).setEndAction(mAnimatePoint));
+//        mLineChart.animateSet(0, new DashAnimation());
+//
+//        //addPoint();
+//
+//    }
+//
+//
+//    private void addPoint() {
+//        float[] thing = {0f, 25f, 26f, 39f, 42f, 30f, 100f};
+//        mLineChart.updateValues(0, thing);
+//        mLineChart.notifyDataUpdate();
+//
+//    }
 
     private Animation getAnimation(boolean newAnim) {
         if (newAnim)
