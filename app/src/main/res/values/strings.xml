@@ -56,6 +56,7 @@
     <string name="billsLabelsLastBillAmount">Total ultima factura:</string>
     <string name="billsLabelsLastBillStatus">Estado:</string>
     <string name="billsLabelsSomething">3</string>
+    <string name="billsLabelsToPay">Total de la factura a pagar</string>
     <string name="billsLabelsNoBillsToShow">No hay facturas para mostrar</string>
 
 
@@ -131,6 +132,7 @@
     <string name="DialogContentPleaseWait">Por favor espere…</string>
     <string name="DialogTitleCheckingParameters">Verificando Parámetros</string>
     <string name="DialogTitleRegisteringUser">Registrando Usuario</string>
+    <string name="DialogTitlePaying">Realizando el Pago</string>
 
     <string name="titleContentServiceChooser">Seleccione su proveedor de servicios</string>
 

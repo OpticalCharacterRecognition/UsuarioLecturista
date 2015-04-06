@@ -47,7 +47,7 @@ public class PayFragment extends Fragment {
     public void payClicked() {
         if (checkBoxPayAgreedTAC.isChecked()) {
             // TODO: add CCV verification
-            Double payAmount = Double.parseDouble(textViewSubTotalPay.getText().toString());
+            Double payAmount = BillsFragment.selectedBill;
             MainActivity.bus.post(payAmount);
         } else {
             Toast.makeText(getActivity(), "Tiene que estar de acuerdo con los terminos y condiciones", Toast.LENGTH_SHORT).show();
@@ -67,6 +67,8 @@ public class PayFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         CreditCard creditCard = MainActivity.checkForSavedCreditCard();
+
+        textViewSubTotalPay.setText(String.valueOf(BillsFragment.selectedBill));
 
         textViewPayCCType.setText(creditCard.type);
         textViewPayCreditCardNumber.setText(String.valueOf(creditCard.number));

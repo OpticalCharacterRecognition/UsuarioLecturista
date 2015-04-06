@@ -87,6 +87,8 @@ public class BillsFragment extends Fragment {
     private static int mCurrAlpha;
     private static int mOldAlpha;
 
+    public static double selectedBill;
+
     /**
      * Line
      */
@@ -171,8 +173,8 @@ public class BillsFragment extends Fragment {
     @InjectView(R.id.textViewNoBillsMsg)
     TextView textViewNoBills;
 
-    @InjectView(R.id.textViewTotalBalanceBills)
-    TextView textViewTotalBalanceBills;
+    @InjectView(R.id.textViewSelectedBills)
+    TextView textViewSelectedBill;
 
     @InjectView(R.id.textViewBillsStatus)
     TextView textViewBillsStatus;
@@ -298,7 +300,7 @@ public class BillsFragment extends Fragment {
     }
 
     private void updateUi(double lastBillAmount, String lastBillStatus) {
-        textViewTotalBalanceBills.setText("$" + String.valueOf(lastBillAmount));
+        textViewSelectedBill.setText("$" + String.valueOf(lastBillAmount));
         String statusTranslate = "";
         if (lastBillStatus.equalsIgnoreCase("Paid")) {
             statusTranslate = "Pagada";
@@ -410,6 +412,8 @@ public class BillsFragment extends Fragment {
                     .setInterpolator(enterInterpolator);
         }
 
+        selectedBill = chartValues[entryIndex];
+        textViewSelectedBill.setText("$" + String.valueOf(selectedBill));
         mLineChart.showTooltip(mLineTooltip);
     }
 

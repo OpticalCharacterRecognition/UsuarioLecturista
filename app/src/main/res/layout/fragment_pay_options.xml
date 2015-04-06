@@ -36,30 +36,19 @@
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textViewBillingDate"
                 style="@style/TextViewMainPage"
-                android:text="26 de Febrero 2015"
+                android:text="26 de Abril 2015"
                 android:textIsSelectable="true" />
 
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textView3"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/readingsLabelsTotalAmount" />
+                android:text="@string/billsLabelsToPay" />
 
             <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewTotalReadingsForThisPeriod"
+                android:id="@+id/textViewTotalBillToPay"
                 style="@style/TextViewMainPage"
-                android:text="$100.00" />
-
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textView2"
-                style="@style/TextViewMainPageLabel"
-                android:layout_marginTop="10dp"
-                android:text="@string/readingsLabelsLastReadingDay" />
-
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewLastReadingDate"
-                style="@style/TextViewMainPage"
-                android:text="2 de Febrero 2015" />
+                android:text="" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

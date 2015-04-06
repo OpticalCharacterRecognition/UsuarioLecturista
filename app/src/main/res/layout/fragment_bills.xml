@@ -76,6 +76,17 @@
                 android:text="26 de Abril 2015"
                 android:textIsSelectable="true" />
 
+            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--android:id="@+id/textView3"-->
+            <!--style="@style/TextViewMainPageLabel"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:text="@string/billsLabelsLastBillAmount" />-->
+
+            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--android:id="@+id/textViewTotalBalanceBills"-->
+            <!--style="@style/TextViewMainPage"-->
+            <!--android:text="" />-->
+
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textView3"
                 style="@style/TextViewMainPageLabel"
@@ -83,7 +94,7 @@
                 android:text="@string/billsLabelsLastBillAmount" />
 
             <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewTotalBalanceBills"
+                android:id="@+id/textViewSelectedBills"
                 style="@style/TextViewMainPage"
                 android:text="" />
 

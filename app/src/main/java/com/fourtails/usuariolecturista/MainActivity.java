@@ -45,9 +45,13 @@ import com.appspot.ocr_backend.backend.model.MessagesGetBillsResponse;
 import com.appspot.ocr_backend.backend.model.MessagesGetReadings;
 import com.appspot.ocr_backend.backend.model.MessagesGetReadingsResponse;
 import com.appspot.ocr_backend.backend.model.MessagesReading;
+import com.conekta.Charge;
+import com.conekta.Token;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.fourtails.usuariolecturista.conekta.ConektaAndroid;
+import com.fourtails.usuariolecturista.conekta.ConektaCallback;
 import com.fourtails.usuariolecturista.model.ChartBill;
 import com.fourtails.usuariolecturista.model.ChartReading;
 import com.fourtails.usuariolecturista.model.CreditCard;
@@ -76,6 +80,9 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -131,6 +138,8 @@ public class MainActivity extends ActionBarActivity {
     private Context context;
 
     public static Bitmap savedBitmap;
+
+    private String globalUserEmail;
 
     /**
      * Global instance of the JSON factory.
@@ -354,9 +363,66 @@ public class MainActivity extends ActionBarActivity {
         // TODO: add all the server calls here
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+
         fragmentManager.popBackStack();
         fragmentManager.popBackStack();
-        Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
+        int finalAmount = (int) (payAmount * 100);
+        payThing(finalAmount);
+        //Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
+    }
+
+    public void payThing(int payAmount) {
+
+        ConektaAndroid conekta = new ConektaAndroid("key_eyD5sHqgVCzppFn6f35BzQ", this);
+        try {
+            progressDialog = ProgressDialog.show(MainActivity.this, getString(R.string.DialogTitlePaying), getString(R.string.DialogContentPleaseWait), true);
+
+            JSONObject pay = new JSONObject(
+                    "{" +
+                            "'currency':'MXN'" + "," +
+                            "'amount':" + payAmount + "," +
+                            "'description':'Android Pay'" + "," +
+                            "'reference_id':'9999-quantum_wolf'" + "," +
+                            //"'card':'" + tokenId + "'" + "," +
+                            "'card':'tok_test_visa_4242'" + "," +
+                            "'details':" +
+                            "{" +
+                            "'email':" + "'" + globalUserEmail + "'" +
+                            "}" +
+                            "}");
+
+            conekta.payThing(pay, new ConektaCallback() {
+                @Override
+                public void failure(Exception error) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    // TODO: Output the error in your app
+                    String result = null;
+                    if (error instanceof com.conekta.Error)
+                        result = ((com.conekta.Error) error).message_to_purchaser;
+                    else
+                        result = error.getMessage();
+                    Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void success(Token token) {
+
+                }
+
+                @Override
+                public void success(Charge token) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Toast.makeText(getApplicationContext(), "Pago Aceptado", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -968,6 +1034,7 @@ public class MainActivity extends ActionBarActivity {
     public void loadImageInBackground() {
         final ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
+            globalUserEmail = parseUser.getEmail();
             if (ParseFacebookUtils.isLinked(parseUser)) {
                 if (ParseFacebookUtils.getSession().isOpened()) {
                     Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
