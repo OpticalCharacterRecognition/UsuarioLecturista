@@ -242,6 +242,7 @@ public class ReadingsFragment extends Fragment {
 
         readingsBus = new Bus(ThreadEnforcer.MAIN);
         readingsBus.register(this);
+        fabScan.hide();
 
         linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorJmasBlueReadings));
 
@@ -270,7 +271,7 @@ public class ReadingsFragment extends Fragment {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //updateLineChart();
+                fabScan.show();
             }
         }, 500);
 

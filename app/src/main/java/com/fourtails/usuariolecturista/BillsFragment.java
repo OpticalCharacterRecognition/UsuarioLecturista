@@ -38,9 +38,11 @@ import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.model.ChartBill;
 import com.melnykov.fab.FloatingActionButton;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -54,6 +56,8 @@ import butterknife.OnClick;
 public class BillsFragment extends Fragment {
 
     public static final String TAG = "BillsFragment";
+
+    public static Bus billsBus;
 
     /**
      * Charts ***********************************************************************************
@@ -102,9 +106,9 @@ public class BillsFragment extends Fragment {
             System.out.println(setIndex);
             System.out.println(entryIndex);
             if (mLineTooltip == null)
-                showLineTooltip(setIndex, entryIndex, rect);
+                showLineTooltip(entryIndex, rect);
             else
-                dismissLineTooltip(setIndex, entryIndex, rect);
+                dismissLineTooltip(entryIndex, rect);
         }
     };
 
@@ -112,7 +116,7 @@ public class BillsFragment extends Fragment {
         @Override
         public void onClick(View v) {
             if (mLineTooltip != null)
-                dismissLineTooltip(-1, -1, null);
+                dismissLineTooltip(-1, null);
         }
     };
 
@@ -179,19 +183,27 @@ public class BillsFragment extends Fragment {
     @InjectView(R.id.textViewBillsStatus)
     TextView textViewBillsStatus;
 
+    String selectedBillStatus;
+
     private float[] chartValues;
+
+    private List<ChartBill> orderedBills;
+
+    public static int selectedBillIndex;
 
     @OnClick(R.id.fabPay)
     public void payButtonClicked() {
-        Fragment payOptionsFragment = new PayOptionsFragment();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            makeAnimationBetweenFragments(
-                    payOptionsFragment, sharedCardView,
-                    getResources().getString(R.string.transitionFirstCardView),
-                    android.R.transition.fade, // Exit Transition
-                    android.R.transition.move);  // Enter Transition
-        } else {
-            MainActivity.bus.post(payOptionsFragment);
+        if (orderedBills.get(selectedBillIndex).status.equalsIgnoreCase("Unpaid")) {
+            Fragment payOptionsFragment = new PayOptionsFragment();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                makeAnimationBetweenFragments(
+                        payOptionsFragment, sharedCardView,
+                        getResources().getString(R.string.transitionFirstCardView),
+                        android.R.transition.fade, // Exit Transition
+                        android.R.transition.move);  // Enter Transition
+            } else {
+                MainActivity.bus.post(payOptionsFragment);
+            }
         }
     }
 
@@ -217,6 +229,9 @@ public class BillsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bills, container, false);
         ButterKnife.inject(this, view);
+
+        billsBus = new Bus(ThreadEnforcer.MAIN);
+        billsBus.register(this);
 
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
@@ -247,6 +262,7 @@ public class BillsFragment extends Fragment {
                 checkBillsFromLocalDB();
             }
         }, 500);
+        fabPay.hide();
 
         return view;
 
@@ -260,13 +276,27 @@ public class BillsFragment extends Fragment {
         MainActivity.bus.post(getResources().getString(R.string.toolbarTitleBills));
     }
 
+
+    /**
+     * This is basically just a refresh for when we pay
+     *
+     * @param option most of the time 1
+     */
+    @Subscribe
+    public void updateBills(Integer option) {
+        if (option == 1) {
+            checkBillsFromLocalDB();
+        }
+    }
+
     /**
      * TODO: get the unpaid bills in a different array
      */
     public void checkBillsFromLocalDB() {
         List<ChartBill> bills = getBillsForThisMonthRange(2);
         if (bills != null) {
-            Collections.reverse(bills); // The list comes with the latest value first, so for chart purposes we reverse it
+            //Collections.reverse(bills); // The list comes with the latest value first, so for chart purposes we reverse it
+            orderedBills = bills;
             double highestReading = 0;
             double lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
@@ -283,13 +313,17 @@ public class BillsFragment extends Fragment {
                     lowestReading = i.amount;
                 }
                 xAxisDays.add(String.valueOf(i.day + 1) + "/" + String.valueOf(i.month + 1));
+                selectedBillIndex = j;
                 chartValues[j++] = (float) i.amount;
                 lastReadingDate = i.day + " / " + i.month + " / " + i.year;
                 lastBillStatus = i.status;
                 lastBillAmount = i.amount;
             }
+
             String[] xAxisDaysArray = xAxisDays.toArray(new String[xAxisDays.size()]);
+
             updateUi(lastBillAmount, lastBillStatus);
+
             updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
             //fabChangeGraph.setEnabled(true);
 
@@ -299,15 +333,24 @@ public class BillsFragment extends Fragment {
         }
     }
 
+    /**
+     * Update the textViews
+     * @param lastBillAmount last bill
+     * @param lastBillStatus last status
+     */
     private void updateUi(double lastBillAmount, String lastBillStatus) {
         textViewSelectedBill.setText("$" + String.valueOf(lastBillAmount));
-        String statusTranslate = "";
+        String statusTranslate;
+        selectedBill = lastBillAmount;
         if (lastBillStatus.equalsIgnoreCase("Paid")) {
             statusTranslate = "Pagada";
+            fabPay.hide();
         } else if (lastBillStatus.equalsIgnoreCase("UnPaid")) {
             statusTranslate = "No Pagada";
+            fabPay.show();
         } else {
             statusTranslate = "Desconocido";
+            fabPay.hide();
         }
         textViewBillsStatus.setText(statusTranslate);
         mLineChart.setVisibility(View.VISIBLE);
@@ -383,12 +426,13 @@ public class BillsFragment extends Fragment {
     /**
      * Chart things
      *
-     * @param setIndex
      * @param entryIndex
      * @param rect
      */
     @SuppressLint("NewApi")
-    private void showLineTooltip(int setIndex, int entryIndex, Rect rect) {
+    private void showLineTooltip(int entryIndex, Rect rect) {
+
+        selectedBillIndex = entryIndex;
 
         mLineTooltip = (TextView) getActivity().getLayoutInflater().inflate(R.layout.circular_tooltip, null);
         mLineTooltip.setText(Integer.toString((int) chartValues[entryIndex]));
@@ -413,12 +457,24 @@ public class BillsFragment extends Fragment {
         }
 
         selectedBill = chartValues[entryIndex];
+        selectedBillStatus = orderedBills.get(entryIndex).status;
+        if (selectedBillStatus.equalsIgnoreCase("Paid")) {
+            selectedBillStatus = "Pagada";
+            fabPay.hide();
+        } else if (selectedBillStatus.equalsIgnoreCase("UnPaid")) {
+            selectedBillStatus = "No Pagada";
+            fabPay.show();
+        } else {
+            selectedBillStatus = "Desconocido";
+            fabPay.hide();
+        }
+        textViewBillsStatus.setText(selectedBillStatus);
         textViewSelectedBill.setText("$" + String.valueOf(selectedBill));
         mLineChart.showTooltip(mLineTooltip);
     }
 
     @SuppressLint("NewApi")
-    private void dismissLineTooltip(final int setIndex, final int entryIndex, final Rect rect) {
+    private void dismissLineTooltip(final int entryIndex, final Rect rect) {
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mLineTooltip.animate()
@@ -431,14 +487,14 @@ public class BillsFragment extends Fragment {
                     mLineChart.removeView(mLineTooltip);
                     mLineTooltip = null;
                     if (entryIndex != -1)
-                        showLineTooltip(setIndex, entryIndex, rect);
+                        showLineTooltip(entryIndex, rect);
                 }
             });
         } else {
             mLineChart.dismissTooltip(mLineTooltip);
             mLineTooltip = null;
             if (entryIndex != -1)
-                showLineTooltip(setIndex, entryIndex, rect);
+                showLineTooltip(entryIndex, rect);
         }
     }
 
@@ -469,7 +525,7 @@ public class BillsFragment extends Fragment {
         Point point;
         for (int i = 0; i < xAxisDaysArray.length; i++) {
             point = new Point(xAxisDaysArray[i], chartValues[i]);
-            if (i > 2) {
+            if (orderedBills.get(i).status.equalsIgnoreCase("Unpaid")) {
                 point.setColor(this.getResources().getColor(R.color.red_300));
             } else {
                 point.setColor(this.getResources().getColor(R.color.colorJmasBlueReadings));

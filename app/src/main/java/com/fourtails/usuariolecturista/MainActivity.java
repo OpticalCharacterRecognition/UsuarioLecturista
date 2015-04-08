@@ -44,6 +44,8 @@ import com.appspot.ocr_backend.backend.model.MessagesGetBills;
 import com.appspot.ocr_backend.backend.model.MessagesGetBillsResponse;
 import com.appspot.ocr_backend.backend.model.MessagesGetReadings;
 import com.appspot.ocr_backend.backend.model.MessagesGetReadingsResponse;
+import com.appspot.ocr_backend.backend.model.MessagesPayBill;
+import com.appspot.ocr_backend.backend.model.MessagesPayBillResponse;
 import com.appspot.ocr_backend.backend.model.MessagesReading;
 import com.conekta.Charge;
 import com.conekta.Token;
@@ -152,6 +154,8 @@ public class MainActivity extends ActionBarActivity {
     public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
     ProgressDialog progressDialog;
+
+    boolean refreshBillsOnly = false;
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("AppCompatMethod")
@@ -413,9 +417,7 @@ public class MainActivity extends ActionBarActivity {
 
                 @Override
                 public void success(Charge token) {
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
+                    makePaymentOnBackend();
                     Toast.makeText(getApplicationContext(), "Pago Aceptado", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -548,13 +550,69 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void enableToolbarSpinner(boolean enable) {
-        if (enable) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        } else {
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-        }
+    /**
+     * Backend call
+     * Tries to register the payment on the backend
+     */
+    public void makePaymentOnBackend() {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
+                        return 99;
+                    }
+                    List<ChartBill> bills = BillsFragment.getBillsForThisMonthRange(1);
+                    ChartBill bill = bills.get(BillsFragment.selectedBillIndex);
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+                    Backend service = builder.build();
 
+                    MessagesPayBill messagesPayBill = new MessagesPayBill();
+                    messagesPayBill.setBillKey(bill.urlSafeKey);
+
+                    MessagesPayBillResponse response = service.bill().pay(messagesPayBill).execute();
+
+                    if (response.getOk()) {
+                        Log.i("BACKEND", response.toPrettyString());
+                        return 1;
+                    } else {
+                        return 2;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                if (transactionResponse != null) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    switch (transactionResponse) {
+                        case 1:
+                            Log.i("BACKEND", "Good-makePaymentOnBackend");
+                            refreshBillsOnly = true;
+                            getPaidBillsFromBackend();
+                            Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 2:
+                            Log.i("BACKEND", "Good-NoBills-makePaymentOnBackend");
+                            break;
+                        case 99:
+                            Log.i("ERROR", "NO INTERNET");
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-makePaymentOnBackend");
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-makePaymentOnBackend");
+                }
+            }
+        }.execute();
     }
 
 
@@ -897,7 +955,12 @@ public class MainActivity extends ActionBarActivity {
                 if (transactionResponse != null) {
                     switch (transactionResponse) {
                         case 1:
-                            ReadingsFragment.readingsBus.post(1);
+                            if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
+                                BillsFragment.billsBus.post(1);
+                                refreshBillsOnly = false;
+                            } else {
+                                ReadingsFragment.readingsBus.post(1);
+                            }
                             Log.i("BACKEND", "Good-getUnPaidBillsFromBackend");
                             break;
                         case 2:

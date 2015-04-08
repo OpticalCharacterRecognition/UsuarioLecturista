@@ -54,7 +54,7 @@ dependencies {
     // for the images in general
     compile 'com.squareup.picasso:picasso:2.4.0'
     // floating action button for prelolipop devices
-    compile 'com.melnykov:floatingactionbutton:1.2.0'
+    compile 'com.melnykov:floatingactionbutton:1.3.0'
     // implementing the Roboto styles
     compile 'com.github.johnkil.android-robototextview:robototextview:2.3.0'
     // View "injection" Library
