@@ -325,7 +325,6 @@ public class BillsFragment extends Fragment {
             updateUi(lastBillAmount, lastBillStatus);
 
             updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
-            //fabChangeGraph.setEnabled(true);
 
         } else {
             lineChartCardViewBills.setVisibility(View.GONE);
@@ -335,6 +334,7 @@ public class BillsFragment extends Fragment {
 
     /**
      * Update the textViews
+     *
      * @param lastBillAmount last bill
      * @param lastBillStatus last status
      */
@@ -539,7 +539,6 @@ public class BillsFragment extends Fragment {
                 .setColor(this.getResources().getColor(R.color.whiteWater))
                 .setDashed(true);
         mLineChart.addData(dataSet);
-
 
 
         mLineChart.setBorderSpacing(Tools.fromDpToPx(4))

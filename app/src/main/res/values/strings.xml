@@ -64,7 +64,8 @@
 
     <!-- PayOptions -->
     <string name="textAddCreditCard">Agregar tarjeta</string>
-    <string name="labelPayInOxxo">Pague en el Oxxo con este código de barras</string>
+    <string name="labelPayInOxxo">Pague en el Oxxo</string>
+    <string name="textCreditCard">Tarjeta de crédito</string>
     <string name="labelPaymentOptionDesc">Seleccione una opción para pagar:</string>
     <string name="toolbarTitlePayOptions">Opciones de Pago</string>
 
@@ -145,5 +146,13 @@
     <!--misc-->
     <string name="toastImageUploadError">Hay un problema subiendo la imagen al servidor, por favor intente de nuevo</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="buttonTextOxxo">Generar Código OXXO</string>
+
+    <!--Credit Card Errors-->
+    <string name="creditCardErrorNumber">El numero de tarjeta es invalido</string>
+    <string name="creditCardErrorExpiryDate">La fecha de expiración es invalida</string>
+    <string name="creditCardErrorCCV">El código CCV es invalido</string>
+    <string name="creditCardError">Los detalles de la tarjeta son inválidos</string>
+    <string name="TACMustAgreedMessage">Tiene que estar de acuerdo con los términos y condiciones</string>
 
 </resources>
