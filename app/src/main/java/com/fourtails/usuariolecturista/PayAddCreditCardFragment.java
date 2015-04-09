@@ -9,11 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.fourtails.usuariolecturista.model.CreditCard;
 import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 
 import java.util.Calendar;
@@ -27,8 +24,8 @@ public class PayAddCreditCardFragment extends Fragment {
     @InjectView(R.id.editTextCreditCardExpirationDate)
     TextView textViewCreditCardExpirationDate;
 
-    @InjectView(R.id.spinnerCreditCardSelector)
-    Spinner spinnerCreditCardSelector;
+//    @InjectView(R.id.spinnerCreditCardSelector)
+//    Spinner spinnerCreditCardSelector;
 
     @InjectView(R.id.editTextCreditCardNumber)
     EditText editTextCreditCardNumber;
@@ -48,9 +45,9 @@ public class PayAddCreditCardFragment extends Fragment {
         showDatePicker();
     }
 
-    @OnClick(R.id.buttonAddCreditCard)
+    @OnClick(R.id.buttonCreditCard)
     public void clickedAddCreditCard() {
-        saveNewCreditCard();
+        //saveNewCreditCard();
     }
 
     public PayAddCreditCardFragment() {
@@ -71,22 +68,22 @@ public class PayAddCreditCardFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Creates a new credit card and sends it to the MainActivity to be saved
-     */
-    private void saveNewCreditCard() {
-        if (checkBoxAgreedTAC.isChecked()) {
-            CreditCard creditCard = new CreditCard(
-                    spinnerCreditCardSelector.getSelectedItem().toString(),
-                    Long.parseLong(editTextCreditCardNumber.getText().toString()),
-                    editTextCreditCardName.getText().toString(),
-                    Integer.parseInt(editTextCCV.getText().toString()),
-                    textViewCreditCardExpirationDate.getText().toString());
-            MainActivity.bus.post(creditCard);
-        } else {
-            Toast.makeText(getActivity(), "Tiene que estar de acuerdo con los terminos y condiciones", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    /**
+//     * Creates a new credit card and sends it to the MainActivity to be saved
+//     */
+//    private void saveNewCreditCard() {
+//        if (checkBoxAgreedTAC.isChecked()) {
+//            CreditCard creditCard = new CreditCard(
+//                    spinnerCreditCardSelector.getSelectedItem().toString(),
+//                    Long.parseLong(editTextCreditCardNumber.getText().toString()),
+//                    editTextCreditCardName.getText().toString(),
+//                    Integer.parseInt(editTextCCV.getText().toString()),
+//                    textViewCreditCardExpirationDate.getText().toString());
+//            MainActivity.bus.post(creditCard);
+//        } else {
+//            Toast.makeText(getActivity(), "Tiene que estar de acuerdo con los terminos y condiciones", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     /**
      * This will call for an special date picker without the "day"

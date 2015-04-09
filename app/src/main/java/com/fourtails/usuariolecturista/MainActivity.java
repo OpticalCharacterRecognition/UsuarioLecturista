@@ -369,7 +369,6 @@ public class MainActivity extends ActionBarActivity {
 
 
         fragmentManager.popBackStack();
-        fragmentManager.popBackStack();
         int finalAmount = (int) (payAmount * 100);
         payThing(finalAmount);
         //Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
@@ -806,7 +805,7 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetReadings messagesGetReadings = new MessagesGetReadings();
-                    messagesGetReadings.setAccountNumber("1");
+                    messagesGetReadings.setAccountNumber("3");
 
                     MessagesGetReadingsResponse response = service.reading().get(messagesGetReadings).execute();
 
@@ -864,7 +863,7 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    messagesGetBills.setAccountNumber("1");
+                    messagesGetBills.setAccountNumber("3");
                     messagesGetBills.setStatus("Paid");
 
                     MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
@@ -928,7 +927,7 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    messagesGetBills.setAccountNumber("1");
+                    messagesGetBills.setAccountNumber("3");
                     messagesGetBills.setStatus("Unpaid");
 
                     MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();

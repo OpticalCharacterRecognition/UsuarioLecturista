@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="com.fourtails.usuariolecturista.PayOptionsFragment">
 
@@ -60,61 +60,26 @@
         android:id="@+id/textView6"
         android:layout_marginTop="15dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:id="@+id/containerPayOptionsAddCard">
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/textCreditCard"
+        android:id="@+id/buttonCreditCard"
+        android:layout_marginTop="20dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageViewAddCreditCard"
-            android:src="@drawable/img_agregar2" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:id="@+id/containerPayOptionsSavedCard">
-
-        <Button
-            android:id="@+id/buttonSavedCreditCard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Tarjeta xxxx-1234"
-            android:textColor="@color/whiteWater"
-            android:background="@drawable/img_visa2"
-            android:transitionName="transitionCardToPay" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+    <com.devspark.robototextview.widget.RobotoTextView
+        style="@style/TextViewMainPageLabel"
+        android:id="@+id/textView5"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:text="@string/labelPayInOxxo"
+        android:layout_marginTop="30dp" />
 
-        <com.devspark.robototextview.widget.RobotoTextView
-            style="@style/TextViewMainPageLabel"
-            android:id="@+id/textView5"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/labelPayInOxxo" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/img_barcode2" />
-    </LinearLayout>
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/buttonTextOxxo"
+        android:id="@+id/buttonOxxoGenerate"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" />
 
 </LinearLayout>
