@@ -118,7 +118,9 @@ public abstract class ChartView extends RelativeLayout {
     private OnClickListener mChartListener;
 
 
-    /** Drawing flag */
+    /**
+     * Drawing flag
+     */
     private boolean mReadyToDraw;
 
 
@@ -237,16 +239,16 @@ public abstract class ChartView extends RelativeLayout {
 
         this.setWillNotDraw(false);
         style.init();
-	}
-	
-	
-	@Override
-	public void onDetachedFromWindow(){
-		super.onDetachedFromWindow();
+    }
+
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
 
         style.clean();
     }
-	
+
 
 	
 	
@@ -278,7 +280,7 @@ public abstract class ChartView extends RelativeLayout {
      * (Optional) To be overriden in case the view needs to execute some code before
      * starting the drawing.
      *
-     * @param data   Array of {@link ChartSet} to do the necessary preparation just before onDraw
+     * @param data Array of {@link ChartSet} to do the necessary preparation just before onDraw
      */
     protected void onPreDrawChart(ArrayList<ChartSet> data) {
     }
@@ -287,14 +289,14 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * (Optional) To be overridden in order for each chart to define its own clickable regions.
      * This way, classes extending ChartView will only define their clickable regions.
-     *
+     * <p/>
      * Important: the returned vector must match the order of the data passed
      * by the user. This ensures that onTouchEvent will return the correct index.
      *
-     * @param data   {@link java.util.ArrayList} of {@link com.db.chart.model.ChartSet}
+     * @param data {@link java.util.ArrayList} of {@link com.db.chart.model.ChartSet}
      *             to use while defining each region of a {@link com.db.chart.view.BarChartView}
-     * @return   {@link java.util.ArrayList} of {@link android.graphics.Region} with regions
-     *           where click will be detected
+     * @return {@link java.util.ArrayList} of {@link android.graphics.Region} with regions
+     * where click will be detected
      */
     protected ArrayList<ArrayList<Region>> defineRegions(ArrayList<ChartSet> data) {
         return mRegions;
@@ -306,9 +308,9 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Method responsible to draw bars with the parsed screen points.
      *
-     * @param canvas   The canvas to draw on
+     * @param canvas The canvas to draw on
      * @param data   {@link java.util.ArrayList} of {@link com.db.chart.model.ChartSet}
-     *             to use while drawing the Chart
+     *               to use while drawing the Chart
      */
     abstract protected void onDrawChart(Canvas canvas, ArrayList<ChartSet> data);
 
@@ -360,7 +362,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Show only a specific chart dataset.
      *
-     * @param setIndex   Dataset's index to be displayed
+     * @param setIndex Dataset's index to be displayed
      */
     public void show(int setIndex) {
 
@@ -392,7 +394,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Dismiss a specific chart dataset.
      *
-     * @param setIndex   Dataset's index to be dismissed
+     * @param setIndex Dataset's index to be dismissed
      */
     public void dismiss(int setIndex) {
 
@@ -524,7 +526,7 @@ public abstract class ChartView extends RelativeLayout {
      * Adds a tooltip to ChartView. If is not the case already,
      * the whole tooltip is forced to be inside ChartView bounds.
      *
-     * @param tooltip   Tooltip view to be added
+     * @param tooltip Tooltip view to be added
      */
     public void showTooltip(View tooltip) {
         showTooltip(tooltip, true);
@@ -534,7 +536,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Removes tooltip from ChartView.
      *
-     * @param tooltip   View to be removed
+     * @param tooltip View to be removed
      */
     public void dismissTooltip(View tooltip) {
         this.removeView(tooltip);
@@ -552,8 +554,8 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Animate {@link ChartSet}.
      *
-     * @param index   Position of {@link ChartSet}
-     * @param anim   Animation extending {@link BaseStyleAnimation}
+     * @param index Position of {@link ChartSet}
+     * @param anim  Animation extending {@link BaseStyleAnimation}
      */
     public void animateSet(int index, BaseStyleAnimation anim) {
         anim.play(this, this.data.get(index));
@@ -562,10 +564,10 @@ public abstract class ChartView extends RelativeLayout {
 
     /**
      * Asks the view if it is able to draw now.
-	 */
-	public boolean canIPleaseAskYouToDraw(){
-		return !mIsDrawing;
-	}
+     */
+    public boolean canIPleaseAskYouToDraw() {
+        return !mIsDrawing;
+    }
 
 	
 	
@@ -577,8 +579,8 @@ public abstract class ChartView extends RelativeLayout {
 	 * -------------
 	 */
 
-	
-	@Override
+
+    @Override
     protected void onDraw(Canvas canvas) {
         try { // we know this will fail when trying to animate
             mIsDrawing = true;
@@ -665,9 +667,9 @@ public abstract class ChartView extends RelativeLayout {
                     pos,
                     style.gridPaint);
         }
-		
-		// If there's no axis
-		if(!horController.hasAxis)
+
+        // If there's no axis
+        if (!horController.hasAxis)
             canvas.drawLine(getInnerChartLeft(),
                     getInnerChartBottom(),
                     getInnerChartRight(),
@@ -777,7 +779,7 @@ public abstract class ChartView extends RelativeLayout {
      * Inner Chart refers only to the area where chart data will be draw,
      * excluding labels, axis, etc.
      *
-	 * @return Position of the inner left side of the chart
+     * @return Position of the inner left side of the chart
      */
     public float getInnerChartLeft() {
         return verController.getInnerChartLeft();
@@ -824,8 +826,8 @@ public abstract class ChartView extends RelativeLayout {
      * Get the step used between Y values.
      *
      * @return Step
-	 */
-	protected int getStep() {
+     */
+    protected int getStep() {
 
         if (orientation == Orientation.VERTICAL)
             return verController.step;
@@ -851,7 +853,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Sets the chart's orientation.
      *
-     * @param orien   Orientation.HORIZONTAL | Orientation.VERTICAL
+     * @param orien Orientation.HORIZONTAL | Orientation.VERTICAL
      */
     protected void setOrientation(Orientation orien) {
 
@@ -867,9 +869,9 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Show/Hide Y labels and respective axis.
      *
-     * @param position   NONE - No labels
-     *                   OUTSIDE - Labels will be positioned outside the chart
-     *                   INSIDE - Labels will be positioned inside the chart
+     * @param position NONE - No labels
+     *                 OUTSIDE - Labels will be positioned outside the chart
+     *                 INSIDE - Labels will be positioned inside the chart
      */
     public ChartView setYLabels(YController.LabelPosition position) {
         verController.labelsPositioning = position;
@@ -880,9 +882,9 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Show/Hide X labels and respective axis.
      *
-     * @param position   NONE - No labels
-     *                   OUTSIDE - Labels will be positioned outside the chart
-     *                   INSIDE - Labels will be positioned inside the chart
+     * @param position NONE - No labels
+     *                 OUTSIDE - Labels will be positioned outside the chart
+     *                 INSIDE - Labels will be positioned inside the chart
      */
     public ChartView setXLabels(XController.LabelPosition position) {
         horController.labelsPositioning = position;
@@ -893,7 +895,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Set the format to be added to Y labels.
      *
-     * @param format   Format to be applied
+     * @param format Format to be applied
      */
     public ChartView setLabelsFormat(DecimalFormat format) {
         verController.labelFormat = format;
@@ -902,7 +904,6 @@ public abstract class ChartView extends RelativeLayout {
 
 
     /**
-     *
      * @param color
      * @return
      */
@@ -913,7 +914,6 @@ public abstract class ChartView extends RelativeLayout {
 
 
     /**
-     *
      * @param size
      * @return
      */
@@ -960,13 +960,13 @@ public abstract class ChartView extends RelativeLayout {
      * example a step of 2 with a maxAxisValue of 6 will end up with
      * {0, 2, 4, 6} as labels.
      *
-     * @param maxValue   The maximum value that Y axis will have as a label
-     * @param step   (real) value distance from every label
+     * @param maxValue The maximum value that Y axis will have as a label
+     * @param step     (real) value distance from every label
      */
     public ChartView setAxisBorderValues(int minValue, int maxValue, int step) {
 
         if ((maxValue - minValue) % step != 0)
-            Log.e(TAG, "Step value must be a divisor of distance between " +
+            Log.i(TAG, "Step value must be a divisor of distance between " +
                     "minValue and maxValue", new IllegalArgumentException());
 
         if (orientation == Orientation.VERTICAL) {
@@ -986,9 +986,9 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Define the thickness of the axis.
      *
-     * @param thickness   size of the thickness
+     * @param thickness size of the thickness
      */
-    public ChartView setAxisThickness(float thickness){
+    public ChartView setAxisThickness(float thickness) {
         style.axisThickness = thickness;
         return this;
     }
@@ -1011,7 +1011,7 @@ public abstract class ChartView extends RelativeLayout {
      * As an example a step of 2 with a max label value of 6 will end
      * up with {0, 2, 4, 6} as labels.
      *
-     * @param step   (real) value distance from every label
+     * @param step (real) value distance from every label
      */
     public ChartView setStep(int step) {
 
@@ -1049,8 +1049,7 @@ public abstract class ChartView extends RelativeLayout {
 
 
     /**
-     *
-     * @param spacing   Spacing between left/right of the chart and the first/last label
+     * @param spacing Spacing between left/right of the chart and the first/last label
      */
     public ChartView setBorderSpacing(float spacing) {
 
@@ -1064,8 +1063,7 @@ public abstract class ChartView extends RelativeLayout {
 
 
     /**
-     *
-     * @param spacing   Spacing between top of the chart and the first label
+     * @param spacing Spacing between top of the chart and the first label
      */
     public ChartView setTopSpacing(float spacing) {
 
@@ -1104,9 +1102,9 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * To set a threshold line to the chart.
      *
-     * @param value   Threshold value.
-     * @param paint   The Paint instance that will be used to draw the grid
-     *                If null the grid won't be drawn
+     * @param value Threshold value.
+     * @param paint The Paint instance that will be used to draw the grid
+     *              If null the grid won't be drawn
      */
     public ChartView setThresholdLine(float value, Paint paint) {
 
@@ -1149,23 +1147,31 @@ public abstract class ChartView extends RelativeLayout {
         private final static int DEFAULT_COLOR = -16777216;
 
 
-        /** Chart */
+        /**
+         * Chart
+         */
         protected Paint chartPaint;
         protected float axisThickness;
         protected int axisColor;
 
 
-        /** Grid */
+        /**
+         * Grid
+         */
         protected Paint gridPaint;
         protected boolean hasHorizontalGrid;
         protected boolean hasVerticalGrid;
 
 
-        /** Threshold Line **/
+        /**
+         * Threshold Line *
+         */
         private Paint thresholdPaint;
 
 
-        /** Font */
+        /**
+         * Font
+         */
         protected Paint labelsPaint;
         protected int labelsColor;
         protected float fontSize;
@@ -1233,23 +1239,23 @@ public abstract class ChartView extends RelativeLayout {
             labelsPaint = null;
             gridPaint = null;
             thresholdPaint = null;
-		}
-	
-		
-		protected int getTextHeightBounds(String character){
-			if(character != ""){
-				Rect bounds = new Rect();
-				style.labelsPaint
-					.getTextBounds(character, 
-							0, 
-								1, 
-									bounds);
-				return bounds.height();
-			}
-			return 0;
-		}
-		
-	}
-	
+        }
+
+
+        protected int getTextHeightBounds(String character) {
+            if (character != "") {
+                Rect bounds = new Rect();
+                style.labelsPaint
+                        .getTextBounds(character,
+                                0,
+                                1,
+                                bounds);
+                return bounds.height();
+            }
+            return 0;
+        }
+
+    }
+
 
 }
