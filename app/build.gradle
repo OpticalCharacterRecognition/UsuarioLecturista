@@ -39,7 +39,6 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':tess-two')
     compile project(':viewPagerLibrary')
     compile project(':ParseLoginUI')
     compile project(':chartLibrary')

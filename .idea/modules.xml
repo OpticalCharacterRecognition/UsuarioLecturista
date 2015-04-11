@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/chartLibrary/chartLibrary.iml" filepath="$PROJECT_DIR$/chartLibrary/chartLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-sdk/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook-sdk/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-sdk/facebook-sdk.iml" filepath="$PROJECT_DIR$/facebook-sdk/facebook-sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tess-two/tess-two.iml" filepath="$PROJECT_DIR$/tess-two/tess-two.iml" />
       <module fileurl="file://$PROJECT_DIR$/viewPagerLibrary/viewPagerLibrary.iml" filepath="$PROJECT_DIR$/viewPagerLibrary/viewPagerLibrary.iml" />
     </modules>
   </component>
