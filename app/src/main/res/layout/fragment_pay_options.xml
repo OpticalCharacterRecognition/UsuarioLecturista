@@ -27,17 +27,17 @@
             android:orientation="vertical">
 
 
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textView"
-                style="@style/TextViewMainPageLabel"
-                android:text="@string/readingsLabelsLimitDate"
-                android:textIsSelectable="false" />
+            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--android:id="@+id/textView"-->
+            <!--style="@style/TextViewMainPageLabel"-->
+            <!--android:text="@string/readingsLabelsLimitDate"-->
+            <!--android:textIsSelectable="false" />-->
 
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/textViewBillingDate"
-                style="@style/TextViewMainPage"
-                android:text="26 de Abril 2015"
-                android:textIsSelectable="true" />
+            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--android:id="@+id/textViewBillingDate"-->
+            <!--style="@style/TextViewMainPage"-->
+            <!--android:text="26 de Abril 2015"-->
+            <!--android:textIsSelectable="true" />-->
 
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textView3"
@@ -63,6 +63,7 @@
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:textColor="@color/whiteWater"
         android:text="@string/textCreditCard"
         android:id="@+id/buttonCreditCard"
         android:layout_marginTop="20dp" />
@@ -78,6 +79,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="@string/buttonTextOxxo"
+        android:textColor="@color/whiteWater"
         android:id="@+id/buttonOxxoGenerate"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp" />

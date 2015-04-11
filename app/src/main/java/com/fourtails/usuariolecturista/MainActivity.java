@@ -157,6 +157,10 @@ public class MainActivity extends ActionBarActivity {
 
     boolean refreshBillsOnly = false;
 
+    public static boolean prepaidModeEnabled = false;
+
+    public static int mShortAnimationDuration;
+
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("AppCompatMethod")
     @Override
@@ -171,8 +175,10 @@ public class MainActivity extends ActionBarActivity {
 
         context = getApplicationContext();
 
-        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
 
+        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
 
         /**toolBar **/
         setUpToolBar();
@@ -364,7 +370,6 @@ public class MainActivity extends ActionBarActivity {
      */
     @Subscribe
     public void paymentAttempt(Double payAmount) {
-        // TODO: add all the server calls here
         FragmentManager fragmentManager = getSupportFragmentManager();
 
 
@@ -416,7 +421,14 @@ public class MainActivity extends ActionBarActivity {
 
                 @Override
                 public void success(Charge token) {
-                    makePaymentOnBackend();
+                    if (prepaidModeEnabled) {
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                            //TODO make prepaid backend call
+                        }
+                    } else {
+                        makeNormalPaymentOnBackend();
+                    }
                     Toast.makeText(getApplicationContext(), "Pago Aceptado", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -553,7 +565,7 @@ public class MainActivity extends ActionBarActivity {
      * Backend call
      * Tries to register the payment on the backend
      */
-    public void makePaymentOnBackend() {
+    public void makeNormalPaymentOnBackend() {
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
@@ -593,22 +605,87 @@ public class MainActivity extends ActionBarActivity {
                     }
                     switch (transactionResponse) {
                         case 1:
-                            Log.i("BACKEND", "Good-makePaymentOnBackend");
+                            Log.i("BACKEND", "Good-makeNormalPaymentOnBackend");
                             refreshBillsOnly = true;
                             getPaidBillsFromBackend();
                             Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
-                            Log.i("BACKEND", "Good-NoBills-makePaymentOnBackend");
+                            Log.i("BACKEND", "Good-NoBills-makeNormalPaymentOnBackend");
                             break;
                         case 99:
                             Log.i("ERROR", "NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-makePaymentOnBackend");
+                            Log.i("BACKEND", "Bad-makeNormalPaymentOnBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-makePaymentOnBackend");
+                    Log.e(TAG, "BackendError - Unknown-makeNormalPaymentOnBackend");
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * Backend call
+     * Tries to register the payment on the backend
+     */
+    public void makePrepayPaymentOnBackend() {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
+                        return 99;
+                    }
+                    List<ChartBill> bills = BillsFragment.getBillsForThisMonthRange(1);
+                    ChartBill bill = bills.get(BillsFragment.selectedBillIndex);
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+                    Backend service = builder.build();
+
+                    MessagesPayBill messagesPayBill = new MessagesPayBill();
+                    messagesPayBill.setBillKey(bill.urlSafeKey);
+
+                    MessagesPayBillResponse response = service.bill().pay(messagesPayBill).execute();
+
+                    if (response.getOk()) {
+                        Log.i("BACKEND", response.toPrettyString());
+                        return 1;
+                    } else {
+                        return 2;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                if (transactionResponse != null) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    switch (transactionResponse) {
+                        case 1:
+                            Log.i("BACKEND", "Good-makeNormalPaymentOnBackend");
+                            refreshBillsOnly = true;
+                            getPaidBillsFromBackend();
+                            Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 2:
+                            Log.i("BACKEND", "Good-NoBills-makeNormalPaymentOnBackend");
+                            break;
+                        case 99:
+                            Log.i("ERROR", "NO INTERNET");
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-makeNormalPaymentOnBackend");
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-makeNormalPaymentOnBackend");
                 }
             }
         }.execute();
@@ -734,56 +811,6 @@ public class MainActivity extends ActionBarActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, baos);
         return baos.toByteArray();
     }
-
-//    /**
-//     * DatabaseSave
-//     * tries to save a reading to the backend
-//     *
-//     * @param chartReading the last reading from the camera
-//     */
-//    private void saveReadingToBackend(final ChartReading chartReading) {
-//        new AsyncTask<Void, Void, Integer>() {
-//            @Override
-//            protected Integer doInBackground(Void... params) {
-//                try {
-//
-//                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-//                    Backend service = builder.build();
-//
-//                    MessagesNewReading messagesNewReading = new MessagesNewReading();
-//                    messagesNewReading.setAccountNumber(checkForSavedMeter().accountNumber);
-//                    //messagesNewReading.setImageName((long) chartReading.value);
-//
-//                    MessagesNewReadingResponse response = service.reading().newImage(messagesNewReading).execute();
-//
-//                    if (response.getOk()) {
-//                        Log.i("BACKEND", response.toPrettyString());
-//                        return 1;
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Log.e(TAG, e.getMessage());
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(Integer transactionResponse) {
-//                if (transactionResponse != null) {
-//                    switch (transactionResponse) {
-//                        case 1:
-//                            chartReading.save();
-//                            Log.i("BACKEND", "Good-saveReadingToBackend");
-//                            break;
-//                        default:
-//                            Log.i("BACKEND", "Bad-saveReadingToBackend");
-//                    }
-//                } else {
-//                    Log.e(TAG, "BackendError - Unknown-saveReadingToBackend");
-//                }
-//            }
-//        }.execute();
-//    }
 
     /**
      * DatabaseSave
@@ -962,12 +989,18 @@ public class MainActivity extends ActionBarActivity {
                             }
                             Log.i("BACKEND", "Good-getUnPaidBillsFromBackend");
                             break;
-                        case 2:
-                            ReadingsFragment.readingsBus.post(2);
+                        case 2: // no unpaid bills found so we enable the prepaid mode
+                            prepaidModeEnabled = true;
+                            if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
+                                BillsFragment.billsBus.post(1);
+                                refreshBillsOnly = false;
+                            } else {
+                                ReadingsFragment.readingsBus.post(2);
+                            }
                             Log.i("BACKEND", "Good-NoBills-getUnPaidBillsFromBackend");
                             break;
                         case 99:
-                            ReadingsFragment.readingsBus.post(2);
+                            ReadingsFragment.readingsBus.post(3);
                             Log.i("ERROR", "NO INTERNET");
                             break;
                         default:

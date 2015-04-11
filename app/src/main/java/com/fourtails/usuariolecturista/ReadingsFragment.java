@@ -209,7 +209,6 @@ public class ReadingsFragment extends Fragment {
     @InjectView(R.id.textViewLastReadingDate)
     TextView textViewLastReadingDate;
 
-    private int mShortAnimationDuration;
 
     private float[] chartValues;
 
@@ -274,10 +273,6 @@ public class ReadingsFragment extends Fragment {
                 fabScan.show();
             }
         }, 500);
-
-        mShortAnimationDuration = getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
-
 
         return view;
     }
@@ -400,7 +395,7 @@ public class ReadingsFragment extends Fragment {
         // listener set on the view.
         linechartCardView.animate()
                 .alpha(1f)
-                .setDuration(mShortAnimationDuration)
+                .setDuration(MainActivity.mShortAnimationDuration)
                 .setListener(null);
 
         // Animate the loading view to 0% opacity. After the animation ends,
@@ -408,7 +403,7 @@ public class ReadingsFragment extends Fragment {
         // participate in layout passes, etc.)
         progressBar.animate()
                 .alpha(0f)
-                .setDuration(mShortAnimationDuration)
+                .setDuration(MainActivity.mShortAnimationDuration)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {

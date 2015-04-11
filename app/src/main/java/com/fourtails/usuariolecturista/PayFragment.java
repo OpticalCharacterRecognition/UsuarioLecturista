@@ -20,6 +20,7 @@ import butterknife.OnClick;
 /**
  * Main Payment fragment, the CreditCard will be shown and then will call our servers
  */
+@Deprecated
 public class PayFragment extends Fragment {
 
     @InjectView(R.id.textViewPayCreditCardNumber)

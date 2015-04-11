@@ -26,6 +26,10 @@ import butterknife.OnClick;
 
 public class PayOptionsFragment extends Fragment {
 
+    /**
+     * Dialog Views *
+     */
+
     TextView textViewCreditCardExpirationDate;
     Spinner spinnerCreditCardSelector;
     EditText editTextCreditCardNumber;
@@ -38,6 +42,11 @@ public class PayOptionsFragment extends Fragment {
     int selectedMonth;
     int selectedYear;
 
+    private AlertDialog payDialog = null;
+
+    /**
+     * **************************
+     */
 
     @InjectView(R.id.buttonCreditCard)
     Button buttonAddCreditCard;
@@ -48,7 +57,7 @@ public class PayOptionsFragment extends Fragment {
 
     @OnClick(R.id.buttonCreditCard)
     public void creditCardClicked() {
-        inflateAlertDialog();
+        inflateCreditCardDialog();
     }
 
 
@@ -84,13 +93,13 @@ public class PayOptionsFragment extends Fragment {
     /**
      * Inflates the credit card alert dialog, can't be injected
      */
-    private void inflateAlertDialog() {
+    private void inflateCreditCardDialog() {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_add_credit_card, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
-        builder.show();
+        payDialog = builder.show();
 
         textViewCreditCardExpirationDate = (TextView) view.findViewById(R.id.editTextCreditCardExpirationDate);
 //        spinnerCreditCardSelector = (Spinner) view.findViewById(R.id.spinnerCreditCardSelector);
@@ -127,6 +136,9 @@ public class PayOptionsFragment extends Fragment {
             if (validCard) {
                 Double payAmount = BillsFragment.selectedBill;
                 MainActivity.bus.post(payAmount);
+                if (PayOptionsFragment.this.payDialog != null) {
+                    PayOptionsFragment.this.payDialog.dismiss();
+                }
             }
         } else {
             Toast.makeText(getActivity(), getResources().getString(R.string.TACMustAgreedMessage), Toast.LENGTH_SHORT).show();

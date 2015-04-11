@@ -193,16 +193,27 @@ public class BillsFragment extends Fragment {
 
     @OnClick(R.id.fabPay)
     public void payButtonClicked() {
-        if (orderedBills.get(selectedBillIndex).status.equalsIgnoreCase("Unpaid")) {
-            Fragment payOptionsFragment = new PayOptionsFragment();
+        if (MainActivity.prepaidModeEnabled) {
+            Fragment prepaidFragment = new PrepaidFragment();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 makeAnimationBetweenFragments(
-                        payOptionsFragment, sharedCardView,
+                        prepaidFragment, sharedCardView,
                         getResources().getString(R.string.transitionFirstCardView),
                         android.R.transition.fade, // Exit Transition
                         android.R.transition.move);  // Enter Transition
-            } else {
-                MainActivity.bus.post(payOptionsFragment);
+            }
+        } else {
+            if (orderedBills.get(selectedBillIndex).status.equalsIgnoreCase("Unpaid")) {
+                Fragment payOptionsFragment = new PayOptionsFragment();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    makeAnimationBetweenFragments(
+                            payOptionsFragment, sharedCardView,
+                            getResources().getString(R.string.transitionFirstCardView),
+                            android.R.transition.fade, // Exit Transition
+                            android.R.transition.move);  // Enter Transition
+                } else {
+                    MainActivity.bus.post(payOptionsFragment);
+                }
             }
         }
     }
@@ -342,15 +353,20 @@ public class BillsFragment extends Fragment {
         textViewSelectedBill.setText("$" + String.valueOf(lastBillAmount));
         String statusTranslate;
         selectedBill = lastBillAmount;
-        if (lastBillStatus.equalsIgnoreCase("Paid")) {
-            statusTranslate = "Pagada";
-            fabPay.hide();
-        } else if (lastBillStatus.equalsIgnoreCase("UnPaid")) {
-            statusTranslate = "No Pagada";
+        if (MainActivity.prepaidModeEnabled) {
             fabPay.show();
+            statusTranslate = "Pagada";
         } else {
-            statusTranslate = "Desconocido";
-            fabPay.hide();
+            if (lastBillStatus.equalsIgnoreCase("Paid")) {
+                statusTranslate = "Pagada";
+                fabPay.hide();
+            } else if (lastBillStatus.equalsIgnoreCase("UnPaid")) {
+                statusTranslate = "No Pagada";
+                fabPay.show();
+            } else {
+                statusTranslate = "Desconocido";
+                fabPay.hide();
+            }
         }
         textViewBillsStatus.setText(statusTranslate);
         mLineChart.setVisibility(View.VISIBLE);
@@ -458,15 +474,20 @@ public class BillsFragment extends Fragment {
 
         selectedBill = chartValues[entryIndex];
         selectedBillStatus = orderedBills.get(entryIndex).status;
-        if (selectedBillStatus.equalsIgnoreCase("Paid")) {
+        // Prepaid logic
+        if (MainActivity.prepaidModeEnabled) {
             selectedBillStatus = "Pagada";
-            fabPay.hide();
-        } else if (selectedBillStatus.equalsIgnoreCase("UnPaid")) {
-            selectedBillStatus = "No Pagada";
-            fabPay.show();
         } else {
-            selectedBillStatus = "Desconocido";
-            fabPay.hide();
+            if (selectedBillStatus.equalsIgnoreCase("Paid")) {
+                selectedBillStatus = "Pagada";
+                fabPay.hide();
+            } else if (selectedBillStatus.equalsIgnoreCase("UnPaid")) {
+                selectedBillStatus = "No Pagada";
+                fabPay.show();
+            } else {
+                selectedBillStatus = "Desconocido";
+                fabPay.hide();
+            }
         }
         textViewBillsStatus.setText(selectedBillStatus);
         textViewSelectedBill.setText("$" + String.valueOf(selectedBill));

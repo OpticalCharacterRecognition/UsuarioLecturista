@@ -129,6 +129,22 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="keyboardButton">
+        <item name="android:background">@drawable/custom_button</item>
+        <item name="android:textColor">@color/whiteWater</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
     <!--<style name="ButtonAppTheme" parent="android:Widget.Material.Button">-->
     <style name="ButtonAppTheme" parent="Widget.AppCompat.ActionButton">
         <item name="android:background">@drawable/custom_button</item>
