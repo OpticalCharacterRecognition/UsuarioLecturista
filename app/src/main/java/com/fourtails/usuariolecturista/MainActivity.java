@@ -832,7 +832,8 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetReadings messagesGetReadings = new MessagesGetReadings();
-                    messagesGetReadings.setAccountNumber("3");
+                    Meter meter = checkForSavedMeter();
+                    messagesGetReadings.setAccountNumber(meter.accountNumber);
 
                     MessagesGetReadingsResponse response = service.reading().get(messagesGetReadings).execute();
 
@@ -890,7 +891,8 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    messagesGetBills.setAccountNumber("3");
+                    Meter meter = checkForSavedMeter();
+                    messagesGetBills.setAccountNumber(meter.accountNumber);
                     messagesGetBills.setStatus("Paid");
 
                     MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
@@ -954,7 +956,8 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    messagesGetBills.setAccountNumber("3");
+                    Meter meter = checkForSavedMeter();
+                    messagesGetBills.setAccountNumber(meter.accountNumber);
                     messagesGetBills.setStatus("Unpaid");
 
                     MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();

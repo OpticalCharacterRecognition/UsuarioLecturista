@@ -57,21 +57,7 @@
             android:screenOrientation="portrait" />
 
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
-        <activity
-            android:name=".ocr.CaptureActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/AppThemeFull"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".ocr.HelpActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ocr.PreferencesActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main_drawer"
@@ -139,7 +125,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:name="com.fourtails.usuariolecturista.utilities.CustomPushBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -160,6 +146,10 @@
                 <category android:name="com.fourtails.usuariolecturista" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="com.parse.push.notification_icon"
+            android:resource="@drawable/push_icon" />
     </application>
 
 </manifest>

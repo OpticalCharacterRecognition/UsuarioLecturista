@@ -172,7 +172,7 @@ public class ServiceChooserActivity extends Activity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("golocky", e.getMessage());
+                    Log.e(TAG, e.getMessage());
                 }
                 return null;
             }

@@ -19,7 +19,8 @@
 package com.appspot.ocr_backend.backend.model;
 
 /**
- * Message asking for Readings that meet certain criteria account_number: (String)
+ * Response to reading creation request ok: (Boolean) Process creation successful or failed error:
+ * (String) If creation failed, contains the reason, otherwise empty.
  * <p/>
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the backend. For a detailed explanation see:
@@ -29,37 +30,58 @@ package com.appspot.ocr_backend.backend.model;
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
-public final class MessagesGetReadings extends com.google.api.client.json.GenericJson {
+public final class MessagesNewImageForProcessingResponse extends com.google.api.client.json.GenericJson {
 
     /**
      * The value may be {@code null}.
      */
-    @com.google.api.client.util.Key("account_number")
-    private java.lang.String accountNumber;
+    @com.google.api.client.util.Key
+    private java.lang.String error;
+
+    /**
+     * The value may be {@code null}.
+     */
+    @com.google.api.client.util.Key
+    private java.lang.Boolean ok;
 
     /**
      * @return value or {@code null} for none
      */
-    public java.lang.String getAccountNumber() {
-        return accountNumber;
+    public java.lang.String getError() {
+        return error;
     }
 
     /**
-     * @param accountNumber accountNumber or {@code null} for none
+     * @param error error or {@code null} for none
      */
-    public MessagesGetReadings setAccountNumber(java.lang.String accountNumber) {
-        this.accountNumber = accountNumber;
+    public MessagesNewImageForProcessingResponse setError(java.lang.String error) {
+        this.error = error;
+        return this;
+    }
+
+    /**
+     * @return value or {@code null} for none
+     */
+    public java.lang.Boolean getOk() {
+        return ok;
+    }
+
+    /**
+     * @param ok ok or {@code null} for none
+     */
+    public MessagesNewImageForProcessingResponse setOk(java.lang.Boolean ok) {
+        this.ok = ok;
         return this;
     }
 
     @Override
-    public MessagesGetReadings set(String fieldName, Object value) {
-        return (MessagesGetReadings) super.set(fieldName, value);
+    public MessagesNewImageForProcessingResponse set(String fieldName, Object value) {
+        return (MessagesNewImageForProcessingResponse) super.set(fieldName, value);
     }
 
     @Override
-    public MessagesGetReadings clone() {
-        return (MessagesGetReadings) super.clone();
+    public MessagesNewImageForProcessingResponse clone() {
+        return (MessagesNewImageForProcessingResponse) super.clone();
     }
 
 }

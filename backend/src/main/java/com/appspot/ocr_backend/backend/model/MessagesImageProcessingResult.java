@@ -19,8 +19,9 @@
 package com.appspot.ocr_backend.backend.model;
 
 /**
- * Message containing the details of a Meter urlsafe_key: (String) urlsafe key account_number:
- * (String) balance: (Integer) model: (String)
+ * Message containing the result of the processing of an image task_name: (String)
+ * Process--[image_name] task_payload: (String) [account_number]--[image_name] result: (Integer) the
+ * measurement read from the image. Empty if error error: (String) error. Empty if success
  * <p/>
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the backend. For a detailed explanation see:
@@ -30,101 +31,101 @@ package com.appspot.ocr_backend.backend.model;
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
-public final class MessagesMeter extends com.google.api.client.json.GenericJson {
+public final class MessagesImageProcessingResult extends com.google.api.client.json.GenericJson {
 
     /**
      * The value may be {@code null}.
      */
-    @com.google.api.client.util.Key("account_number")
-    private java.lang.String accountNumber;
+    @com.google.api.client.util.Key
+    private java.lang.String error;
 
     /**
      * The value may be {@code null}.
      */
     @com.google.api.client.util.Key
     @com.google.api.client.json.JsonString
-    private java.lang.Long balance;
+    private java.lang.Long result;
 
     /**
      * The value may be {@code null}.
      */
-    @com.google.api.client.util.Key
-    private java.lang.String model;
+    @com.google.api.client.util.Key("task_name")
+    private java.lang.String taskName;
 
     /**
      * The value may be {@code null}.
      */
-    @com.google.api.client.util.Key("urlsafe_key")
-    private java.lang.String urlsafeKey;
+    @com.google.api.client.util.Key("task_payload")
+    private java.lang.String taskPayload;
 
     /**
      * @return value or {@code null} for none
      */
-    public java.lang.String getAccountNumber() {
-        return accountNumber;
+    public java.lang.String getError() {
+        return error;
     }
 
     /**
-     * @param accountNumber accountNumber or {@code null} for none
+     * @param error error or {@code null} for none
      */
-    public MessagesMeter setAccountNumber(java.lang.String accountNumber) {
-        this.accountNumber = accountNumber;
+    public MessagesImageProcessingResult setError(java.lang.String error) {
+        this.error = error;
         return this;
     }
 
     /**
      * @return value or {@code null} for none
      */
-    public java.lang.Long getBalance() {
-        return balance;
+    public java.lang.Long getResult() {
+        return result;
     }
 
     /**
-     * @param balance balance or {@code null} for none
+     * @param result result or {@code null} for none
      */
-    public MessagesMeter setBalance(java.lang.Long balance) {
-        this.balance = balance;
+    public MessagesImageProcessingResult setResult(java.lang.Long result) {
+        this.result = result;
         return this;
     }
 
     /**
      * @return value or {@code null} for none
      */
-    public java.lang.String getModel() {
-        return model;
+    public java.lang.String getTaskName() {
+        return taskName;
     }
 
     /**
-     * @param model model or {@code null} for none
+     * @param taskName taskName or {@code null} for none
      */
-    public MessagesMeter setModel(java.lang.String model) {
-        this.model = model;
+    public MessagesImageProcessingResult setTaskName(java.lang.String taskName) {
+        this.taskName = taskName;
         return this;
     }
 
     /**
      * @return value or {@code null} for none
      */
-    public java.lang.String getUrlsafeKey() {
-        return urlsafeKey;
+    public java.lang.String getTaskPayload() {
+        return taskPayload;
     }
 
     /**
-     * @param urlsafeKey urlsafeKey or {@code null} for none
+     * @param taskPayload taskPayload or {@code null} for none
      */
-    public MessagesMeter setUrlsafeKey(java.lang.String urlsafeKey) {
-        this.urlsafeKey = urlsafeKey;
+    public MessagesImageProcessingResult setTaskPayload(java.lang.String taskPayload) {
+        this.taskPayload = taskPayload;
         return this;
     }
 
     @Override
-    public MessagesMeter set(String fieldName, Object value) {
-        return (MessagesMeter) super.set(fieldName, value);
+    public MessagesImageProcessingResult set(String fieldName, Object value) {
+        return (MessagesImageProcessingResult) super.set(fieldName, value);
     }
 
     @Override
-    public MessagesMeter clone() {
-        return (MessagesMeter) super.clone();
+    public MessagesImageProcessingResult clone() {
+        return (MessagesImageProcessingResult) super.clone();
     }
 
 }

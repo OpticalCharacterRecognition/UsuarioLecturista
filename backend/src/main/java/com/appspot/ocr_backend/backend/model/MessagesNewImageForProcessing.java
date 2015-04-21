@@ -19,8 +19,8 @@
 package com.appspot.ocr_backend.backend.model;
 
 /**
- * Message containing the details of a Meter urlsafe_key: (String) urlsafe key account_number:
- * (String) balance: (Integer) model: (String)
+ * Message containing the information of a new image captured in the platform account_number:
+ * (String) image_name: (String)
  * <p/>
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the backend. For a detailed explanation see:
@@ -30,7 +30,7 @@ package com.appspot.ocr_backend.backend.model;
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
-public final class MessagesMeter extends com.google.api.client.json.GenericJson {
+public final class MessagesNewImageForProcessing extends com.google.api.client.json.GenericJson {
 
     /**
      * The value may be {@code null}.
@@ -41,21 +41,8 @@ public final class MessagesMeter extends com.google.api.client.json.GenericJson 
     /**
      * The value may be {@code null}.
      */
-    @com.google.api.client.util.Key
-    @com.google.api.client.json.JsonString
-    private java.lang.Long balance;
-
-    /**
-     * The value may be {@code null}.
-     */
-    @com.google.api.client.util.Key
-    private java.lang.String model;
-
-    /**
-     * The value may be {@code null}.
-     */
-    @com.google.api.client.util.Key("urlsafe_key")
-    private java.lang.String urlsafeKey;
+    @com.google.api.client.util.Key("image_name")
+    private java.lang.String imageName;
 
     /**
      * @return value or {@code null} for none
@@ -67,7 +54,7 @@ public final class MessagesMeter extends com.google.api.client.json.GenericJson 
     /**
      * @param accountNumber accountNumber or {@code null} for none
      */
-    public MessagesMeter setAccountNumber(java.lang.String accountNumber) {
+    public MessagesNewImageForProcessing setAccountNumber(java.lang.String accountNumber) {
         this.accountNumber = accountNumber;
         return this;
     }
@@ -75,56 +62,26 @@ public final class MessagesMeter extends com.google.api.client.json.GenericJson 
     /**
      * @return value or {@code null} for none
      */
-    public java.lang.Long getBalance() {
-        return balance;
+    public java.lang.String getImageName() {
+        return imageName;
     }
 
     /**
-     * @param balance balance or {@code null} for none
+     * @param imageName imageName or {@code null} for none
      */
-    public MessagesMeter setBalance(java.lang.Long balance) {
-        this.balance = balance;
-        return this;
-    }
-
-    /**
-     * @return value or {@code null} for none
-     */
-    public java.lang.String getModel() {
-        return model;
-    }
-
-    /**
-     * @param model model or {@code null} for none
-     */
-    public MessagesMeter setModel(java.lang.String model) {
-        this.model = model;
-        return this;
-    }
-
-    /**
-     * @return value or {@code null} for none
-     */
-    public java.lang.String getUrlsafeKey() {
-        return urlsafeKey;
-    }
-
-    /**
-     * @param urlsafeKey urlsafeKey or {@code null} for none
-     */
-    public MessagesMeter setUrlsafeKey(java.lang.String urlsafeKey) {
-        this.urlsafeKey = urlsafeKey;
+    public MessagesNewImageForProcessing setImageName(java.lang.String imageName) {
+        this.imageName = imageName;
         return this;
     }
 
     @Override
-    public MessagesMeter set(String fieldName, Object value) {
-        return (MessagesMeter) super.set(fieldName, value);
+    public MessagesNewImageForProcessing set(String fieldName, Object value) {
+        return (MessagesNewImageForProcessing) super.set(fieldName, value);
     }
 
     @Override
-    public MessagesMeter clone() {
-        return (MessagesMeter) super.clone();
+    public MessagesNewImageForProcessing clone() {
+        return (MessagesNewImageForProcessing) super.clone();
     }
 
 }

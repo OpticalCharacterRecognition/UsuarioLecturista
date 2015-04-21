@@ -222,7 +222,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                         switch (transactionResponse) {
                             case 1:
                                 Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
-                                meter.save();
+                                meter.save(); // we only save if successful
                                 assignMeterToUserBackend(meter.accountNumber);
                                 break;
                             default:
