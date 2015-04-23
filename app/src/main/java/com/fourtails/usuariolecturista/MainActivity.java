@@ -44,6 +44,8 @@ import com.appspot.ocr_backend.backend.model.MessagesGetBills;
 import com.appspot.ocr_backend.backend.model.MessagesGetBillsResponse;
 import com.appspot.ocr_backend.backend.model.MessagesGetReadings;
 import com.appspot.ocr_backend.backend.model.MessagesGetReadingsResponse;
+import com.appspot.ocr_backend.backend.model.MessagesNewImageForProcessing;
+import com.appspot.ocr_backend.backend.model.MessagesNewImageForProcessingResponse;
 import com.appspot.ocr_backend.backend.model.MessagesPayBill;
 import com.appspot.ocr_backend.backend.model.MessagesPayBillResponse;
 import com.appspot.ocr_backend.backend.model.MessagesReading;
@@ -141,7 +143,8 @@ public class MainActivity extends ActionBarActivity {
 
     public static Bitmap savedBitmap;
 
-    private String globalUserEmail;
+    private String mUserEmail;
+    private String mAccountNumber;
 
     /**
      * Global instance of the JSON factory.
@@ -179,6 +182,10 @@ public class MainActivity extends ActionBarActivity {
                 android.R.integer.config_shortAnimTime);
 
         ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+
+        // Account Number
+        Meter meter = checkForSavedMeter();
+        mAccountNumber = meter.accountNumber;
 
         /**toolBar **/
         setUpToolBar();
@@ -395,7 +402,7 @@ public class MainActivity extends ActionBarActivity {
                             "'card':'tok_test_visa_4242'" + "," +
                             "'details':" +
                             "{" +
-                            "'email':" + "'" + globalUserEmail + "'" +
+                            "'email':" + "'" + mUserEmail + "'" +
                             "}" +
                             "}");
 
@@ -699,6 +706,7 @@ public class MainActivity extends ActionBarActivity {
      * @param image
      */
     public void uploadFileToGCS(final byte[] image) {
+        final String[] imageName = {""};
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected void onPreExecute() {
@@ -723,10 +731,10 @@ public class MainActivity extends ActionBarActivity {
                             .setServiceAccountPrivateKeyFromP12File(file)
                             .build();
 
-                    String imageName = generateIdentifierForImage();
+                    imageName[0] = generateIdentifierForImage();
 
 
-                    String URI = "https://storage.googleapis.com/" + BUCKET_NAME + "/" + imageName + ".jpg";
+                    String URI = "https://storage.googleapis.com/" + BUCKET_NAME + "/" + imageName[0] + ".jpg";
                     HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
 
                     GenericUrl url = new GenericUrl(URI);
@@ -755,6 +763,7 @@ public class MainActivity extends ActionBarActivity {
                     switch (transactionResponse) {
                         case 1:
                             Log.i("BACKEND", "Good-uploadFileToGCS");
+                            registerImageNameOnBackend(imageName[0]);
                             Toast.makeText(context, getString(R.string.camera_message_upload_finished), Toast.LENGTH_SHORT).show();
                             break;
                         default:
@@ -801,6 +810,61 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
+     * Registers the image name on the backend so it triggers a "reading"
+     *
+     * @param imageName
+     */
+    private void registerImageNameOnBackend(final String imageName) {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                try {
+                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
+                        return 99;
+                    }
+                    // Use a builder to help formulate the API request.
+                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+                    Backend service = builder.build();
+
+
+                    MessagesNewImageForProcessing messagesNewImageForProcessing = new MessagesNewImageForProcessing();
+                    messagesNewImageForProcessing.setAccountNumber(mAccountNumber);
+                    messagesNewImageForProcessing.setImageName(imageName);
+
+                    MessagesNewImageForProcessingResponse response = service.reading().newImageForProcessing(messagesNewImageForProcessing).execute();
+
+                    if (response.getOk()) {
+                        Log.i("BACKEND", response.toPrettyString());
+                        return 1;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer transactionResponse) {
+                if (transactionResponse != null) {
+                    switch (transactionResponse) {
+                        case 1:
+                            Log.i("BACKEND", "Good-registerImageNameOnBackend");
+                            break;
+                        case 99:
+                            Log.i("ERROR", "NO INTERNET");
+                            break;
+                        default:
+                            Log.i("BACKEND", "Bad-registerImageNameOnBackend");
+                    }
+                } else {
+                    Log.e(TAG, "BackendError - Unknown-registerImageNameOnBackend");
+                }
+            }
+        }.execute();
+    }
+
+    /**
      * Bitmap to array method
      *
      * @param bitmap bitmap to convert
@@ -832,8 +896,7 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetReadings messagesGetReadings = new MessagesGetReadings();
-                    Meter meter = checkForSavedMeter();
-                    messagesGetReadings.setAccountNumber(meter.accountNumber);
+                    messagesGetReadings.setAccountNumber(mAccountNumber);
 
                     MessagesGetReadingsResponse response = service.reading().get(messagesGetReadings).execute();
 
@@ -891,8 +954,7 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    Meter meter = checkForSavedMeter();
-                    messagesGetBills.setAccountNumber(meter.accountNumber);
+                    messagesGetBills.setAccountNumber(mAccountNumber);
                     messagesGetBills.setStatus("Paid");
 
                     MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
@@ -956,8 +1018,7 @@ public class MainActivity extends ActionBarActivity {
                     Backend service = builder.build();
 
                     MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    Meter meter = checkForSavedMeter();
-                    messagesGetBills.setAccountNumber(meter.accountNumber);
+                    messagesGetBills.setAccountNumber(mAccountNumber);
                     messagesGetBills.setStatus("Unpaid");
 
                     MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
@@ -1132,7 +1193,7 @@ public class MainActivity extends ActionBarActivity {
     public void loadImageInBackground() {
         final ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
-            globalUserEmail = parseUser.getEmail();
+            mUserEmail = parseUser.getEmail();
             if (ParseFacebookUtils.isLinked(parseUser)) {
                 if (ParseFacebookUtils.getSession().isOpened()) {
                     Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
