@@ -45,6 +45,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -358,6 +359,7 @@ public class ReadingsFragment extends Fragment {
         mLineChart.addData(dataSet);
 
         mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
+                .setLabelsFormat(new DecimalFormat("##' m3'"))
                 .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
                 .setXAxis(false)
                 .setXLabels(XController.LabelPosition.OUTSIDE)

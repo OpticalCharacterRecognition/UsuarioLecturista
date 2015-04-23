@@ -42,6 +42,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -565,6 +566,7 @@ public class BillsFragment extends Fragment {
 
 
         mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
+                .setLabelsFormat(new DecimalFormat("'$ '##"))
                 .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
                 .setXAxis(false)
                 .setXLabels(XController.LabelPosition.OUTSIDE)
