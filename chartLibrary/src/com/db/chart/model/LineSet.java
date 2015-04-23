@@ -74,9 +74,13 @@ public class LineSet extends ChartSet {
 
 
     /**
-     * Phase of the line (for animations)
+     * Intervals to apply in dashness
      */
-    private int mPhase;
+    private float[] mDashedIntervals;
+    /**
+     * Phase of the line (useful for animations)
+     */
+    private int mDashedPhase;
 
 
     public LineSet() {
@@ -193,10 +197,14 @@ public class LineSet extends ChartSet {
     }
 
 
-    public int getPhase() {
-        return mPhase;
+    public float[] getDashedIntervals() {
+        return mDashedIntervals;
     }
-	
+
+    public int getDashedPhase() {
+        return mDashedPhase;
+    }
+
 	
 	
 	/*
@@ -206,14 +214,21 @@ public class LineSet extends ChartSet {
 	 */
 
 
-    public void setPhase(int phase) {
-        mPhase = phase;
+    public void setDashedPhase(int phase) {
+        mDashedPhase = phase;
     }
 
 
-    public LineSet setDashed(boolean bool) {
-        mIsDashed = bool;
-        mPhase = 0;
+    /**
+     * Set a dashed effect to the line.
+     *
+     * @param intervals array of ON and OFF distances
+     * @return
+     */
+    public LineSet setDashed(float[] intervals) {
+        mIsDashed = true;
+        mDashedIntervals = intervals;
+        mDashedPhase = 0;
         return this;
     }
 

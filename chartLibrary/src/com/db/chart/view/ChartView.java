@@ -155,6 +155,8 @@ public abstract class ChartView extends RelativeLayout {
         public boolean onPreDraw() {
             ChartView.this.getViewTreeObserver().removeOnPreDrawListener(this);
 
+            style.init();
+
             // Define chart frame
             chartTop = getPaddingTop() + verController.getLabelHeight() / 2;
             chartBottom = getMeasuredHeight() - getPaddingBottom();
@@ -254,7 +256,7 @@ public abstract class ChartView extends RelativeLayout {
 	
 	
 	/*
-	 * -----------------------
+     * -----------------------
 	 * Methods to be overriden
 	 * -----------------------
 	 */
@@ -387,8 +389,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     public void dismiss() {
 
-        data.clear();
-        invalidate();
+        dismiss(mAnim);
     }
 
     /**
@@ -409,19 +410,24 @@ public abstract class ChartView extends RelativeLayout {
      */
     public void dismiss(Animation anim) {
 
-        mAnim = anim;
+        if (anim != null) {
+            mAnim = anim;
 
-        final Runnable endAction = mAnim.getEndAction();
-        mAnim.setEndAction(new Runnable() {
-            @Override
-            public void run() {
-                if (endAction != null)
-                    endAction.run();
-                dismiss();
-            }
-        });
+            final Runnable endAction = mAnim.getEndAction();
+            mAnim.setEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    if (endAction != null)
+                        endAction.run();
+                    data.clear();
+                    invalidate();
+                }
+            });
 
-        data = mAnim.prepareExitAnimation(this);
+            data = mAnim.prepareExitAnimation(this);
+        } else {
+            data.clear();
+        }
         invalidate();
     }
 
@@ -479,7 +485,7 @@ public abstract class ChartView extends RelativeLayout {
 
         mRegions = defineRegions(data);
         if (mAnim != null)
-            data = mAnim.prepareAnimation(this, oldCoords, newCoords);
+            data = mAnim.prepareUpdateAnimation(this, oldCoords, newCoords);
 
         mToUpdateValues.clear();
 
@@ -583,6 +589,7 @@ public abstract class ChartView extends RelativeLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         try { // we know this will fail when trying to animate
+
             mIsDrawing = true;
             super.onDraw(canvas);
 
@@ -615,9 +622,8 @@ public abstract class ChartView extends RelativeLayout {
             mIsDrawing = false;
         } catch (Exception e) {
         }
-
-
     }
+
 
     private void drawThresholdLine(Canvas canvas) {
 
@@ -642,7 +648,7 @@ public abstract class ChartView extends RelativeLayout {
 
         // If border diff than 0 inner chart sides must have lines
         if (horController.borderSpacing != 0 || horController.mandatoryBorderSpacing != 0) {
-            if (verController.labelsPositioning == YController.LabelPosition.NONE)
+            if (!verController.hasAxis)
                 canvas.drawLine(getInnerChartLeft(),
                         getInnerChartBottom(),
                         getInnerChartLeft(),
@@ -825,7 +831,7 @@ public abstract class ChartView extends RelativeLayout {
     /**
      * Get the step used between Y values.
      *
-     * @return Step
+     * @return step
      */
     protected int getStep() {
 
@@ -836,10 +842,51 @@ public abstract class ChartView extends RelativeLayout {
     }
 
 
+    /**
+     * Get chart's border spacing.
+     *
+     * @return spacing
+     */
+    protected float getBorderSpacing() {
+
+        if (orientation == Orientation.VERTICAL)
+            return verController.borderSpacing;
+        else
+            return horController.borderSpacing;
+    }
+
+
+    /**
+     * Get the whole data owned by the chart.
+     *
+     * @return List of {@link com.db.chart.model.ChartSet} owned by the chart
+     */
     public ArrayList<ChartSet> getData() {
         return data;
     }
 
+
+    /**
+     * Get the list of {@link android.graphics.Region} associated to each entry of a ChartSet.
+     *
+     * @param index {@link com.db.chart.model.ChartSet} index
+     * @return The list of {@link android.graphics.Region} for the specified dataset
+     */
+    public ArrayList<Region> getEntriesRegion(int index) {
+        return mRegions.get(index);
+    }
+
+
+    /**
+     * Get the current {@link com.db.chart.view.animation.Animation}
+     * held by {@link com.db.chart.view.ChartView}.
+     * Useful, for instance, to define another endAction.
+     *
+     * @return Current {@link com.db.chart.view.animation.Animation}
+     */
+    public Animation getChartAnimation() {
+        return mAnim;
+    }
 
 
 
@@ -898,7 +945,12 @@ public abstract class ChartView extends RelativeLayout {
      * @param format Format to be applied
      */
     public ChartView setLabelsFormat(DecimalFormat format) {
-        verController.labelFormat = format;
+
+        if (orientation == Orientation.VERTICAL)
+            verController.labelFormat = format;
+        else
+            horController.labelFormat = format;
+
         return this;
     }
 
@@ -909,6 +961,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     public ChartView setLabelsColor(int color) {
         style.labelsColor = color;
+        style.labelsPaint.setColor(color);
         return this;
     }
 
@@ -919,6 +972,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     public ChartView setFontSize(int size) {
         style.fontSize = size;
+        style.labelsPaint.setTextSize(size);
         return this;
     }
 
@@ -929,6 +983,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     public ChartView setTypeface(Typeface typeface) {
         style.typeface = typeface;
+        style.labelsPaint.setTypeface(typeface);
         return this;
     }
 
@@ -990,6 +1045,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     public ChartView setAxisThickness(float thickness) {
         style.axisThickness = thickness;
+        style.chartPaint.setStrokeWidth(thickness);
         return this;
     }
 
@@ -1002,6 +1058,7 @@ public abstract class ChartView extends RelativeLayout {
      */
     public ChartView setAxisColor(int color) {
         style.axisColor = color;
+        style.chartPaint.setColor(color);
         return this;
     }
 

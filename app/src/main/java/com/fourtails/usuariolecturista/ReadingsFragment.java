@@ -36,7 +36,7 @@ import com.db.chart.view.XController;
 import com.db.chart.view.YController;
 import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
-import com.db.chart.view.animation.easing.quint.QuintEaseOut;
+import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
 import com.fourtails.usuariolecturista.model.ChartReading;
@@ -250,13 +250,13 @@ public class ReadingsFragment extends Fragment {
 
         /** Chart things **/
         mCurrOverlapFactor = .5f;
-        mCurrEasing = new QuintEaseOut();
+        mCurrEasing = new QuintEase();
         mCurrStartX = -1;
         mCurrStartY = 0;
         mCurrAlpha = -1;
 
         mOldOverlapFactor = 1;
-        mOldEasing = new QuintEaseOut();
+        mOldEasing = new QuintEase();
         mOldStartX = -1;
         mOldStartY = 0;
         mOldAlpha = -1;
@@ -340,7 +340,8 @@ public class ReadingsFragment extends Fragment {
     }
 
     private void updateLineChart(String[] xAxisDaysArray, float[] valuesArray, long lowestReading, long highestReading) {
-        int spacing = (int) ((highestReading - lowestReading) / xAxisDaysArray.length);
+        double tempSpacing = ((highestReading - lowestReading) / xAxisDaysArray.length);
+        int spacing = (int) Math.ceil(tempSpacing);
         if (spacing == 0) {
             spacing = 1;
         }
@@ -351,7 +352,7 @@ public class ReadingsFragment extends Fragment {
         dataSet.setColor(this.getResources().getColor(R.color.line))
                 .setThickness(Tools.fromDpToPx(3))
                 .setSmooth(true)
-                .setDashed(true)
+                .setDashed(new float[]{10, 10})
                 .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
                 .setDotsRadius(Tools.fromDpToPx(5))
                 .setDotsStrokeThickness(Tools.fromDpToPx(2))

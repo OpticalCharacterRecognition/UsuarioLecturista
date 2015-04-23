@@ -34,7 +34,7 @@ import com.db.chart.view.XController;
 import com.db.chart.view.YController;
 import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
-import com.db.chart.view.animation.easing.quint.QuintEaseOut;
+import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.model.ChartBill;
 import com.melnykov.fab.FloatingActionButton;
@@ -251,13 +251,13 @@ public class BillsFragment extends Fragment {
 
         /** Chart things **/
         mCurrOverlapFactor = .5f;
-        mCurrEasing = new QuintEaseOut();
+        mCurrEasing = new QuintEase();
         mCurrStartX = -1;
         mCurrStartY = 0;
         mCurrAlpha = -1;
 
         mOldOverlapFactor = 1;
-        mOldEasing = new QuintEaseOut();
+        mOldEasing = new QuintEase();
         mOldStartX = -1;
         mOldStartY = 0;
         mOldAlpha = -1;
@@ -537,7 +537,8 @@ public class BillsFragment extends Fragment {
 
     private void updateLineChart(String[] xAxisDaysArray, float[] chartValues, double lowestReading, double highestReading) {
 
-        int spacing = (int) ((highestReading - lowestReading) / xAxisDaysArray.length);
+        double tempSpacing = ((highestReading - lowestReading) / xAxisDaysArray.length);
+        int spacing = (int) Math.ceil(tempSpacing);
         if (spacing == 0) {
             spacing = 1;
         }
@@ -561,7 +562,7 @@ public class BillsFragment extends Fragment {
                 .setDotsStrokeColor(this.getResources().getColor(R.color.line))
                 .setThickness(Tools.fromDpToPx(3))
                 .setColor(this.getResources().getColor(R.color.whiteWater))
-                .setDashed(true);
+                .setDashed(new float[]{10, 10});
         mLineChart.addData(dataSet);
 
 

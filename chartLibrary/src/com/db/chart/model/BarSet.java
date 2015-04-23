@@ -75,7 +75,14 @@ public class BarSet extends ChartSet {
     public BarSet setColor(int color) {
 
         for (ChartEntry e : getEntries())
-            ((Bar) e).setColor(color);
+            e.setColor(color);
+        return this;
+    }
+
+    public BarSet setGradientColor(int colors[], float[] positions) {
+
+        for (ChartEntry e : getEntries())
+            ((Bar) e).setGradientColor(colors, positions);
         return this;
     }
 

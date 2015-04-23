@@ -29,23 +29,23 @@ import com.db.chart.model.ChartSet;
 import java.util.ArrayList;
 
 /**
- * Implements a StackBar chart extending {@link BarChartView}
+ * Implements an HorizontalStackBarChart chart extending {@link com.db.chart.view.BaseStackBarChartView}
  */
-public class StackBarChartView extends BaseStackBarChartView {
+public class HorizontalStackBarChartView extends BaseStackBarChartView {
 
 
-    public StackBarChartView(Context context, AttributeSet attrs) {
+    public HorizontalStackBarChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setOrientation(Orientation.VERTICAL);
+        setOrientation(Orientation.HORIZONTAL);
         setMandatoryBorderSpacing();
     }
 
 
-    public StackBarChartView(Context context) {
+    public HorizontalStackBarChartView(Context context) {
         super(context);
 
-        setOrientation(Orientation.VERTICAL);
+        setOrientation(Orientation.HORIZONTAL);
         setMandatoryBorderSpacing();
     }
 
@@ -59,15 +59,15 @@ public class StackBarChartView extends BaseStackBarChartView {
     @Override
     public void onDrawChart(Canvas canvas, ArrayList<ChartSet> data) {
 
-        float verticalOffset;
-        float currBottomY;
+        float offset;
+        float currBottom;
 
-        float negVerticalOffset;
-        float negCurrBottomY;
+        float negOffset;
+        float negCurrBottom;
 
-        float x0;
-        float x1;
+        float y0;
         float y1;
+        float x1;
         float barSize;
         int bottomSetIndex;
         int topSetIndex;
@@ -81,21 +81,21 @@ public class StackBarChartView extends BaseStackBarChartView {
         for (int i = 0; i < setSize; i++) {
 
             // If bar needs background
-            if (style.hasBarBackground) {
+            if (style.hasBarBackground)
                 drawBarBackground(canvas,
-                        (int) (data.get(0).getEntry(i).getX() - barWidth / 2),
-                        (int) this.getInnerChartTop(),
-                        (int) (data.get(0).getEntry(i).getX() + barWidth / 2),
-                        (int) this.getInnerChartBottom());
-            }
+                        (int) this.getInnerChartLeft(),
+                        (int) (data.get(0).getEntry(i).getY() - barWidth / 2),
+                        (int) this.getInnerChartRight(),
+                        (int) (data.get(0).getEntry(i).getY() + barWidth / 2));
+
 
             // Vertical offset to keep drawing bars on top of the others
-            verticalOffset = 0;
-            negVerticalOffset = 0;
+            offset = 0;
+            negOffset = 0;
 
             // Bottom of the next bar to be drawn
-            currBottomY = zeroPosition;
-            negCurrBottomY = zeroPosition;
+            currBottom = zeroPosition;
+            negCurrBottom = zeroPosition;
 
             // Unfortunately necessary to discover which set is the bottom and top in case there
             // are entries with value 0. To better understand check one of the methods.
@@ -107,7 +107,7 @@ public class StackBarChartView extends BaseStackBarChartView {
                 barSet = (BarSet) data.get(j);
                 bar = (Bar) barSet.getEntry(i);
 
-                barSize = Math.abs(zeroPosition - bar.getY());
+                barSize = Math.abs(zeroPosition - bar.getX());
 
                 // If:
                 // Bar not visible OR
@@ -120,80 +120,80 @@ public class StackBarChartView extends BaseStackBarChartView {
                 style.barPaint.setColor(bar.getColor());
                 style.applyAlpha(style.barPaint, barSet.getAlpha());
 
-                x0 = (bar.getX() - barWidth / 2);
-                x1 = (bar.getX() + barWidth / 2);
+                y0 = (bar.getY() - barWidth / 2);
+                y1 = (bar.getY() + barWidth / 2);
 
 
                 if (bar.getValue() > 0) {
 
-                    y1 = zeroPosition - (barSize + verticalOffset);
+                    x1 = zeroPosition + (barSize - offset);
 
                     // Draw bar
                     if (j == bottomSetIndex) {
-                        drawBar(canvas, (int) x0, (int) y1, (int) x1, (int) currBottomY);
+                        drawBar(canvas, (int) currBottom, (int) y0, (int) x1, (int) y1);
                         if (bottomSetIndex != topSetIndex && style.cornerRadius != 0) {
                             // Patch top corners of bar
-                            cornersPatch = (currBottomY - y1) / 2;
-                            canvas.drawRect(new Rect((int) x0, (int) y1,
-                                            (int) x1, (int) (y1 + cornersPatch)),
+                            cornersPatch = (x1 - currBottom) / 2;
+                            canvas.drawRect(new Rect((int) (x1 - cornersPatch), (int) y0,
+                                            (int) x1, (int) y1),
                                     style.barPaint);
                         }
 
                     } else if (j == topSetIndex) {
-                        drawBar(canvas, (int) x0, (int) y1, (int) x1, (int) currBottomY);
+                        drawBar(canvas, (int) currBottom, (int) y0, (int) x1, (int) y1);
                         // Patch bottom corners of bar
-                        cornersPatch = (currBottomY - y1) / 2;
-                        canvas.drawRect(new Rect((int) x0, (int) (currBottomY - cornersPatch),
-                                        (int) x1, (int) currBottomY),
+                        cornersPatch = (x1 - currBottom) / 2;
+                        canvas.drawRect(new Rect((int) currBottom, (int) y0,
+                                        (int) (currBottom + cornersPatch), (int) y1),
                                 style.barPaint);
 
                     } else {// if(j != bottomSetIndex && j != topSetIndex){ // Middle sets
-                        canvas.drawRect(new Rect((int) x0, (int) y1,
-                                        (int) x1, (int) currBottomY),
+                        canvas.drawRect(new Rect((int) currBottom, (int) y0,
+                                        (int) x1, (int) y1),
                                 style.barPaint);
                     }
 
-                    currBottomY = y1;
+                    currBottom = x1;
 
                     // Increase the vertical offset to be used by the next bar
                     if (barSize != 0)
                         // Sum 1 to compensate the loss of precision in float
-                        verticalOffset += barSize + 2;
+                        offset -= barSize - 0;
 
 
                 } else { // if(bar.getValue() < 0)
 
-                    y1 = zeroPosition + (barSize - negVerticalOffset);
+                    x1 = zeroPosition - (barSize + negOffset);
 
                     if (j == bottomSetIndex) {
-                        drawBar(canvas, (int) x0, (int) negCurrBottomY, (int) x1, (int) y1);
+                        drawBar(canvas, (int) x1, (int) y0, (int) negCurrBottom, (int) y1);
                         if (bottomSetIndex != topSetIndex && style.cornerRadius != 0) {
                             // Patch top corners of bar
-                            cornersPatch = (y1 - negCurrBottomY) / 2;
-                            canvas.drawRect(new Rect((int) x0, (int) negCurrBottomY,
-                                            (int) x1, (int) (negCurrBottomY + cornersPatch)),
+                            cornersPatch = (negCurrBottom - x1) / 2;
+                            canvas.drawRect(new Rect((int) (negCurrBottom - cornersPatch), (int) y0,
+                                            (int) negCurrBottom, (int) y1),
                                     style.barPaint);
                         }
 
                     } else if (j == topSetIndex) {
-                        drawBar(canvas, (int) x0, (int) negCurrBottomY, (int) x1, (int) y1);
+                        drawBar(canvas, (int) x1, (int) y0, (int) negCurrBottom, (int) y1);
                         // Patch bottom corners of bar
-                        cornersPatch = (y1 - negCurrBottomY) / 2;
-                        canvas.drawRect(new Rect((int) x0, (int) (y1 - cornersPatch),
-                                        (int) x1, (int) y1),
+                        cornersPatch = (negCurrBottom - x1) / 2;
+                        canvas.drawRect(new Rect((int) x1, (int) y0,
+                                        (int) (x1 + cornersPatch), (int) y1),
                                 style.barPaint);
 
                     } else {// if(j != bottomSetIndex && j != topSetIndex){ // Middle sets
-                        canvas.drawRect(new Rect((int) x0, (int) negCurrBottomY,
-                                        (int) x1, (int) y1),
+                        canvas.drawRect(new Rect((int) x1, (int) y0,
+                                        (int) negCurrBottom, (int) y1),
                                 style.barPaint);
                     }
 
-                    negCurrBottomY = y1;
+                    negCurrBottom = x1;
 
                     // Increase the vertical offset to be used by the next bar
                     if (barSize != 0)
-                        negVerticalOffset -= barSize;
+                        negOffset += barSize;
 
                 }
             }
@@ -205,7 +205,7 @@ public class StackBarChartView extends BaseStackBarChartView {
      * (Optional) To be overriden in case the view needs to execute some code before
      * starting the drawing.
      *
-     * @param data Array of {@link ChartSet} to do the necessary preparation just before onDraw
+     * @param data Array of {@link com.db.chart.model.ChartSet} to do the necessary preparation just before onDraw
      */
     @Override
     public void onPreDrawChart(ArrayList<ChartSet> data) {
@@ -213,10 +213,10 @@ public class StackBarChartView extends BaseStackBarChartView {
         // Doing calculations here to avoid doing several times while drawing
         // in case of animation
         if (data.get(0).size() == 1)
-            barWidth = (this.getInnerChartRight() - this.getInnerChartLeft()
+            barWidth = (this.getInnerChartBottom() - this.getInnerChartTop()
                     - this.getBorderSpacing() * 2);
         else
-            calculateBarsWidth(-1, data.get(0).getEntry(0).getX(), data.get(0).getEntry(1).getX());
+            calculateBarsWidth(-1, data.get(0).getEntry(1).getY(), data.get(0).getEntry(0).getY());
     }
 
 
@@ -241,13 +241,13 @@ public class StackBarChartView extends BaseStackBarChartView {
         for (int i = 0; i < dataSize; i++)
             result.add(new ArrayList<Region>(setSize));
 
-        float verticalOffset;
-        float currBottomY;
+        float offset;
+        float currBottom;
 
-        float negVerticalOffset;
-        float negCurrBottomY;
+        float negOffset;
+        float negCurrBottom;
 
-        float y1;
+        float x1;
         float barSize;
         BarSet barSet;
         Bar bar;
@@ -256,18 +256,18 @@ public class StackBarChartView extends BaseStackBarChartView {
         for (int i = 0; i < setSize; i++) {
 
             // Vertical offset to keep drawing bars on top of the others
-            verticalOffset = 0;
-            negVerticalOffset = 0;
+            offset = 0;
+            negOffset = 0;
             // Bottom of the next bar to be drawn
-            currBottomY = zeroPosition;
-            negCurrBottomY = zeroPosition;
+            currBottom = zeroPosition;
+            negCurrBottom = zeroPosition;
 
             for (int j = 0; j < dataSize; j++) {
 
                 barSet = (BarSet) data.get(j);
                 bar = (Bar) barSet.getEntry(i);
 
-                barSize = Math.abs(zeroPosition - bar.getY());
+                barSize = Math.abs(zeroPosition - bar.getX());
 
                 // If:
                 // Bar not visible OR
@@ -279,26 +279,26 @@ public class StackBarChartView extends BaseStackBarChartView {
 
                 if (bar.getValue() > 0) {
 
-                    y1 = zeroPosition - (barSize + verticalOffset);
+                    x1 = zeroPosition + (barSize - offset);
                     result.get(j).add(new Region(
-                            (int) (bar.getX() - barWidth / 2),
-                            (int) y1,
-                            (int) (bar.getX() + barWidth / 2),
-                            (int) currBottomY));
+                            (int) currBottom,
+                            (int) (bar.getY() - barWidth / 2),
+                            (int) x1,
+                            (int) (bar.getY() + barWidth / 2)));
 
-                    currBottomY = y1;
-                    verticalOffset += barSize + 2;
+                    currBottom = x1;
+                    offset -= barSize - 2;
                 } else {
 
-                    y1 = zeroPosition + (barSize - negVerticalOffset);
+                    x1 = zeroPosition - (barSize + negOffset);
                     result.get(j).add(new Region(
-                            (int) (bar.getX() - barWidth / 2),
-                            (int) negCurrBottomY,
-                            (int) (bar.getX() + barWidth / 2),
-                            (int) y1));
+                            (int) x1,
+                            (int) (bar.getY() - barWidth / 2),
+                            (int) negCurrBottom,
+                            (int) (bar.getY() + barWidth / 2)));
 
-                    negCurrBottomY = y1;
-                    negVerticalOffset -= barSize;
+                    negCurrBottom = x1;
+                    negOffset += barSize;
                 }
             }
         }
