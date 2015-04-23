@@ -3,10 +3,9 @@ package com.fourtails.usuariolecturista.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.google.api.client.util.DateTime;
 
 /**
- * Created by Vazh on 2/4/2015.
+ * Stores the Bills to be displayed on the bill chart
  */
 @Table(name = "ChartBills")
 public class ChartBill extends Model {
@@ -18,7 +17,7 @@ public class ChartBill extends Model {
     @Column
     public int year;
     @Column
-    public DateTime dateTime;
+    public long timeInMillis;
     @Column
     public double amount;
     @Column
@@ -30,11 +29,11 @@ public class ChartBill extends Model {
     @Column
     public String status;
 
-    public ChartBill(int day, int month, int year, DateTime dateTime, double amount, long balance, String urlSafeKey, String accountNumber, String status) {
+    public ChartBill(int day, int month, int year, long timeInMillis, double amount, long balance, String urlSafeKey, String accountNumber, String status) {
         this.day = day;
         this.month = month;
         this.year = year;
-        this.dateTime = dateTime;
+        this.timeInMillis = timeInMillis;
         this.amount = amount;
         this.balance = balance;
         this.urlSafeKey = urlSafeKey;

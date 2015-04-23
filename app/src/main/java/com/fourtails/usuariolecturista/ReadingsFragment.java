@@ -47,7 +47,6 @@ import com.squareup.otto.ThreadEnforcer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -296,7 +295,7 @@ public class ReadingsFragment extends Fragment {
     public void checkReadingsFromLocalDB(Integer action) {
         List<ChartReading> readings = getReadingsForThisMonthRange(2);
         if (readings != null) {
-            Collections.reverse(readings); // The list comes with the latest value first, so for chart purposes we reverse it
+            //Collections.reverse(readings); // The list comes with the latest value first, so for chart purposes we reverse it
             long highestReading = 0;
             long lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
@@ -310,9 +309,11 @@ public class ReadingsFragment extends Fragment {
                 if (i.value < lowestReading) {
                     lowestReading = i.value;
                 }
-                xAxisDays.add(String.valueOf(i.day + 1) + "/" + String.valueOf(i.month + 1));
+                Time time = new Time();
+                time.set(i.timeInMillis);
+                xAxisDays.add(time.format("%d/%m"));
                 chartValues[j++] = i.value;
-                lastReadingDate = i.day + " / " + i.month + " / " + i.year;
+                lastReadingDate = time.format("%d/%m/%Y");
             }
             String[] xAxisDaysArray = xAxisDays.toArray(new String[xAxisDays.size()]);
             long totalForThisPeriod = highestReading - lowestReading;
@@ -380,6 +381,7 @@ public class ReadingsFragment extends Fragment {
         time.setToNow();
         return new Select()
                 .from(ChartReading.class)
+                .orderBy("timeInMillis ASC")
 //                .where("month >= ?", time.month - range)
 //                .and("year = ?", time.year)
                 .execute();

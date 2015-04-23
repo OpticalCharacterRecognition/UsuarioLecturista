@@ -323,10 +323,11 @@ public class BillsFragment extends Fragment {
                 if (i.amount < lowestReading) {
                     lowestReading = i.amount;
                 }
-                xAxisDays.add(String.valueOf(i.day + 1) + "/" + String.valueOf(i.month + 1));
+                Time time = new Time();
+                time.set(i.timeInMillis);
+                xAxisDays.add(time.format("%d/%m"));
                 selectedBillIndex = j;
                 chartValues[j++] = (float) i.amount;
-                lastReadingDate = i.day + " / " + i.month + " / " + i.year;
                 lastBillStatus = i.status;
                 lastBillAmount = i.amount;
             }
@@ -383,6 +384,7 @@ public class BillsFragment extends Fragment {
         time.setToNow();
         return new Select()
                 .from(ChartBill.class)
+                .orderBy("timeInMillis ASC")
 //                .where("month >= ?", time.month - range)
 //                .and("year = ?", time.year)
                 .execute();

@@ -76,7 +76,6 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.DateTime;
 import com.google.api.services.storage.StorageScopes;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
@@ -1089,14 +1088,14 @@ public class MainActivity extends ActionBarActivity {
         ActiveAndroid.beginTransaction();
         try {
             for (MessagesReading readings : readingsArray) {
-                DateTime dateTime = readings.getCreationDate();
-                time.set(dateTime.getValue());
+                long timeInMillis = readings.getCreationDate().getValue();
+                time.set(timeInMillis);
 
                 ChartReading chartReading = new ChartReading(
                         time.monthDay,
                         time.month,
                         time.year,
-                        readings.getCreationDate(),
+                        timeInMillis,
                         readings.getMeasure(),
                         readings.getUrlsafeKey(),
                         readings.getAccountNumber());
@@ -1122,14 +1121,14 @@ public class MainActivity extends ActionBarActivity {
         ActiveAndroid.beginTransaction();
         try {
             for (MessagesBill bills : billsArray) {
-                DateTime dateTime = bills.getCreationDate();
-                time.set(dateTime.getValue());
+                long timeInMillis = bills.getCreationDate().getValue();
+                time.set(timeInMillis);
 
                 ChartBill chartBill = new ChartBill(
                         time.monthDay,
                         time.month,
                         time.year,
-                        bills.getCreationDate(),
+                        timeInMillis,
                         bills.getAmount(),
                         bills.getBalance(),
                         bills.getUrlsafeKey(),

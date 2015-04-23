@@ -3,10 +3,9 @@ package com.fourtails.usuariolecturista.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.google.api.client.util.DateTime;
 
 /**
- * Created by Vazh on 12/2/2015.
+ * Stores the Readings to be displayed on the chart
  */
 @Table(name = "ChartReadings")
 public class ChartReading extends Model {
@@ -18,19 +17,19 @@ public class ChartReading extends Model {
     @Column
     public int year;
     @Column
-    public long value;
+    public long timeInMillis;
     @Column
-    public DateTime dateTime;
+    public long value;
     @Column
     public String urlSafeKey;
     @Column
     public String accountNumber;
 
-    public ChartReading(int day, int month, int year, DateTime dateTime, long value, String urlSafeKey, String accountNumber) {
+    public ChartReading(int day, int month, int year, long timeInMillis, long value, String urlSafeKey, String accountNumber) {
         this.day = day;
         this.month = month;
         this.year = year;
-        this.dateTime = dateTime;
+        this.timeInMillis = timeInMillis;
         this.value = value;
         this.urlSafeKey = urlSafeKey;
         this.accountNumber = accountNumber;
