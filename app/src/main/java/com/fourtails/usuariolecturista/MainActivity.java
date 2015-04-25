@@ -95,6 +95,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -160,6 +161,8 @@ public class MainActivity extends ActionBarActivity {
     boolean refreshBillsOnly = false;
 
     public static boolean prepaidModeEnabled = false;
+
+    public static long oldReadingsLastDateInMillis;
 
     public static int mShortAnimationDuration;
 
@@ -1087,6 +1090,8 @@ public class MainActivity extends ActionBarActivity {
 
         ActiveAndroid.beginTransaction();
         try {
+            // values come unsorted, and we sort them by date
+            Collections.sort(readingsArray, new ReadingsCompare());
             for (MessagesReading readings : readingsArray) {
                 long timeInMillis = readings.getCreationDate().getValue();
                 time.set(timeInMillis);
@@ -1107,6 +1112,19 @@ public class MainActivity extends ActionBarActivity {
                     "the needed fields from the database or they are null");
         } finally {
             ActiveAndroid.endTransaction();
+        }
+    }
+
+    /**
+     * I don't like inner classes but this is too small for its own file, it just compares 2 values
+     */
+    class ReadingsCompare implements Comparator<MessagesReading> {
+
+        @Override
+        public int compare(MessagesReading lhs, MessagesReading rhs) {
+            Long value1 = lhs.getCreationDate().getValue();
+            Long values2 = rhs.getCreationDate().getValue();
+            return value1.compareTo(values2);
         }
     }
 
@@ -1154,6 +1172,10 @@ public class MainActivity extends ActionBarActivity {
     private void eraseReadingsDataFromLocalDB() {
         List<ChartReading> tempList = new Select().from(ChartReading.class).execute();
         if (tempList != null && tempList.size() > 0) {
+            // we need the time of the last value to help us render the new values differently
+            ChartReading lastListValue = tempList.get(tempList.size() - 1);
+            oldReadingsLastDateInMillis = lastListValue.timeInMillis;
+
             ActiveAndroid.beginTransaction();
             try {
                 new Delete().from(ChartReading.class).execute();

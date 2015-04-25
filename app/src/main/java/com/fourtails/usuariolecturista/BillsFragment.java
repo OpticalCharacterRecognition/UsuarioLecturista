@@ -317,6 +317,7 @@ public class BillsFragment extends Fragment {
             String lastBillStatus = "";
             double lastBillAmount = 0.0;
             int j = 0;
+            Time time = new Time();
             for (ChartBill i : bills) {
                 if (i.amount > highestReading) {
                     highestReading = i.amount;
@@ -324,7 +325,6 @@ public class BillsFragment extends Fragment {
                 if (i.amount < lowestReading) {
                     lowestReading = i.amount;
                 }
-                Time time = new Time();
                 time.set(i.timeInMillis);
                 xAxisDays.add(time.format("%d/%m"));
                 selectedBillIndex = j;

@@ -164,7 +164,7 @@ public class ReadingsFragment extends Fragment {
 //        public void run() {
 //            mHandler.postDelayed(new Runnable() {
 //                public void run() {
-//                    addPoint();
+//                    updatePoint();
 //                }
 //            }, 500);
 //        }
@@ -211,6 +211,7 @@ public class ReadingsFragment extends Fragment {
 
 
     private float[] chartValues;
+    private float[] chartValuesForAnimation;
 
     public static boolean ranAtleastOnce = false;
 
@@ -301,8 +302,10 @@ public class ReadingsFragment extends Fragment {
             long lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
             chartValues = new float[readings.size()];
+            chartValuesForAnimation = new float[readings.size()];
             String lastReadingDate = "";
             int j = 0;
+            Time time = new Time();
             for (ChartReading i : readings) {
                 if (i.value > highestReading) {
                     highestReading = i.value;
@@ -310,16 +313,28 @@ public class ReadingsFragment extends Fragment {
                 if (i.value < lowestReading) {
                     lowestReading = i.value;
                 }
-                Time time = new Time();
                 time.set(i.timeInMillis);
                 xAxisDays.add(time.format("%d/%m"));
-                chartValues[j++] = i.value;
                 lastReadingDate = time.format("%d/%m/%Y");
+                chartValues[j] = i.value;
+                if (i.timeInMillis >= MainActivity.oldReadingsLastDateInMillis) {
+                    chartValuesForAnimation[j] = lowestReading; // we want the lowest so we animate from there to the top
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            updatePoint();
+                        }
+                    }, 1000);
+                } else {
+                    chartValuesForAnimation[j] = i.value;
+                }
+                j++;
             }
             String[] xAxisDaysArray = xAxisDays.toArray(new String[xAxisDays.size()]);
             long totalForThisPeriod = highestReading - lowestReading;
             updateUi(totalForThisPeriod, lastReadingDate);
-            updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
+            // keep in mind that charValuesForAnimation are the same if there is no "new" reading to animate
+            updateLineChart(xAxisDaysArray, chartValuesForAnimation, lowestReading, highestReading);
             fabChangeGraph.setEnabled(true);
             ranAtleastOnce = true;
         } else {
@@ -384,7 +399,7 @@ public class ReadingsFragment extends Fragment {
         time.setToNow();
         return new Select()
                 .from(ChartReading.class)
-                .orderBy("timeInMillis ASC")
+//                .orderBy("timeInMillis ASC")
 //                .where("month >= ?", time.month - range)
 //                .and("year = ?", time.year)
                 .execute();
@@ -568,7 +583,7 @@ public class ReadingsFragment extends Fragment {
     }
 
 
-//    /**
+    //    /**
 //     * This will be executed by mExitEndAction because we first need to show a dismiss animation
 //     */
 //    private void updateChart() {
@@ -597,17 +612,19 @@ public class ReadingsFragment extends Fragment {
 //                .show(getAnimation(true).setEndAction(mAnimatePoint));
 //        mLineChart.animateSet(0, new DashAnimation());
 //
-//        //addPoint();
+//        //updatePoint();
 //
 //    }
 //
 //
-//    private void addPoint() {
-//        float[] thing = {0f, 25f, 26f, 39f, 42f, 30f, 100f};
-//        mLineChart.updateValues(0, thing);
-//        mLineChart.notifyDataUpdate();
-//
-//    }
+
+    /**
+     * Updates the chart to show a "significant" way that there has been a new reading
+     */
+    private void updatePoint() {
+        mLineChart.updateValues(0, chartValues);
+        mLineChart.notifyDataUpdate();
+    }
 
     private Animation getAnimation(boolean newAnim) {
         if (newAnim)
