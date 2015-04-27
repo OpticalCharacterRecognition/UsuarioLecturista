@@ -53,6 +53,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 /**
@@ -317,7 +319,7 @@ public class ReadingsFragment extends Fragment {
                 xAxisDays.add(time.format("%d/%m"));
                 lastReadingDate = time.format("%d/%m/%Y");
                 chartValues[j] = i.value;
-                if (i.timeInMillis >= MainActivity.oldReadingsLastDateInMillis) {
+                if (i.timeInMillis > MainActivity.oldReadingsLastDateInMillis) {
                     chartValuesForAnimation[j] = lowestReading; // we want the lowest so we animate from there to the top
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -622,6 +624,8 @@ public class ReadingsFragment extends Fragment {
      * Updates the chart to show a "significant" way that there has been a new reading
      */
     private void updatePoint() {
+        Crouton.makeText(getActivity(), "Nueva Lectura", new Style.Builder().setBackgroundColor(R.color.blue_400).build(), linechartCardView).show();
+
         mLineChart.updateValues(0, chartValues);
         mLineChart.notifyDataUpdate();
     }

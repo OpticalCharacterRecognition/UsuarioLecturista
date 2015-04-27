@@ -79,4 +79,9 @@ dependencies {
     compile 'com.commonsware.cwac:camera:0.6.+'
     // Credit Card
     compile 'com.stripe:stripe-android:+'
+    // Crouton: Toast like alerts
+    compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
+        // exclusion is not necessary, but generally a good idea.
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
 }
