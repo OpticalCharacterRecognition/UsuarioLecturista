@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -22,6 +21,7 @@ import com.appspot.ocr_backend.backend.model.MessagesGetMetersResponse;
 import com.fourtails.usuariolecturista.model.Meter;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.orhanobut.logger.Logger;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -110,7 +110,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     MessagesGetMetersResponse response = service.meter().getAllAssignedToUser(messagesGetMeters).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         Meter meter = new Meter(
                                 response.getMeters().get(0).getAccountNumber(),
                                 response.getMeters().get(0).getBalance(),
@@ -131,7 +131,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("golocky", e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -146,13 +146,13 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                             Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
-                            Log.i("BACKEND", "Good-checkIfUserHasMeter");
+                            Logger.i("BACKEND, Good-checkIfUserHasMeter");
                         } else {
-                            Log.i("BACKEND", "Bad-checkIfUserHasMeter");
+                            Logger.i("BACKEND, Bad-checkIfUserHasMeter");
                         }
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-checkIfUserHasMeter");
+                    Logger.e("BackendError - Unknown-checkIfUserHasMeter");
                 }
             }
         }.execute();
@@ -205,12 +205,12 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     MessagesCreateMeterResponse response = service.meter().create(messagesCreateMeter).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND-registerMeter", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("golocky", e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -221,15 +221,15 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     if (running) {
                         switch (transactionResponse) {
                             case 1:
-                                Log.i("BACKEND-registerMeter", "Good-registerMeterBackend");
+                                Logger.i("BACKEND-registerMeter, Good-registerMeterBackend");
                                 meter.save(); // we only save if successful
                                 assignMeterToUserBackend(meter.accountNumber);
                                 break;
                             default:
-                                Log.i("BACKEND-registerMeter", "Bad-registerMeterBackend");
+                                Logger.e("BACKEND-registerMeter, Bad-registerMeterBackend");
                         }
                     } else {
-                        Log.e(TAG, "BackendError - Unknown-registerMeterBackend");
+                        Logger.e("BackendError - Unknown-registerMeterBackend");
                     }
                 }
             }
@@ -263,12 +263,12 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                     MessagesAssignMeterToUserResponse response = service.meter().assignToUser(messagesAssignMeterToUser).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND-assignMeter", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("golocky", e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -282,18 +282,18 @@ public class MeterRegistrationActivity extends ActionBarActivity {
                         progressDialog.dismiss();
                         switch (transactionResponse) {
                             case 1:
-                                Log.i("BACKEND-assignMeter", "Good-assignMeterToUserBackend");
+                                Logger.i("BACKEND-assignMeter, Good-assignMeterToUserBackend");
                                 setSharedPrefJmasMeterRegisteredTrue();
                                 Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                                 break;
                             default:
-                                Log.i("BACKEND-assignMeter", "Bad-assignMeterToUserBackend");
+                                Logger.e("BACKEND-assignMeter, Bad-assignMeterToUserBackend");
                         }
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-assignMeterToUserBackend");
+                    Logger.e("BackendError - Unknown-assignMeterToUserBackend");
                 }
             }
         }.execute();

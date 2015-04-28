@@ -24,6 +24,7 @@ import com.fourtails.usuariolecturista.model.RegisteredUser;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.melnykov.fab.FloatingActionButton;
+import com.orhanobut.logger.Logger;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
@@ -163,7 +164,7 @@ public class ServiceChooserActivity extends Activity {
                     MessagesCreateUserResponse response = service.user().create(messagesCreateUser).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     } else {
                         if (response.getError().contains("User email already in platform")) {
@@ -185,18 +186,18 @@ public class ServiceChooserActivity extends Activity {
                         switch (transactionResponse) {
                             case 1:
                                 registerUser();
-                                Log.i("BACKEND", "Good-registerUserBackend");
+                                Logger.i("BACKEND, Good-registerUserBackend");
                                 break;
                             case 2:
                                 registerUser();
-                                Log.i("BACKEND", "Good-AlreadyExists-registerUserBackend");
+                                Logger.i("BACKEND, Good-AlreadyExists-registerUserBackend");
                                 break;
                             default:
-                                Log.i("BACKEND", "Bad-registerUserBackend");
+                                Logger.i("BACKEND, Bad-registerUserBackend");
                         }
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-registerUserBackend");
+                    Logger.e("BackendError - Unknown-registerUserBackend");
                 }
             }
         }.execute();

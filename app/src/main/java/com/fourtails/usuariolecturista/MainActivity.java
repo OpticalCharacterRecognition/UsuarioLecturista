@@ -77,6 +77,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.StorageScopes;
+import com.orhanobut.logger.Logger;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.squareup.otto.Bus;
@@ -317,7 +318,7 @@ public class MainActivity extends ActionBarActivity {
                 .replace(R.id.container, fragment)
                 .addToBackStack(null)
                 .commit();
-        Log.d(TAG, "fragment added " + fragment.getTag());
+        Logger.d("fragment added " + fragment.getTag());
     }
 
     /**
@@ -558,7 +559,7 @@ public class MainActivity extends ActionBarActivity {
                     .addToBackStack(null)
                     .replace(R.id.container, fragment)
                     .commit();
-            Log.d(TAG, "fragment added " + fragment.getTag());
+            Logger.d("fragment added " + fragment.getTag());
 
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
@@ -567,7 +568,7 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
         } else {
             // error in creating fragment
-            Log.e(TAG, "Error in creating fragment");
+            Logger.e("Error in creating fragment");
         }
     }
 
@@ -595,14 +596,14 @@ public class MainActivity extends ActionBarActivity {
                     MessagesPayBillResponse response = service.bill().pay(messagesPayBill).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     } else {
                         return 2;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -615,22 +616,22 @@ public class MainActivity extends ActionBarActivity {
                     }
                     switch (transactionResponse) {
                         case 1:
-                            Log.i("BACKEND", "Good-makeNormalPaymentOnBackend");
+                            Logger.i("BACKEND, Good-makeNormalPaymentOnBackend");
                             refreshBillsOnly = true;
                             getPaidBillsFromBackend();
                             Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
-                            Log.i("BACKEND", "Good-NoBills-makeNormalPaymentOnBackend");
+                            Logger.i("BACKEND, Good-NoBills-makeNormalPaymentOnBackend");
                             break;
                         case 99:
-                            Log.i("ERROR", "NO INTERNET");
+                            Logger.e("ERROR, NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-makeNormalPaymentOnBackend");
+                            Logger.e("BACKEND, Bad-makeNormalPaymentOnBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-makeNormalPaymentOnBackend");
+                    Logger.e("BackendError - Unknown-makeNormalPaymentOnBackend");
                 }
             }
         }.execute();
@@ -660,14 +661,14 @@ public class MainActivity extends ActionBarActivity {
                     MessagesPayBillResponse response = service.bill().pay(messagesPayBill).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     } else {
                         return 2;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -680,22 +681,22 @@ public class MainActivity extends ActionBarActivity {
                     }
                     switch (transactionResponse) {
                         case 1:
-                            Log.i("BACKEND", "Good-makeNormalPaymentOnBackend");
+                            Logger.i("BACKEND, Good-makeNormalPaymentOnBackend");
                             refreshBillsOnly = true;
                             getPaidBillsFromBackend();
                             Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
-                            Log.i("BACKEND", "Good-NoBills-makeNormalPaymentOnBackend");
+                            Logger.i("BACKEND, Good-NoBills-makeNormalPaymentOnBackend");
                             break;
                         case 99:
-                            Log.i("ERROR", "NO INTERNET");
+                            Logger.e("NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-makeNormalPaymentOnBackend");
+                            Logger.e("Bad-makeNormalPaymentOnBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-makeNormalPaymentOnBackend");
+                    Logger.e("BackendError - Unknown-makeNormalPaymentOnBackend");
                 }
             }
         }.execute();
@@ -714,6 +715,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             protected void onPreExecute() {
                 Toast.makeText(context, getString(R.string.camera_message_uploading), Toast.LENGTH_SHORT).show();
+                Logger.i("Initiating Image upload");
             }
 
             @Override
@@ -749,13 +751,13 @@ public class MainActivity extends ActionBarActivity {
                     HttpResponse response = putRequest.execute();
 
                     if (response.isSuccessStatusCode()) {
-                        Log.i("BACKEND", response.getStatusMessage());
+                        Logger.i(response.getStatusMessage() + "Uploading image");
                         return 1;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
-                    Log.d("debug", "Error in  user profile image uploading", e);
+                    Logger.e(e, e.getMessage());
+                    Logger.d("Error in  user profile image uploading");
                 }
                 return null;
             }
@@ -765,17 +767,17 @@ public class MainActivity extends ActionBarActivity {
                 if (transactionResponse != null) {
                     switch (transactionResponse) {
                         case 1:
-                            Log.i("BACKEND", "Good-uploadFileToGCS");
+                            Logger.i("BACKEND, Good-uploadFileToGCS");
                             registerImageNameOnBackend(imageName[0]);
                             Toast.makeText(context, getString(R.string.camera_message_upload_finished), Toast.LENGTH_SHORT).show();
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-uploadFileToGCS");
+                            Logger.e("BACKEND, Bad-uploadFileToGCS");
                             Toast.makeText(context, getString(R.string.toastImageUploadError), Toast.LENGTH_SHORT).show();
 
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-uploadFileToGCS");
+                    Logger.e("BackendError - Unknown-uploadFileToGCS");
                 }
             }
         }.execute();
@@ -807,7 +809,7 @@ public class MainActivity extends ActionBarActivity {
             inputStream.close();
 
         } catch (IOException e) {
-            Log.e(TAG, "Cant create a file from input stream");
+            Logger.e("Cant create a file from input stream");
         }
         return file;
     }
@@ -837,12 +839,12 @@ public class MainActivity extends ActionBarActivity {
                     MessagesNewImageForProcessingResponse response = service.reading().newImageForProcessing(messagesNewImageForProcessing).execute();
 
                     if (response.getOk()) {
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -852,16 +854,16 @@ public class MainActivity extends ActionBarActivity {
                 if (transactionResponse != null) {
                     switch (transactionResponse) {
                         case 1:
-                            Log.i("BACKEND", "Good-registerImageNameOnBackend");
+                            Logger.i("BACKEND, Good-registerImageNameOnBackend");
                             break;
                         case 99:
-                            Log.i("ERROR", "NO INTERNET");
+                            Logger.e("ERROR, NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-registerImageNameOnBackend");
+                            Logger.e("BACKEND, Bad-registerImageNameOnBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-registerImageNameOnBackend");
+                    Logger.e("BackendError - Unknown-registerImageNameOnBackend");
                 }
             }
         }.execute();
@@ -907,12 +909,12 @@ public class MainActivity extends ActionBarActivity {
                         List<MessagesReading> readingsArray = response.getReadings();
                         eraseReadingsDataFromLocalDB();
                         populateDBWithReadings(readingsArray);
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -923,16 +925,16 @@ public class MainActivity extends ActionBarActivity {
                     switch (transactionResponse) {
                         case 1:
                             getPaidBillsFromBackend();
-                            Log.i("BACKEND", "Good-getReadingsFromBackend");
+                            Logger.i("Good-getReadingsFromBackend");
                             break;
                         case 99:
-                            Log.i("ERROR", "NO INTERNET");
+                            Logger.e("NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-getReadingsFromBackend");
+                            Logger.e("Bad-getReadingsFromBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-getReadingsFromBackend");
+                    Logger.e("BackendError - Unknown-getReadingsFromBackend");
                 }
             }
         }.execute();
@@ -966,7 +968,7 @@ public class MainActivity extends ActionBarActivity {
                         List<MessagesBill> billsArray = response.getBills();
                         eraseBillsDataFromLocalDB();
                         populateDBWithBills(billsArray);
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     } else {
                         if (response.getError().contains("No Bills found under specified criteria")) {
@@ -976,7 +978,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -987,16 +989,16 @@ public class MainActivity extends ActionBarActivity {
                     switch (transactionResponse) {
                         case 1:
                             getUnPaidBillsFromBackend();
-                            Log.i("BACKEND", "Good-getPaidBillsFromBackend");
+                            Logger.i("BACKEND, Good-getPaidBillsFromBackend");
                             break;
                         case 99:
-                            Log.i("ERROR", "NO INTERNET");
+                            Logger.e("NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-getPaidBillsFromBackend");
+                            Logger.e("BACKEND, Bad-getPaidBillsFromBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-getPaidBillsFromBackend");
+                    Logger.e("BackendError - Unknown-getPaidBillsFromBackend");
                 }
             }
         }.execute();
@@ -1029,7 +1031,7 @@ public class MainActivity extends ActionBarActivity {
                     if (response.getOk()) {
                         List<MessagesBill> billsArray = response.getBills();
                         populateDBWithBills(billsArray);
-                        Log.i("BACKEND", response.toPrettyString());
+                        Logger.json(response.toPrettyString());
                         return 1;
                     } else {
                         if (response.getError().contains("No Bills found under specified criteria")) {
@@ -1038,7 +1040,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
+                    Logger.e(e, e.getMessage());
                 }
                 return null;
             }
@@ -1054,7 +1056,7 @@ public class MainActivity extends ActionBarActivity {
                             } else {
                                 ReadingsFragment.readingsBus.post(1);
                             }
-                            Log.i("BACKEND", "Good-getUnPaidBillsFromBackend");
+                            Logger.i("BACKEND, Good-getUnPaidBillsFromBackend");
                             break;
                         case 2: // no unpaid bills found so we enable the prepaid mode
                             prepaidModeEnabled = true;
@@ -1064,17 +1066,17 @@ public class MainActivity extends ActionBarActivity {
                             } else {
                                 ReadingsFragment.readingsBus.post(2);
                             }
-                            Log.i("BACKEND", "Good-NoBills-getUnPaidBillsFromBackend");
+                            Logger.i("BACKEND, Good-NoBills-getUnPaidBillsFromBackend");
                             break;
                         case 99:
                             ReadingsFragment.readingsBus.post(3);
-                            Log.i("ERROR", "NO INTERNET");
+                            Logger.e("NO INTERNET");
                             break;
                         default:
-                            Log.i("BACKEND", "Bad-getUnPaidBillsFromBackend");
+                            Logger.e("BACKEND, Bad-getUnPaidBillsFromBackend");
                     }
                 } else {
-                    Log.e(TAG, "BackendError - Unknown-getUnPaidBillsFromBackend");
+                    Logger.e("BackendError - Unknown-getUnPaidBillsFromBackend");
                 }
             }
         }.execute();
@@ -1109,7 +1111,7 @@ public class MainActivity extends ActionBarActivity {
             }
             ActiveAndroid.setTransactionSuccessful();
         } catch (Exception e) {
-            Log.e(TAG, "there was an error saving to the database, most likely the data doesn't have" +
+            Logger.e(e, "there was an error saving to the database, most likely the data doesn't have" +
                     "the needed fields from the database or they are null");
         } finally {
             ActiveAndroid.endTransaction();
@@ -1157,7 +1159,7 @@ public class MainActivity extends ActionBarActivity {
             }
             ActiveAndroid.setTransactionSuccessful();
         } catch (Exception e) {
-            Log.e(TAG, "there was an error saving to the database, most likely the data doesn't have" +
+            Logger.e(e, "there was an error saving to the database, most likely the data doesn't have" +
                     "the needed fields from the database or they are null");
         } finally {
             ActiveAndroid.endTransaction();
@@ -1182,7 +1184,7 @@ public class MainActivity extends ActionBarActivity {
                 new Delete().from(ChartReading.class).execute();
                 ActiveAndroid.setTransactionSuccessful();
             } catch (Exception e) {
-                Log.e(TAG, "error deleting existing db");
+                Logger.e(e, "error deleting existing db");
             } finally {
                 ActiveAndroid.endTransaction();
             }
@@ -1201,7 +1203,7 @@ public class MainActivity extends ActionBarActivity {
                 new Delete().from(ChartBill.class).execute();
                 ActiveAndroid.setTransactionSuccessful();
             } catch (Exception e) {
-                Log.e(TAG, "error deleting existing db");
+                Logger.e(e, "error deleting existing db");
             } finally {
                 ActiveAndroid.endTransaction();
             }
@@ -1354,7 +1356,7 @@ public class MainActivity extends ActionBarActivity {
         fragmentManager.beginTransaction()
                 .addToBackStack(null)
                 .replace(R.id.container, fragment).commit();
-        Log.d(TAG, "fragment added in the beginning " + fragment.getTag());
+        Logger.d("fragment added in the beginning " + fragment.getTag());
         mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
 
     }

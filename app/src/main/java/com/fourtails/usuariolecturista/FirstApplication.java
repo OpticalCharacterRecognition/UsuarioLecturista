@@ -1,9 +1,9 @@
 package com.fourtails.usuariolecturista;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
+import com.orhanobut.logger.Logger;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParsePush;
@@ -20,6 +20,8 @@ public class FirstApplication extends Application {
         // Initialize ORM
         ActiveAndroid.initialize(this);
 
+        Logger.init("PL");
+
         // Required - Initialize the Parse SDK
         Parse.initialize(this, getString(R.string.parse_app_id),
                 getString(R.string.parse_client_key));
@@ -30,9 +32,9 @@ public class FirstApplication extends Application {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                    Logger.d("com.parse.push, successfully subscribed to the broadcast channel.");
                 } else {
-                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                    Logger.e(e, "com.parse.push, failed to subscribe for push");
                 }
             }
         });
