@@ -2,6 +2,9 @@ package com.fourtails.usuariolecturista;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +14,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -167,6 +171,8 @@ public class MainActivity extends ActionBarActivity {
     public static long oldReadingsLastDateInMillis;
 
     public static int mShortAnimationDuration;
+
+    private Crouton imageUploadCrouton;
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("AppCompatMethod")
@@ -715,6 +721,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             protected void onPreExecute() {
                 Toast.makeText(context, getString(R.string.camera_message_uploading), Toast.LENGTH_SHORT).show();
+                showImageLoadingCrouton();
                 Logger.i("Initiating Image upload");
             }
 
@@ -769,18 +776,89 @@ public class MainActivity extends ActionBarActivity {
                         case 1:
                             Logger.i("BACKEND, Good-uploadFileToGCS");
                             registerImageNameOnBackend(imageName[0]);
-                            Toast.makeText(context, getString(R.string.camera_message_upload_finished), Toast.LENGTH_SHORT).show();
+                            showImageLoadingDoneCrouton();
                             break;
                         default:
                             Logger.e("BACKEND, Bad-uploadFileToGCS");
-                            Toast.makeText(context, getString(R.string.toastImageUploadError), Toast.LENGTH_SHORT).show();
+                            showImageLoadingErrorCrouton();
 
                     }
                 } else {
+                    showImageLoadingErrorCrouton();
                     Logger.e("BackendError - Unknown-uploadFileToGCS");
                 }
             }
         }.execute();
+    }
+
+    /**
+     * Shows am infinite crouton to show image is being upload to the server
+     */
+    private void showImageLoadingCrouton() {
+        View view = getLayoutInflater().inflate(R.layout.crouton_upload_custom_view, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.uploadAnimationContainer);
+
+        AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+        if (!animationDrawable.isRunning()) {
+            animationDrawable.start();
+        }
+
+        de.keyboardsurfer.android.widget.crouton.Configuration configuration = new de.keyboardsurfer.android.widget.crouton.Configuration.Builder()
+                .setDuration(de.keyboardsurfer.android.widget.crouton.Configuration.DURATION_INFINITE)
+                .build();
+        imageUploadCrouton = Crouton.make(this, view, toolbar).setConfiguration(configuration);
+        imageUploadCrouton.show();
+    }
+
+    private void showImageLoadingDoneCrouton() {
+        if (imageUploadCrouton != null) {
+            imageUploadCrouton.hide();
+        }
+        View view = getLayoutInflater().inflate(R.layout.crouton_upload_custom_view, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.uploadAnimationContainer);
+
+        imageView.setImageResource(R.drawable.ic_cloud_done_white_24dp);
+
+        TextView textView = (TextView) view.findViewById(R.id.textViewCustomCrouton);
+        textView.setText(getString(R.string.camera_message_upload_finished));
+
+        imageUploadCrouton = Crouton.make(this, view, toolbar);
+        imageUploadCrouton.show();
+
+        createImageUploadDoneNotification();
+    }
+
+    private void showImageLoadingErrorCrouton() {
+        if (imageUploadCrouton != null) {
+            imageUploadCrouton.hide();
+        }
+        View view = getLayoutInflater().inflate(R.layout.crouton_upload_custom_view, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.uploadAnimationContainer);
+
+        imageView.setImageResource(R.drawable.ic_cloud_off_white_24dp);
+
+        TextView textView = (TextView) view.findViewById(R.id.textViewCustomCrouton);
+        textView.setText(getString(R.string.toastImageUploadError));
+
+        imageUploadCrouton = Crouton.make(this, view, toolbar);
+        imageUploadCrouton.show();
+    }
+
+    private void createImageUploadDoneNotification() {
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(getString(R.string.title_activity_login))
+                .setContentText(getString(R.string.camera_message_upload_finished))
+                .setSmallIcon(R.drawable.push_icon_white)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, notification);
     }
 
     /**
@@ -1050,6 +1128,7 @@ public class MainActivity extends ActionBarActivity {
                 if (transactionResponse != null) {
                     switch (transactionResponse) {
                         case 1:
+                            prepaidModeEnabled = false;
                             if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
                                 BillsFragment.billsBus.post(1);
                                 refreshBillsOnly = false;

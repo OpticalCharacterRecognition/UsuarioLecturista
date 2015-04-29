@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/uploadArrow"
+    android:oneshot="false">
+
+    <!-- First frame - up arrow image for 1000 milliseconds
+        (1 second) -->
+    <item
+        android:drawable="@drawable/ic_cloud_upload_white_24dp"
+        android:duration="750" />
+
+    <!-- Second frame - an empty image for another 1000 milliseconds
+        (or 1 second) -->
+    <item
+        android:drawable="@drawable/ic_cloud_white_24dp"
+        android:duration="750" />
+</animation-list>

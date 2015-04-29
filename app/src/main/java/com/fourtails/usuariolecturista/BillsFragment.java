@@ -302,6 +302,8 @@ public class BillsFragment extends Fragment {
     }
 
     /**
+     * This might be the most important method here, it basically just gets the bills and puts them
+     * into the chart
      * TODO: get the unpaid bills in a different array
      */
     public void checkBillsFromLocalDB() {
