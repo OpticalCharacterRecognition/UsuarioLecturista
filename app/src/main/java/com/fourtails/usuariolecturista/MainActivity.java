@@ -393,7 +393,6 @@ public class MainActivity extends ActionBarActivity {
         fragmentManager.popBackStack();
         int finalAmount = (int) (payAmount * 100);
         payThing(finalAmount);
-        //Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
     }
 
     public void payThing(int payAmount) {

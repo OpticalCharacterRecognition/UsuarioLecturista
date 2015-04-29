@@ -283,21 +283,21 @@ public class ServiceChooserActivity extends Activity {
             // listener set on the view.
             fabJmasIcon.animate()
                     .alpha(1f)
-                    .setDuration(500)
+                    .setDuration(300)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             fabJmasIcon.show();
                             fabGasIcon.animate()
                                     .alpha(1f)
-                                    .setDuration(500)
+                                    .setDuration(300)
                                     .setListener(new AnimatorListenerAdapter() {
                                         @Override
                                         public void onAnimationEnd(Animator animation) {
                                             fabGasIcon.show();
                                             fabCfeIcon.animate()
                                                     .alpha(1f)
-                                                    .setDuration(500)
+                                                    .setDuration(300)
                                                     .setListener(new AnimatorListenerAdapter() {
                                                         @Override
                                                         public void onAnimationEnd(Animator animation) {

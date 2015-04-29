@@ -47,7 +47,7 @@ public class DisplayActivity extends Activity {
             MainActivity.bus.post(imageToShow);
 
 
-            iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
             setContentView(iv);
 
             mHandler = new Handler();

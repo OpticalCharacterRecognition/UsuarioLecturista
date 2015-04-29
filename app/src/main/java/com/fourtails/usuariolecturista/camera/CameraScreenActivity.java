@@ -28,21 +28,9 @@ public class CameraScreenActivity extends Activity implements
     CameraFragment frag = null;
 
 
-    @OnClick(R.id.buttonRed)
-    public void redClicked() {
+    @OnClick(R.id.fabTakePicture)
+    public void takePicutureClicked() {
         int pic = 1;
-        frag.takeSimplePicture(pic);
-    }
-
-    @OnClick(R.id.buttonBlue)
-    public void blueClicked() {
-        int pic = 2;
-        frag.takeSimplePicture(pic);
-    }
-
-    @OnClick(R.id.buttonGreen)
-    public void greenClicked() {
-        int pic = 3;
         frag.takeSimplePicture(pic);
     }
 

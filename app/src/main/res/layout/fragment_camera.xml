@@ -19,28 +19,10 @@
     <!--android:src="@drawable/test4" />-->
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="25dp"
-        android:id="@+id/imageViewOverlay"
-        android:src="@drawable/backtrans"
-        android:layout_gravity="center"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <ImageView
         android:layout_width="225dp"
         android:layout_height="37.5dp"
         android:id="@+id/imageViewOverlay2"
         android:src="@drawable/backtrans2"
-        android:layout_gravity="center"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <ImageView
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:id="@+id/imageViewOverlay3"
-        android:src="@drawable/backtrans3"
         android:layout_gravity="center"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
