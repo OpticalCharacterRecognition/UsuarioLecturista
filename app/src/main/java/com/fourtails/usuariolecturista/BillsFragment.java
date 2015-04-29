@@ -38,6 +38,7 @@ import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.model.ChartBill;
 import com.melnykov.fab.FloatingActionButton;
+import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -339,7 +340,11 @@ public class BillsFragment extends Fragment {
 
             updateUi(lastBillAmount, lastBillStatus);
 
-            updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
+            try {
+                updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
+            } catch (Exception e) {
+                Logger.e(e, "The user most likely pressed back a bunch of times");
+            }
 
         } else {
             lineChartCardViewBills.setVisibility(View.GONE);

@@ -1,10 +1,12 @@
 package com.fourtails.usuariolecturista;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +14,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.activeandroid.query.Select;
 import com.appspot.ocr_backend.backend.Backend;
@@ -53,11 +58,24 @@ public class ServiceChooserActivity extends Activity {
     private String email;
     private String name;
 
-    ProgressDialog progressDialog;
+    public boolean isFabButtonShowing = false;
 
 
     @InjectView(R.id.imageViewJmasIcon)
-    FloatingActionButton jmasFAB;
+    FloatingActionButton fabJmasIcon;
+
+    @InjectView(R.id.imageViewGasIcon)
+    FloatingActionButton fabGasIcon;
+
+    @InjectView(R.id.imageViewCfeIcon)
+    FloatingActionButton fabCfeIcon;
+
+    @InjectView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    @InjectView(R.id.textViewIntroTitle)
+    TextView introTitle;
+
 
     @OnClick(R.id.imageViewJmasIcon)
     public void jmasIconClicked() {
@@ -82,7 +100,7 @@ public class ServiceChooserActivity extends Activity {
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 this,
-                jmasFAB, getResources().getString(R.string.transitionJmas)
+                fabJmasIcon, getResources().getString(R.string.transitionJmas)
         );
         ActivityCompat.startActivity(this, intent, options.toBundle());
     }
@@ -100,6 +118,19 @@ public class ServiceChooserActivity extends Activity {
         running = true;
 
         fillUserInfoThenRegister();
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryOCR), PorterDuff.Mode.SRC_IN);
+
+        introTitle.setVisibility(View.GONE);
+
+        fabJmasIcon.hide();
+        fabJmasIcon.setVisibility(View.INVISIBLE);
+        fabGasIcon.hide();
+        fabGasIcon.setVisibility(View.INVISIBLE);
+        fabCfeIcon.hide();
+        fabCfeIcon.setVisibility(View.INVISIBLE);
 
 
     }
@@ -138,13 +169,6 @@ public class ServiceChooserActivity extends Activity {
     private void registerUserBackend() {
         new AsyncTask<Void, Void, Integer>() {
             @Override
-            protected void onPreExecute() {
-                if (running) {
-                    progressDialog = ProgressDialog.show(ServiceChooserActivity.this, getString(R.string.DialogTitleCheckingParameters), getString(R.string.DialogContentPleaseWait), true);
-                }
-            }
-
-            @Override
             protected Integer doInBackground(Void... params) {
                 try {
 
@@ -182,7 +206,8 @@ public class ServiceChooserActivity extends Activity {
             protected void onPostExecute(Integer transactionResponse) {
                 if (transactionResponse != null) {
                     if (running) {
-                        progressDialog.dismiss();
+                        progressBar.setVisibility(View.GONE);
+                        showFab();
                         switch (transactionResponse) {
                             case 1:
                                 registerUser();
@@ -235,5 +260,66 @@ public class ServiceChooserActivity extends Activity {
                 .where("Email = ?", emailAsUsername)
                 .executeSingle();
     }
+
+
+    /**
+     * Show the calculate button
+     */
+    private void showFab() {
+        if (!isFabButtonShowing) {
+            isFabButtonShowing = true;
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            fabJmasIcon.setAlpha(0f);
+            fabJmasIcon.setVisibility(View.VISIBLE);
+            fabGasIcon.setAlpha(0f);
+            fabGasIcon.setVisibility(View.VISIBLE);
+            fabCfeIcon.setAlpha(0f);
+            fabCfeIcon.setVisibility(View.VISIBLE);
+            introTitle.setAlpha(0f);
+            introTitle.setVisibility(View.VISIBLE);
+
+            // Animate the content view to 100% opacity, and clear any animation
+            // listener set on the view.
+            fabJmasIcon.animate()
+                    .alpha(1f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            fabJmasIcon.show();
+                            fabGasIcon.animate()
+                                    .alpha(1f)
+                                    .setDuration(500)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            fabGasIcon.show();
+                                            fabCfeIcon.animate()
+                                                    .alpha(1f)
+                                                    .setDuration(500)
+                                                    .setListener(new AnimatorListenerAdapter() {
+                                                        @Override
+                                                        public void onAnimationEnd(Animator animation) {
+                                                            fabCfeIcon.show();
+                                                        }
+                                                    });
+                                        }
+                                    });
+                        }
+                    });
+
+
+            introTitle.animate()
+                    .alpha(1f)
+                    .setDuration(1000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                        }
+                    });
+        }
+    }
+
 
 }
