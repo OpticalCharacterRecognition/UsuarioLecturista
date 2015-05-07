@@ -10,10 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -26,7 +24,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.format.Time;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
@@ -39,20 +36,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.appspot.ocr_backend.backend.Backend;
-import com.appspot.ocr_backend.backend.model.MessagesBill;
-import com.appspot.ocr_backend.backend.model.MessagesGetBills;
-import com.appspot.ocr_backend.backend.model.MessagesGetBillsResponse;
-import com.appspot.ocr_backend.backend.model.MessagesGetReadings;
-import com.appspot.ocr_backend.backend.model.MessagesGetReadingsResponse;
-import com.appspot.ocr_backend.backend.model.MessagesNewImageForProcessing;
-import com.appspot.ocr_backend.backend.model.MessagesNewImageForProcessingResponse;
 import com.appspot.ocr_backend.backend.model.MessagesPayBill;
 import com.appspot.ocr_backend.backend.model.MessagesPayBillResponse;
-import com.appspot.ocr_backend.backend.model.MessagesReading;
 import com.conekta.Charge;
 import com.conekta.Token;
 import com.facebook.Request;
@@ -60,61 +47,54 @@ import com.facebook.Response;
 import com.facebook.model.GraphUser;
 import com.fourtails.usuariolecturista.conekta.ConektaAndroid;
 import com.fourtails.usuariolecturista.conekta.ConektaCallback;
+import com.fourtails.usuariolecturista.jobs.GetPaidBillsJob;
+import com.fourtails.usuariolecturista.jobs.GetReadingsJob;
+import com.fourtails.usuariolecturista.jobs.GetUnPaidBillsJob;
+import com.fourtails.usuariolecturista.jobs.MakePaymentOnBackendJob;
+import com.fourtails.usuariolecturista.jobs.RegisterImageNameJob;
+import com.fourtails.usuariolecturista.jobs.UploadFileToGCSJob;
 import com.fourtails.usuariolecturista.model.ChartBill;
-import com.fourtails.usuariolecturista.model.ChartReading;
 import com.fourtails.usuariolecturista.model.CreditCard;
 import com.fourtails.usuariolecturista.model.Meter;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerItem;
 import com.fourtails.usuariolecturista.navigationDrawer.NavDrawerListAdapter;
+import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent;
+import com.fourtails.usuariolecturista.ottoEventBus.MakePaymentOnBackendEvent;
+import com.fourtails.usuariolecturista.ottoEventBus.UploadImageEvent;
 import com.fourtails.usuariolecturista.utilities.CheckNetwork;
 import com.fourtails.usuariolecturista.utilities.CircleTransform;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.storage.StorageScopes;
 import com.orhanobut.logger.Logger;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.path.android.jobqueue.JobManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
+import static com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent.Status;
+import static com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent.Type;
+
 
 public class MainActivity extends ActionBarActivity {
+
+    public static String TAG = "MainActivity";
+
     private static final String BUCKET_NAME = "ocr-test-pics";
 
     public static Bus bus;
-
-    public static String TAG = "MainActivity";
 
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -147,20 +127,12 @@ public class MainActivity extends ActionBarActivity {
 
     private Context context;
 
-    public static Bitmap savedBitmap;
-
     private String mUserEmail;
     private String mAccountNumber;
 
-    /**
-     * Global instance of the JSON factory.
-     */
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-
-    public static final int GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE = 00233;
 
     ProgressDialog progressDialog;
 
@@ -174,6 +146,8 @@ public class MainActivity extends ActionBarActivity {
 
     private Crouton imageUploadCrouton;
 
+    JobManager jobManager;
+
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("AppCompatMethod")
     @Override
@@ -181,12 +155,15 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bus = new Bus(ThreadEnforcer.MAIN);
+        bus = new AndroidBus();
         bus.register(this);
 
         ButterKnife.inject(this);
 
         context = getApplicationContext();
+
+        jobManager = FirstApplication.getInstance().getJobManager();
+
 
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
@@ -266,8 +243,8 @@ public class MainActivity extends ActionBarActivity {
             // on first time display view for first nav item
             displayView(0);
         }
-        getReadingsFromBackend();
 
+        jobManager.addJobInBackground(new GetReadingsJob(mAccountNumber));
     }
 
     /**
@@ -287,6 +264,45 @@ public class MainActivity extends ActionBarActivity {
      * Otto bus calls
      * ********************************************************************************************
      */
+
+    /**
+     * Most of the initial backend logic will happen here
+     *
+     * @param backendObject that can be a READING, UNPAID_BILL, PAID_BILL, UNPAID_PREPAY, PAID_PREPAY
+     */
+    @Subscribe
+    public void initiateJobs(BackendObjectsEvent backendObject) {
+        if (backendObject.status == Status.ERROR) {
+            Logger.e("Error getting objects from backend");
+        } else { //if there is no error
+            if (backendObject.type == Type.READING) {
+                // Readings finished
+                jobManager.addJobInBackground(new GetPaidBillsJob(mAccountNumber));
+            } else if (backendObject.type == Type.PAID_BILL) {
+                // Paid bills finished
+                jobManager.addJobInBackground(new GetUnPaidBillsJob(mAccountNumber));
+            } else if (backendObject.type == Type.UNPAID_BILL && backendObject.status == Status.NORMAL) {
+                // Unpaid Bills finished and there is unpaid bills
+                prepaidModeEnabled = false;
+                if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
+                    BillsFragment.billsBus.post(1);
+                    refreshBillsOnly = false;
+                } else {
+                    ReadingsFragment.readingsBus.post(1);
+                }
+            } else if (backendObject.type == Type.UNPAID_BILL && backendObject.status == Status.NOT_FOUND) {
+                // no unpaid bills found so we enable the prepaid mode
+                prepaidModeEnabled = true;
+                if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
+                    BillsFragment.billsBus.post(1);
+                    refreshBillsOnly = false;
+                } else {
+                    ReadingsFragment.readingsBus.post(2);
+                }
+            }
+        }
+
+    }
 
     @Subscribe
     public void imageCaptured(byte[] image) {
@@ -392,10 +408,10 @@ public class MainActivity extends ActionBarActivity {
 
         fragmentManager.popBackStack();
         int finalAmount = (int) (payAmount * 100);
-        payThing(finalAmount);
+        paymentWithConekta(finalAmount);
     }
 
-    public void payThing(int payAmount) {
+    public void paymentWithConekta(int payAmount) {
 
         ConektaAndroid conekta = new ConektaAndroid("key_eyD5sHqgVCzppFn6f35BzQ", this);
         try {
@@ -457,17 +473,6 @@ public class MainActivity extends ActionBarActivity {
     /**
      * *****************************************************************************************
      */
-
-    /**
-     * Generates a random Identifier for the image
-     *
-     * @return random id
-     */
-    public String generateIdentifierForImage() {
-        UUID id = UUID.randomUUID();
-        return id.toString();
-    }
-
 
     /**
      * DatabaseQuery
@@ -582,64 +587,21 @@ public class MainActivity extends ActionBarActivity {
      * Tries to register the payment on the backend
      */
     public void makeNormalPaymentOnBackend() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
-                        return 99;
-                    }
-                    List<ChartBill> bills = BillsFragment.getBillsForThisMonthRange(1);
-                    ChartBill bill = bills.get(BillsFragment.selectedBillIndex);
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-                    Backend service = builder.build();
+        jobManager.addJobInBackground(new MakePaymentOnBackendJob());
+    }
 
-                    MessagesPayBill messagesPayBill = new MessagesPayBill();
-                    messagesPayBill.setBillKey(bill.urlSafeKey);
-
-                    MessagesPayBillResponse response = service.bill().pay(messagesPayBill).execute();
-
-                    if (response.getOk()) {
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    } else {
-                        return 2;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
-                    switch (transactionResponse) {
-                        case 1:
-                            Logger.i("BACKEND, Good-makeNormalPaymentOnBackend");
-                            refreshBillsOnly = true;
-                            getPaidBillsFromBackend();
-                            Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 2:
-                            Logger.i("BACKEND, Good-NoBills-makeNormalPaymentOnBackend");
-                            break;
-                        case 99:
-                            Logger.e("ERROR, NO INTERNET");
-                            break;
-                        default:
-                            Logger.e("BACKEND, Bad-makeNormalPaymentOnBackend");
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-makeNormalPaymentOnBackend");
-                }
-            }
-        }.execute();
+    @Subscribe
+    public void makeNormalPaymentOnBackendResponse(MakePaymentOnBackendEvent event) {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        if (event.getResultCode() == 1) {
+            refreshBillsOnly = true;
+            jobManager.addJobInBackground(new GetPaidBillsJob(mAccountNumber));
+            Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
+        } else if (event.getResultCode() == 99) {
+            Logger.e("BACKEND, Bad-makeNormalPaymentOnBackend");
+        }
     }
 
     /**
@@ -688,7 +650,7 @@ public class MainActivity extends ActionBarActivity {
                         case 1:
                             Logger.i("BACKEND, Good-makeNormalPaymentOnBackend");
                             refreshBillsOnly = true;
-                            getPaidBillsFromBackend();
+                            jobManager.addJobInBackground(new GetPaidBillsJob(mAccountNumber));
                             Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
@@ -707,87 +669,20 @@ public class MainActivity extends ActionBarActivity {
         }.execute();
     }
 
+    public void uploadFileToGCS(byte[] image) {
+        showImageLoadingCrouton();
+        Logger.i("Initiating Image upload");
+        jobManager.addJobInBackground(new UploadFileToGCSJob(image, context, BUCKET_NAME));
+    }
 
-    /**
-     * BACKEND call to upload a picture from the camera to Google Cloud Storage
-     * TODO: SECURITY PROBLEM remove the key from assets, find a way to do it
-     *
-     * @param image
-     */
-    public void uploadFileToGCS(final byte[] image) {
-        final String[] imageName = {""};
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected void onPreExecute() {
-                Toast.makeText(context, getString(R.string.camera_message_uploading), Toast.LENGTH_SHORT).show();
-                showImageLoadingCrouton();
-                Logger.i("Initiating Image upload");
-            }
-
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    // convert key into class File. from inputStream to file. in an aux class.
-                    File file = createFileFromInputStream();
-
-                    NetHttpTransport httpTransport = new NetHttpTransport();
-
-                    String emailAddress = "382197999605-nc5h44q7v54mgn915eqvtd71is4r46jg@developer.gserviceaccount.com";
-
-                    // Google credentials
-                    GoogleCredential credential = new GoogleCredential.Builder().setTransport(httpTransport)
-                            .setJsonFactory(JSON_FACTORY)
-                            .setServiceAccountId(emailAddress)
-                            .setServiceAccountScopes(Collections.singleton(StorageScopes.DEVSTORAGE_FULL_CONTROL))
-                            .setServiceAccountPrivateKeyFromP12File(file)
-                            .build();
-
-                    imageName[0] = generateIdentifierForImage();
-
-
-                    String URI = "https://storage.googleapis.com/" + BUCKET_NAME + "/" + imageName[0] + ".jpg";
-                    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
-
-                    GenericUrl url = new GenericUrl(URI);
-
-                    HttpContent contentSend = new ByteArrayContent("image/jpeg", image);
-
-                    HttpRequest putRequest = requestFactory.buildPutRequest(url, contentSend);
-
-                    HttpResponse response = putRequest.execute();
-
-                    if (response.isSuccessStatusCode()) {
-                        Logger.i(response.getStatusMessage() + "Uploading image");
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                    Logger.d("Error in  user profile image uploading");
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    switch (transactionResponse) {
-                        case 1:
-                            Logger.i("BACKEND, Good-uploadFileToGCS");
-                            registerImageNameOnBackend(imageName[0]);
-                            showImageLoadingDoneCrouton();
-                            break;
-                        default:
-                            Logger.e("BACKEND, Bad-uploadFileToGCS");
-                            showImageLoadingErrorCrouton();
-
-                    }
-                } else {
-                    showImageLoadingErrorCrouton();
-                    Logger.e("BackendError - Unknown-uploadFileToGCS");
-                }
-            }
-        }.execute();
+    @Subscribe
+    public void uploadFileToGCSResponse(UploadImageEvent event) {
+        if (event.getResultCode() == 1) {
+            jobManager.addJobInBackground(new RegisterImageNameJob(mAccountNumber, event.getImageName()));
+            showImageLoadingDoneCrouton();
+        } else if (event.getResultCode() == 99) {
+            showImageLoadingErrorCrouton();
+        }
     }
 
     /**
@@ -860,433 +755,6 @@ public class MainActivity extends ActionBarActivity {
         notificationManager.notify(0, notification);
     }
 
-    /**
-     * Creates a temporary file that stores the .p12 GCS authentication services
-     * TODO: security concern about the file being on assets.
-     *
-     * @return a p12 file
-     */
-    private File createFileFromInputStream() {
-        File file = null;
-        try {
-            // we take the key and put it in a temporary file
-            AssetManager am = context.getAssets();
-            InputStream inputStream = am.open("privatekey.p12"); //you should not put the key in assets in prod version.
-
-            file = File.createTempFile("tempKeyFile", "p12");
-
-            OutputStream outputStream = new FileOutputStream(file);
-            byte buffer[] = new byte[1024];
-            int length = 0;
-
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
-            outputStream.close();
-            inputStream.close();
-
-        } catch (IOException e) {
-            Logger.e("Cant create a file from input stream");
-        }
-        return file;
-    }
-
-    /**
-     * Registers the image name on the backend so it triggers a "reading"
-     *
-     * @param imageName
-     */
-    private void registerImageNameOnBackend(final String imageName) {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
-                        return 99;
-                    }
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-                    Backend service = builder.build();
-
-
-                    MessagesNewImageForProcessing messagesNewImageForProcessing = new MessagesNewImageForProcessing();
-                    messagesNewImageForProcessing.setAccountNumber(mAccountNumber);
-                    messagesNewImageForProcessing.setImageName(imageName);
-
-                    MessagesNewImageForProcessingResponse response = service.reading().newImageForProcessing(messagesNewImageForProcessing).execute();
-
-                    if (response.getOk()) {
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    switch (transactionResponse) {
-                        case 1:
-                            Logger.i("BACKEND, Good-registerImageNameOnBackend");
-                            break;
-                        case 99:
-                            Logger.e("ERROR, NO INTERNET");
-                            break;
-                        default:
-                            Logger.e("BACKEND, Bad-registerImageNameOnBackend");
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-registerImageNameOnBackend");
-                }
-            }
-        }.execute();
-    }
-
-    /**
-     * Bitmap to array method
-     *
-     * @param bitmap bitmap to convert
-     * @return
-     */
-    public static byte[] bitmapToByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, baos);
-        return baos.toByteArray();
-    }
-
-    /**
-     * DatabaseSave
-     * BackendCall
-     * tries to get the readings from the backend
-     * onPostExecute calls for the bills on backend
-     * TODO: ask for a period of time on the backend, we can't just go and get all the readings ever
-     */
-    private void getReadingsFromBackend() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
-                        return 99;
-                    }
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-                    Backend service = builder.build();
-
-                    MessagesGetReadings messagesGetReadings = new MessagesGetReadings();
-                    messagesGetReadings.setAccountNumber(mAccountNumber);
-
-                    MessagesGetReadingsResponse response = service.reading().get(messagesGetReadings).execute();
-
-                    if (response.getOk()) {
-                        List<MessagesReading> readingsArray = response.getReadings();
-                        eraseReadingsDataFromLocalDB();
-                        populateDBWithReadings(readingsArray);
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    switch (transactionResponse) {
-                        case 1:
-                            getPaidBillsFromBackend();
-                            Logger.i("Good-getReadingsFromBackend");
-                            break;
-                        case 99:
-                            Logger.e("NO INTERNET");
-                            break;
-                        default:
-                            Logger.e("Bad-getReadingsFromBackend");
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-getReadingsFromBackend");
-                }
-            }
-        }.execute();
-    }
-
-    /**
-     * DatabaseSave
-     * BackendCall
-     * tries to get the bills from the backend
-     * TODO: ask for all the readings on the backend, no matter the status.
-     */
-    private void getPaidBillsFromBackend() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
-                        return 99;
-                    }
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-                    Backend service = builder.build();
-
-                    MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    messagesGetBills.setAccountNumber(mAccountNumber);
-                    messagesGetBills.setStatus("Paid");
-
-                    MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
-
-                    if (response.getOk()) {
-                        List<MessagesBill> billsArray = response.getBills();
-                        eraseBillsDataFromLocalDB();
-                        populateDBWithBills(billsArray);
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    } else {
-                        if (response.getError().contains("No Bills found under specified criteria")) {
-                            eraseBillsDataFromLocalDB();
-                            return 2;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    switch (transactionResponse) {
-                        case 1:
-                            getUnPaidBillsFromBackend();
-                            Logger.i("BACKEND, Good-getPaidBillsFromBackend");
-                            break;
-                        case 99:
-                            Logger.e("NO INTERNET");
-                            break;
-                        default:
-                            Logger.e("BACKEND, Bad-getPaidBillsFromBackend");
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-getPaidBillsFromBackend");
-                }
-            }
-        }.execute();
-    }
-
-    /**
-     * DatabaseSave
-     * BackendCall
-     * tries to get the bills from the backend
-     * TODO: ask for all the readings on the backend, no matter the status.
-     */
-    private void getUnPaidBillsFromBackend() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    if (!CheckNetwork.isInternetAvailable(MainActivity.this)) {
-                        return 99;
-                    }
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
-                    Backend service = builder.build();
-
-                    MessagesGetBills messagesGetBills = new MessagesGetBills();
-                    messagesGetBills.setAccountNumber(mAccountNumber);
-                    messagesGetBills.setStatus("Unpaid");
-
-                    MessagesGetBillsResponse response = service.bill().get(messagesGetBills).execute();
-
-                    if (response.getOk()) {
-                        List<MessagesBill> billsArray = response.getBills();
-                        populateDBWithBills(billsArray);
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    } else {
-                        if (response.getError().contains("No Bills found under specified criteria")) {
-                            return 2;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    switch (transactionResponse) {
-                        case 1:
-                            prepaidModeEnabled = false;
-                            if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
-                                BillsFragment.billsBus.post(1);
-                                refreshBillsOnly = false;
-                            } else {
-                                ReadingsFragment.readingsBus.post(1);
-                            }
-                            Logger.i("BACKEND, Good-getUnPaidBillsFromBackend");
-                            break;
-                        case 2: // no unpaid bills found so we enable the prepaid mode
-                            prepaidModeEnabled = true;
-                            if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
-                                BillsFragment.billsBus.post(1);
-                                refreshBillsOnly = false;
-                            } else {
-                                ReadingsFragment.readingsBus.post(2);
-                            }
-                            Logger.i("BACKEND, Good-NoBills-getUnPaidBillsFromBackend");
-                            break;
-                        case 99:
-                            ReadingsFragment.readingsBus.post(3);
-                            Logger.e("NO INTERNET");
-                            break;
-                        default:
-                            Logger.e("BACKEND, Bad-getUnPaidBillsFromBackend");
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-getUnPaidBillsFromBackend");
-                }
-            }
-        }.execute();
-    }
-
-    /**
-     * Database save
-     * This will attempt to save the readings from the backend to the
-     *
-     * @param readingsArray they array from the backend
-     */
-    private void populateDBWithReadings(List<MessagesReading> readingsArray) {
-        Time time = new Time();
-
-        ActiveAndroid.beginTransaction();
-        try {
-            // values come unsorted, and we sort them by date
-            Collections.sort(readingsArray, new ReadingsCompare());
-            for (MessagesReading readings : readingsArray) {
-                long timeInMillis = readings.getCreationDate().getValue();
-                time.set(timeInMillis);
-
-                ChartReading chartReading = new ChartReading(
-                        time.monthDay,
-                        time.month,
-                        time.year,
-                        timeInMillis,
-                        readings.getMeasure(),
-                        readings.getUrlsafeKey(),
-                        readings.getAccountNumber());
-                chartReading.save();
-            }
-            ActiveAndroid.setTransactionSuccessful();
-        } catch (Exception e) {
-            Logger.e(e, "there was an error saving to the database, most likely the data doesn't have" +
-                    "the needed fields from the database or they are null");
-        } finally {
-            ActiveAndroid.endTransaction();
-        }
-    }
-
-    /**
-     * I don't like inner classes but this is too small for its own file, it just compares 2 values
-     */
-    class ReadingsCompare implements Comparator<MessagesReading> {
-
-        @Override
-        public int compare(MessagesReading lhs, MessagesReading rhs) {
-            Long value1 = lhs.getCreationDate().getValue();
-            Long values2 = rhs.getCreationDate().getValue();
-            return value1.compareTo(values2);
-        }
-    }
-
-    /**
-     * same as readings
-     *
-     * @param billsArray from the backend
-     */
-    private void populateDBWithBills(List<MessagesBill> billsArray) {
-        Time time = new Time();
-
-        ActiveAndroid.beginTransaction();
-        try {
-            for (MessagesBill bills : billsArray) {
-                long timeInMillis = bills.getCreationDate().getValue();
-                time.set(timeInMillis);
-
-                ChartBill chartBill = new ChartBill(
-                        time.monthDay,
-                        time.month,
-                        time.year,
-                        timeInMillis,
-                        bills.getAmount(),
-                        bills.getBalance(),
-                        bills.getUrlsafeKey(),
-                        bills.getAccountNumber(),
-                        bills.getStatus());
-                chartBill.save();
-            }
-            ActiveAndroid.setTransactionSuccessful();
-        } catch (Exception e) {
-            Logger.e(e, "there was an error saving to the database, most likely the data doesn't have" +
-                    "the needed fields from the database or they are null");
-        } finally {
-            ActiveAndroid.endTransaction();
-        }
-
-    }
-
-
-    /**
-     * Database erase
-     * Erases the db so we don't have to check if the reading already exists and don't put duplicates
-     */
-    private void eraseReadingsDataFromLocalDB() {
-        List<ChartReading> tempList = new Select().from(ChartReading.class).execute();
-        if (tempList != null && tempList.size() > 0) {
-            // we need the time of the last value to help us render the new values differently
-            ChartReading lastListValue = tempList.get(tempList.size() - 1);
-            oldReadingsLastDateInMillis = lastListValue.timeInMillis;
-
-            ActiveAndroid.beginTransaction();
-            try {
-                new Delete().from(ChartReading.class).execute();
-                ActiveAndroid.setTransactionSuccessful();
-            } catch (Exception e) {
-                Logger.e(e, "error deleting existing db");
-            } finally {
-                ActiveAndroid.endTransaction();
-            }
-        }
-
-    }
-
-    /**
-     * see top
-     */
-    private void eraseBillsDataFromLocalDB() {
-        List<ChartReading> tempList = new Select().from(ChartBill.class).execute();
-        if (tempList != null && tempList.size() > 0) {
-            ActiveAndroid.beginTransaction();
-            try {
-                new Delete().from(ChartBill.class).execute();
-                ActiveAndroid.setTransactionSuccessful();
-            } catch (Exception e) {
-                Logger.e(e, "error deleting existing db");
-            } finally {
-                ActiveAndroid.endTransaction();
-            }
-        }
-    }
 
     /**
      * Here we are going to check if the user is from facebook, and if it is
@@ -1415,27 +883,4 @@ public class MainActivity extends ActionBarActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    // Todo: remove if not used
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // This comes from the OCR activity
-        if (requestCode == GO_BACK_TO_MAIN_DRAWER_AND_OPEN_BALANCE_CODE) {
-            startBalanceFragment();
-        }
-    }
-
-    /**
-     * start the balance fragment when coming from the OCR activity
-     */
-    private void startBalanceFragment() {
-        Fragment fragment = new ReadingsFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.container, fragment).commit();
-        Logger.d("fragment added in the beginning " + fragment.getTag());
-        mDrawerLayout.closeDrawer(mDrawerRelativeLayout);
-
-    }
 }

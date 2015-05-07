@@ -40,10 +40,11 @@ import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
 import com.fourtails.usuariolecturista.model.ChartReading;
+import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
 import com.melnykov.fab.FloatingActionButton;
+import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -242,7 +243,7 @@ public class ReadingsFragment extends Fragment {
 
         ButterKnife.inject(this, view);
 
-        readingsBus = new Bus(ThreadEnforcer.MAIN);
+        readingsBus = new AndroidBus();
         readingsBus.register(this);
         fabScan.hide();
 
@@ -624,10 +625,15 @@ public class ReadingsFragment extends Fragment {
      * Updates the chart to show a "significant" way that there has been a new reading
      */
     private void updatePoint() {
-        Crouton.makeText(getActivity(), "Nueva Lectura", new Style.Builder().setBackgroundColor(R.color.blue_400).build(), linechartCardView).show();
+        try {
+            Crouton.makeText(getActivity(), "Nueva Lectura", new Style.Builder().setBackgroundColor(R.color.blue_400).build(), linechartCardView).show();
 
-        mLineChart.updateValues(0, chartValues);
-        mLineChart.notifyDataUpdate();
+            mLineChart.updateValues(0, chartValues);
+            mLineChart.notifyDataUpdate();
+        } catch (Exception e) {
+            Logger.e(e, "Error trying to update the chart last point");
+        }
+
     }
 
     private Animation getAnimation(boolean newAnim) {

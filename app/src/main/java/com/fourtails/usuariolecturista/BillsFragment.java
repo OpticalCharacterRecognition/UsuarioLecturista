@@ -37,11 +37,11 @@ import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
 import com.fourtails.usuariolecturista.model.ChartBill;
+import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
 import com.melnykov.fab.FloatingActionButton;
 import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -243,7 +243,7 @@ public class BillsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_bills, container, false);
         ButterKnife.inject(this, view);
 
-        billsBus = new Bus(ThreadEnforcer.MAIN);
+        billsBus = new AndroidBus();
         billsBus.register(this);
 
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));

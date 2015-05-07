@@ -1,6 +1,7 @@
 package com.fourtails.usuariolecturista;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 import com.orhanobut.logger.Logger;
@@ -8,18 +9,30 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.path.android.jobqueue.JobManager;
+import com.path.android.jobqueue.config.Configuration;
+import com.path.android.jobqueue.log.CustomLogger;
 
 
 /**
  * This class initializes all the goodies on the app
  */
 public class FirstApplication extends Application {
+
+    private static FirstApplication instance;
+    private JobManager jobManager;
+
+    public FirstApplication() {
+        instance = this;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         // Initialize ORM
         ActiveAndroid.initialize(this);
 
+        // Logger
         Logger.init("PL");
 
         // Required - Initialize the Parse SDK
@@ -39,14 +52,50 @@ public class FirstApplication extends Application {
             }
         });
 
-        // If we try to initialize this here the fb login doesn't work :S
-        //ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+        configureJobManager();
 
-//
-//        // Optional - If you don't want to allow Twitter login, you can
-        // remove this line (and other related ParseTwitterUtils calls)
-//        ParseTwitterUtils.initialize(getString(R.string.twitter_consumer_key),
-//                getString(R.string.twitter_consumer_secret));
+    }
+
+    private void configureJobManager() {
+        Configuration configuration = new Configuration.Builder(this)
+                .customLogger(new CustomLogger() {
+                    private static final String TAG = "JOBS";
+
+                    @Override
+                    public boolean isDebugEnabled() {
+                        return true;
+                    }
+
+                    @Override
+                    public void d(String text, Object... args) {
+                        Log.d(TAG, String.format(text, args));
+                    }
+
+
+                    @Override
+                    public void e(Throwable t, String text, Object... args) {
+                        Log.e(TAG, String.format(text, args), t);
+                    }
+
+                    @Override
+                    public void e(String text, Object... args) {
+                        Log.e(TAG, String.format(text, args));
+                    }
+                })
+                .minConsumerCount(1)//always keep at least one consumer alive
+                .maxConsumerCount(3)//up to 3 consumers at a time
+                .loadFactor(3)//3 jobs per consumer
+                .consumerKeepAlive(120)//wait 2 minute
+                .build();
+        jobManager = new JobManager(this, configuration);
+    }
+
+    public JobManager getJobManager() {
+        return jobManager;
+    }
+
+    public static FirstApplication getInstance() {
+        return instance;
     }
 
     @Override

@@ -18,17 +18,20 @@ public class RegisteredUser extends Model {
     public String email;
     @Column
     public String name;
+    @Column
+    public String installationId;
 
     public RegisteredUser() {
         super();
     }
 
-    public RegisteredUser(String accountType, long age, String email, String name) {
+    public RegisteredUser(String accountType, long age, String email, String name, String installationId) {
         super();
         this.accountType = accountType;
         this.age = age;
         this.email = email;
         this.name = name;
+        this.installationId = installationId;
     }
 
 }

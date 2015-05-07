@@ -7,31 +7,31 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.activeandroid.query.Select;
-import com.appspot.ocr_backend.backend.Backend;
-import com.appspot.ocr_backend.backend.model.MessagesCreateUser;
-import com.appspot.ocr_backend.backend.model.MessagesCreateUserResponse;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.fourtails.usuariolecturista.jobs.RegisterUserJob;
 import com.fourtails.usuariolecturista.model.RegisteredUser;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEventBus.RegisterUserEvent;
 import com.melnykov.fab.FloatingActionButton;
 import com.orhanobut.logger.Logger;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
+import com.path.android.jobqueue.JobManager;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,16 +47,21 @@ public class ServiceChooserActivity extends Activity {
 
 
     public static final String PREF_METER_JMAS_REGISTERED = "meterJMASNotAddedPref";
-    public static final String EXRA_USER_EMAIL = "userEmailSetAsExtra";
+    public static final String EXTRA_USER_EMAIL = "userEmailSetAsExtra";
     public static final String EXTRA_SERVICE_TYPE = "extraServiceTypeForApp";
     public static final String EXTRA_JMAS = "jmasAccountSelected";
 
     volatile boolean running;
 
-    private String accountType = "Facebook";
+    private String accountType;
     private long age;
     private String email;
     private String name;
+    private String installationId;
+
+    JobManager jobManager;
+
+    public static Bus bus;
 
     public boolean isFabButtonShowing = false;
 
@@ -86,7 +91,7 @@ public class ServiceChooserActivity extends Activity {
             //finish();
         } else { // otherwise we have to register the meter
             Intent intent = new Intent(this, MeterRegistrationActivity.class);
-            intent.putExtra(EXRA_USER_EMAIL, email);
+            intent.putExtra(EXTRA_USER_EMAIL, email);
             intent.putExtra(EXTRA_SERVICE_TYPE, EXTRA_JMAS);
             startActivity(intent);
         }
@@ -112,6 +117,11 @@ public class ServiceChooserActivity extends Activity {
 
         setContentView(R.layout.activity_service_chooser);
         ButterKnife.inject(this);
+
+        bus = new AndroidBus();
+        bus.register(this);
+
+        jobManager = FirstApplication.getInstance().getJobManager();
 
         ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
 
@@ -140,12 +150,15 @@ public class ServiceChooserActivity extends Activity {
      */
     private void fillUserInfoThenRegister() {
         ParseUser parseUser = ParseUser.getCurrentUser();
+        installationId = ParseInstallation.getCurrentInstallation().getInstallationId();
+        Logger.d("InstallationId ::" + installationId);
         if (ParseFacebookUtils.isLinked(parseUser)) {
             if (ParseFacebookUtils.getSession().isOpened()) {
                 Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
                     @Override
                     public void onCompleted(GraphUser user, Response response) {
                         if (user != null) {
+                            accountType = "Facebook";
                             age = 30L; //user.getBirthday() test this
                             email = user.getName() + "@test.com";
                             name = user.getName();
@@ -155,6 +168,7 @@ public class ServiceChooserActivity extends Activity {
                 }).executeAsync();
             }
         } else { // todo: some of this is dummy data, must change it
+            accountType = "G+";
             age = 30L;
             email = parseUser.getEmail();
             name = parseUser.getUsername();
@@ -167,66 +181,20 @@ public class ServiceChooserActivity extends Activity {
      * Registers the user on the backend
      */
     private void registerUserBackend() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
+        jobManager.addJobInBackground(new RegisterUserJob(accountType, age, email, name, installationId));
+    }
 
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
-                    Backend service = builder.build();
-
-                    MessagesCreateUser messagesCreateUser = new MessagesCreateUser();
-                    messagesCreateUser.setAccountType(accountType);
-                    messagesCreateUser.setAge(age);
-                    messagesCreateUser.setEmail(email);
-                    messagesCreateUser.setName(name);
-
-                    MessagesCreateUserResponse response = service.user().create(messagesCreateUser).execute();
-
-                    if (response.getOk()) {
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    } else {
-                        if (response.getError().contains("User email already in platform")) {
-                            return 2;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    if (running) {
-                        progressBar.setVisibility(View.GONE);
-                        showFab();
-                        switch (transactionResponse) {
-                            case 1:
-                                registerUser();
-                                Logger.i("BACKEND, Good-registerUserBackend");
-                                break;
-                            case 2:
-                                registerUser();
-                                Logger.i("BACKEND, Good-AlreadyExists-registerUserBackend");
-                                break;
-                            default:
-                                Logger.i("BACKEND, Bad-registerUserBackend");
-                        }
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-registerUserBackend");
-                }
-            }
-        }.execute();
-
+    @Subscribe
+    public void registerUserBackendResponse(RegisterUserEvent event) {
+        if (running) {
+            progressBar.setVisibility(View.GONE);
+            showFab();
+        }
+        if (event.getResultCode() == 1) {
+            registerUser();
+        } else if (event.getResultCode() == 99) {
+            Logger.i("BACKEND, Bad-registerUserBackend");
+        }
     }
 
     /**
@@ -241,7 +209,8 @@ public class ServiceChooserActivity extends Activity {
                     accountType,
                     age,
                     email,
-                    name
+                    name,
+                    installationId
             );
             registeredUser.save();
         }

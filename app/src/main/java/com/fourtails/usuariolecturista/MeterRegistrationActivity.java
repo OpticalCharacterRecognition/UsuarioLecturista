@@ -3,7 +3,6 @@ package com.fourtails.usuariolecturista;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -11,17 +10,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.appspot.ocr_backend.backend.Backend;
-import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUser;
-import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUserResponse;
-import com.appspot.ocr_backend.backend.model.MessagesCreateMeter;
-import com.appspot.ocr_backend.backend.model.MessagesCreateMeterResponse;
-import com.appspot.ocr_backend.backend.model.MessagesGetMeters;
-import com.appspot.ocr_backend.backend.model.MessagesGetMetersResponse;
+import com.fourtails.usuariolecturista.jobs.AssignMeterToUserBackendJob;
+import com.fourtails.usuariolecturista.jobs.CheckIfUserHasMeterJob;
+import com.fourtails.usuariolecturista.jobs.RegisterMeterBackendJob;
 import com.fourtails.usuariolecturista.model.Meter;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEventBus.AssignMeterToUserBackendEvent;
+import com.fourtails.usuariolecturista.ottoEventBus.CheckIfUserHasMeterEvent;
+import com.fourtails.usuariolecturista.ottoEventBus.RegisterMeterBackendEvent;
 import com.orhanobut.logger.Logger;
+import com.path.android.jobqueue.JobManager;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -45,6 +45,11 @@ public class MeterRegistrationActivity extends ActionBarActivity {
 
     String emailAsUserIdFromActivity;
 
+    JobManager jobManager;
+
+    Meter meter;
+
+    public static Bus bus;
 
     @OnClick(R.id.buttonAddMeter)
     public void clickedButtonAddMeter() {
@@ -61,7 +66,12 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         setContentView(R.layout.activity_meter_registration);
         ButterKnife.inject(this);
 
-        emailAsUserIdFromActivity = getIntent().getExtras().getString(ServiceChooserActivity.EXRA_USER_EMAIL);
+        bus = new AndroidBus();
+        bus.register(this);
+
+        jobManager = FirstApplication.getInstance().getJobManager();
+
+        emailAsUserIdFromActivity = getIntent().getExtras().getString(ServiceChooserActivity.EXTRA_USER_EMAIL);
 
 
         checkIfUserHasMeter();
@@ -81,91 +91,37 @@ public class MeterRegistrationActivity extends ActionBarActivity {
      * DatabaseSave
      * BackendCall
      * checks if the user already has a meter linked to it
-     *
      */
     private void checkIfUserHasMeter() {
-        new AsyncTask<Void, Void, Boolean>() {
-            @Override
-            protected void onPreExecute() {
-                if (running) {
-                    progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.DialogTitleCheckingParameters), getString(R.string.DialogContentPleaseWait), true);
-                }
-            }
-
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                try {
-
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
-                    Backend service = builder.build();
-
-                    MessagesGetMeters messagesGetMeters = new MessagesGetMeters();
-                    messagesGetMeters.setUser(emailAsUserIdFromActivity);
-
-
-                    MessagesGetMetersResponse response = service.meter().getAllAssignedToUser(messagesGetMeters).execute();
-
-                    if (response.getOk()) {
-                        Logger.json(response.toPrettyString());
-                        Meter meter = new Meter(
-                                response.getMeters().get(0).getAccountNumber(),
-                                response.getMeters().get(0).getBalance(),
-                                response.getMeters().get(0).getModel(),
-                                response.getMeters().get(0).getUrlsafeKey()
-                        );
-                        meter.save();
-                        meterExists = true;
-                        return true;
-                    } else {
-                        if (response.getError().contains("No Meters found under specified criteria")) {
-                            meterExists = false;
-                        }
-                        if (response.getError().contains("User does not exist")) {
-                            meterExists = false;
-                        }
-                        return false;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean transactionResponse) {
-                if (transactionResponse != null) {
-                    if (running) {
-                        progressDialog.dismiss();
-                        if (transactionResponse) {
-                            setSharedPrefJmasMeterRegisteredTrue();
-                            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                            Logger.i("BACKEND, Good-checkIfUserHasMeter");
-                        } else {
-                            Logger.i("BACKEND, Bad-checkIfUserHasMeter");
-                        }
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-checkIfUserHasMeter");
-                }
-            }
-        }.execute();
-
+        if (running) {
+            progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.DialogTitleCheckingParameters), getString(R.string.DialogContentPleaseWait), true);
+        }
+        jobManager.addJobInBackground(new CheckIfUserHasMeterJob(emailAsUserIdFromActivity));
     }
 
+    @Subscribe
+    public void checkIfUserHasMeterResponse(CheckIfUserHasMeterEvent event) {
+        meterExists = event.getMeterExists();
+        if (running) {
+            progressDialog.dismiss();
+        }
+        if (event.getResultCode() == 1) {
+            if (meterExists) {
+                setSharedPrefJmasMeterRegisteredTrue();
+                Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                Logger.i("BACKEND, Good-checkIfUserHasMeter");
+            }
+        }
+    }
 
     /**
      * Registers the meter in the database
      */
     public void registerMeter() {
         if (!meterExists) {
-            Meter meter = new Meter(
+            meter = new Meter(
                     meterNumber.getText().toString(),
                     0L,
                     "Cicasa",
@@ -180,61 +136,19 @@ public class MeterRegistrationActivity extends ActionBarActivity {
      * BackendCall
      * Tries to register the meter on the backend if successful it saves it into the database
      */
-    private void registerMeterBackend(final Meter meter) {
-        new AsyncTask<Void, Void, Integer>() {
+    private void registerMeterBackend(Meter meter) {
+        progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.dialogTitleRegisterMeterBE), getString(R.string.DialogContentPleaseWait), true);
 
-            @Override
-            protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(MeterRegistrationActivity.this, getString(R.string.dialogTitleRegisterMeterBE), getString(R.string.DialogContentPleaseWait), true);
-            }
+        jobManager.addJobInBackground(new RegisterMeterBackendJob(meter.accountNumber));
+    }
 
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
-                    Backend service = builder.build();
-
-                    MessagesCreateMeter messagesCreateMeter = new MessagesCreateMeter();
-                    messagesCreateMeter.setAccountNumber(meter.accountNumber);
-
-                    MessagesCreateMeterResponse response = service.meter().create(messagesCreateMeter).execute();
-
-                    if (response.getOk()) {
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-                if (transactionResponse != null) {
-                    if (running) {
-                        switch (transactionResponse) {
-                            case 1:
-                                Logger.i("BACKEND-registerMeter, Good-registerMeterBackend");
-                                meter.save(); // we only save if successful
-                                assignMeterToUserBackend(meter.accountNumber);
-                                break;
-                            default:
-                                Logger.e("BACKEND-registerMeter, Bad-registerMeterBackend");
-                        }
-                    } else {
-                        Logger.e("BackendError - Unknown-registerMeterBackend");
-                    }
-                }
-            }
-        }.execute();
-
+    @Subscribe
+    public void registerMeterBackendResponse(RegisterMeterBackendEvent event) {
+        if (event.getResultCode() == 1) {
+            Logger.i("BACKEND-registerMeter, Good-registerMeterBackend");
+            meter.save(); // we only save if successful
+            assignMeterToUserBackend(meter.accountNumber);
+        }
     }
 
     /**
@@ -243,61 +157,22 @@ public class MeterRegistrationActivity extends ActionBarActivity {
      *
      * @param accountNumber the meterNumber
      */
-    private void assignMeterToUserBackend(final String accountNumber) {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
+    private void assignMeterToUserBackend(String accountNumber) {
+        jobManager.addJobInBackground(new AssignMeterToUserBackendJob(accountNumber, emailAsUserIdFromActivity));
+    }
 
-                    // Use a builder to help formulate the API request.
-                    Backend.Builder builder = new Backend.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(),
-                            null);
-                    Backend service = builder.build();
-
-                    MessagesAssignMeterToUser messagesAssignMeterToUser = new MessagesAssignMeterToUser();
-                    messagesAssignMeterToUser.setAccountNumber(accountNumber);
-                    messagesAssignMeterToUser.setEmail(emailAsUserIdFromActivity);
-
-                    MessagesAssignMeterToUserResponse response = service.meter().assignToUser(messagesAssignMeterToUser).execute();
-
-                    if (response.getOk()) {
-                        Logger.json(response.toPrettyString());
-                        return 1;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Logger.e(e, e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer transactionResponse) {
-
-                if (transactionResponse != null) {
-
-                    if (running) {
-                        progressDialog.dismiss();
-                        switch (transactionResponse) {
-                            case 1:
-                                Logger.i("BACKEND-assignMeter, Good-assignMeterToUserBackend");
-                                setSharedPrefJmasMeterRegisteredTrue();
-                                Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                                break;
-                            default:
-                                Logger.e("BACKEND-assignMeter, Bad-assignMeterToUserBackend");
-                        }
-                    }
-                } else {
-                    Logger.e("BackendError - Unknown-assignMeterToUserBackend");
-                }
-            }
-        }.execute();
-
+    @Subscribe
+    public void assignMeterToUserBackendResponse(AssignMeterToUserBackendEvent event) {
+        progressDialog.dismiss();
+        if (event.getResultCode() == 1) {
+            Logger.i("BACKEND-assignMeter, Good-assignMeterToUserBackend");
+            setSharedPrefJmasMeterRegisteredTrue();
+            Intent intent = new Intent(MeterRegistrationActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (event.getResultCode() == 99) {
+            Logger.e("BACKEND-assignMeter, Bad-assignMeterToUserBackend");
+        }
     }
 
     public void setSharedPrefJmasMeterRegisteredTrue() {

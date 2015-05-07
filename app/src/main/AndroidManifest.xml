@@ -49,9 +49,6 @@
             android:value="com.fourtails.usuariolecturista.model.CreditCard,com.fourtails.usuariolecturista.model.Meter,com.fourtails.usuariolecturista.model.RegisteredUser,com.fourtails.usuariolecturista.model.ChartReading,com.fourtails.usuariolecturista.model.ChartBill" />
 
         <activity
-            android:name=".LoginActivityBack"
-            android:label="@string/title_activity_login" />
-        <activity
             android:name=".ServiceChooserActivity"
             android:label="@string/title_activity_intermediate"
             android:screenOrientation="portrait" />

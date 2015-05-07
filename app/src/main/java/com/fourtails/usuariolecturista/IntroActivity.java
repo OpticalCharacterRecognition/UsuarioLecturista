@@ -7,9 +7,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 
+import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
@@ -45,7 +45,7 @@ public class IntroActivity extends ActionBarActivity {
         // if is the first time then we call for the "tutorial" slides
         if (isFirstTime) {
             setContentView(R.layout.activity_instructions);
-            introBus = new Bus(ThreadEnforcer.MAIN);
+            introBus = new AndroidBus();
             introBus.register(this);
             ButterKnife.inject(this);
 
@@ -72,26 +72,4 @@ public class IntroActivity extends ActionBarActivity {
         finish();
     }
 
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_instructions, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }

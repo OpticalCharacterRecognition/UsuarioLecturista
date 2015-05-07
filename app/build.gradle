@@ -86,4 +86,6 @@ dependencies {
     }
     // pretty logs
     compile 'com.orhanobut:logger:1.8'
+    // better background jobs
+    compile 'com.birbit:android-priority-jobqueue:1.3.1'
 }
