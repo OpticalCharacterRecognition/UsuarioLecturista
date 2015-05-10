@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista.ottoEventBus;
+package com.fourtails.usuariolecturista.ottoEvents;
 
 /**
  * Created by Vazh on 5/5/2015.

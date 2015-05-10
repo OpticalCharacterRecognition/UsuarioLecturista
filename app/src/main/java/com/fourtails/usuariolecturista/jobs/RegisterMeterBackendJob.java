@@ -4,14 +4,14 @@ import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesCreateMeter;
 import com.appspot.ocr_backend.backend.model.MessagesCreateMeterResponse;
 import com.fourtails.usuariolecturista.MeterRegistrationActivity;
-import com.fourtails.usuariolecturista.ottoEventBus.RegisterMeterBackendEvent;
+import com.fourtails.usuariolecturista.ottoEvents.RegisterMeterBackendEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
-import static com.fourtails.usuariolecturista.ottoEventBus.RegisterMeterBackendEvent.Type;
+import static com.fourtails.usuariolecturista.ottoEvents.RegisterMeterBackendEvent.Type;
 
 
 /**
@@ -49,6 +49,8 @@ public class RegisterMeterBackendJob extends Job {
         if (response.getOk()) {
             Logger.json(response.toPrettyString());
             MeterRegistrationActivity.bus.post(new RegisterMeterBackendEvent(Type.COMPLETED, 1));
+        } else {
+            Logger.e(response.getError());
         }
     }
 

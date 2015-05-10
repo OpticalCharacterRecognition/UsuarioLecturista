@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.fourtails.usuariolecturista.PayAddCreditCardFragment"
+    tools:context="com.fourtails.usuariolecturista.fragments.PayAddCreditCardFragment"
     android:orientation="vertical"
     android:padding="35dp">
 

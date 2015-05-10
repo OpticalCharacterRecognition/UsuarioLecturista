@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.utilities.SwipeDismissRecyclerViewTouchListener;
 
 import java.util.ArrayList;

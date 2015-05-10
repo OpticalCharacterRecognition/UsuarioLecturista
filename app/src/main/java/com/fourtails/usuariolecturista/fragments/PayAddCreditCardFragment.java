@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 
 import java.util.Calendar;

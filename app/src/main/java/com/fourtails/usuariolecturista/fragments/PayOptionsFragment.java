@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -15,6 +15,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
+import com.fourtails.usuariolecturista.ottoEvents.BillPaymentAttemptEvent;
 import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 import com.stripe.android.model.Card;
 
@@ -135,7 +138,7 @@ public class PayOptionsFragment extends Fragment {
             boolean validCard = validateCard();
             if (validCard) {
                 Double payAmount = BillsFragment.selectedBill;
-                MainActivity.bus.post(payAmount);
+                MainActivity.bus.post(new BillPaymentAttemptEvent(payAmount));
                 if (PayOptionsFragment.this.payDialog != null) {
                     PayOptionsFragment.this.payDialog.dismiss();
                 }

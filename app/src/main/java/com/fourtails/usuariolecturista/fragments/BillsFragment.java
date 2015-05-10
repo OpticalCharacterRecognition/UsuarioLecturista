@@ -1,6 +1,8 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -36,8 +38,10 @@ import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.model.ChartBill;
-import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
 import com.melnykov.fab.FloatingActionButton;
 import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
@@ -50,6 +54,10 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import static com.fourtails.usuariolecturista.MainActivity.allowUserToPrepay;
+import static com.fourtails.usuariolecturista.MainActivity.bus;
+import static com.fourtails.usuariolecturista.MainActivity.prepayModeEnabled;
 
 
 /**
@@ -185,6 +193,9 @@ public class BillsFragment extends Fragment {
     @InjectView(R.id.textViewBillsStatus)
     TextView textViewBillsStatus;
 
+    @InjectView(R.id.textViewPrepayInvitation)
+    TextView textViewPrepayInvitation;
+
     String selectedBillStatus;
 
     private float[] chartValues;
@@ -195,8 +206,8 @@ public class BillsFragment extends Fragment {
 
     @OnClick(R.id.fabPay)
     public void payButtonClicked() {
-        if (MainActivity.prepaidModeEnabled) {
-            Fragment prepaidFragment = new PrepaidFragment();
+        if (prepayModeEnabled) {
+            Fragment prepaidFragment = new PrepayCalculatorFragment();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 makeAnimationBetweenFragments(
                         prepaidFragment, sharedCardView,
@@ -214,7 +225,7 @@ public class BillsFragment extends Fragment {
                             android.R.transition.fade, // Exit Transition
                             android.R.transition.move);  // Enter Transition
                 } else {
-                    MainActivity.bus.post(payOptionsFragment);
+                    bus.post(payOptionsFragment);
                 }
             }
         }
@@ -249,6 +260,10 @@ public class BillsFragment extends Fragment {
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
         textViewNoBills.setVisibility(View.GONE);
+
+        if (prepayModeEnabled) {
+            fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_schedule_white_24dp));
+        }
 
         /** Chart things **/
         mCurrOverlapFactor = .5f;
@@ -286,7 +301,14 @@ public class BillsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Set title
-        MainActivity.bus.post(getResources().getString(R.string.toolbarTitleBills));
+        if (MainActivity.userHasAPrepay) {
+            bus.post(getResources().getString(R.string.toolbarTitleHistoricBills));
+        } else {
+            bus.post(getResources().getString(R.string.toolbarTitleBills));
+        }
+        if (prepayModeEnabled) {
+            fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_schedule_white_24dp));
+        }
     }
 
 
@@ -310,13 +332,11 @@ public class BillsFragment extends Fragment {
     public void checkBillsFromLocalDB() {
         List<ChartBill> bills = getBillsForThisMonthRange(2);
         if (bills != null) {
-            //Collections.reverse(bills); // The list comes with the latest value first, so for chart purposes we reverse it
             orderedBills = bills;
             double highestReading = 0;
             double lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
             chartValues = new float[bills.size()];
-            String lastReadingDate = "";
             String lastBillStatus = "";
             double lastBillAmount = 0.0;
             int j = 0;
@@ -350,6 +370,7 @@ public class BillsFragment extends Fragment {
             lineChartCardViewBills.setVisibility(View.GONE);
             textViewNoBills.setVisibility(View.VISIBLE);
         }
+        Logger.d("Finished checkBillsFromLocalDB");
     }
 
     /**
@@ -362,8 +383,9 @@ public class BillsFragment extends Fragment {
         textViewSelectedBill.setText("$" + String.valueOf(lastBillAmount));
         String statusTranslate;
         selectedBill = lastBillAmount;
-        if (MainActivity.prepaidModeEnabled) {
+        if (prepayModeEnabled && allowUserToPrepay) {
             fabPay.show();
+            animateInvitationText();
             statusTranslate = "Pagada";
         } else {
             if (lastBillStatus.equalsIgnoreCase("Paid")) {
@@ -379,6 +401,19 @@ public class BillsFragment extends Fragment {
         }
         textViewBillsStatus.setText(statusTranslate);
         mLineChart.setVisibility(View.VISIBLE);
+    }
+
+    public void animateInvitationText() {
+        textViewPrepayInvitation.setAlpha(0f);
+        textViewPrepayInvitation.setVisibility(View.VISIBLE);
+        textViewPrepayInvitation.animate()
+                .alpha(1f)
+                .setDuration(1000)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                    }
+                });
     }
 
     /**
@@ -402,7 +437,11 @@ public class BillsFragment extends Fragment {
      * Hides the chart then after 500ms makes a transition
      */
     private void hideChartThenMakeTransition() {
-        mLineChart.dismiss(getAnimation(false).setEndAction(mMakeTransition));
+        try {
+            mLineChart.dismiss(getAnimation(false).setEndAction(mMakeTransition));
+        } catch (Exception e) {
+            Logger.e(e, "Something went wrong trying to hide the chart");
+        }
     }
 
     /**
@@ -417,7 +456,7 @@ public class BillsFragment extends Fragment {
                     android.R.transition.fade, // Exit Transition
                     android.R.transition.move); // Enter Transition
         } else {
-            MainActivity.bus.post(readingsFragment);
+            bus.post(readingsFragment);
         }
         fabChangeGraphBills.setEnabled(true);
         isAnimationRunning = false;
@@ -484,8 +523,8 @@ public class BillsFragment extends Fragment {
 
         selectedBill = chartValues[entryIndex];
         selectedBillStatus = orderedBills.get(entryIndex).status;
-        // Prepaid logic
-        if (MainActivity.prepaidModeEnabled) {
+        // Prepay logic
+        if (prepayModeEnabled) {
             selectedBillStatus = "Pagada";
         } else {
             if (selectedBillStatus.equalsIgnoreCase("Paid")) {

@@ -5,14 +5,14 @@ import com.appspot.ocr_backend.backend.model.MessagesGetMeters;
 import com.appspot.ocr_backend.backend.model.MessagesGetMetersResponse;
 import com.fourtails.usuariolecturista.MeterRegistrationActivity;
 import com.fourtails.usuariolecturista.model.Meter;
-import com.fourtails.usuariolecturista.ottoEventBus.CheckIfUserHasMeterEvent;
+import com.fourtails.usuariolecturista.ottoEvents.CheckIfUserHasMeterEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
-import static com.fourtails.usuariolecturista.ottoEventBus.CheckIfUserHasMeterEvent.Type;
+import static com.fourtails.usuariolecturista.ottoEvents.CheckIfUserHasMeterEvent.Type;
 
 
 /**
@@ -62,14 +62,18 @@ public class CheckIfUserHasMeterJob extends Job {
             MeterRegistrationActivity.bus.post(new CheckIfUserHasMeterEvent(Type.COMPLETED, 1, meterExists));
         } else {
             if (response.getError().contains("No Meters found under specified criteria")) {
+                Logger.d(response.getError());
                 meterExists = false;
                 retry = false;
                 MeterRegistrationActivity.bus.post(new CheckIfUserHasMeterEvent(Type.COMPLETED, 1, meterExists));
             }
             if (response.getError().contains("User does not exist")) {
+                Logger.d(response.getError());
                 meterExists = false;
                 retry = false;
                 MeterRegistrationActivity.bus.post(new CheckIfUserHasMeterEvent(Type.COMPLETED, 1, meterExists));
+            } else {
+                Logger.e(response.getError());
             }
         }
     }

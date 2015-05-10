@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 
 import android.graphics.drawable.Drawable;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.contactSlidingFragments.BranchesFragment;
 import com.fourtails.usuariolecturista.contactSlidingFragments.CustomerSupport;
 import com.fourtails.usuariolecturista.contactSlidingFragments.PaymentCenters;

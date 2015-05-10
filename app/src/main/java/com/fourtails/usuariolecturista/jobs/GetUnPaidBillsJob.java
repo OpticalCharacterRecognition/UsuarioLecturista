@@ -9,7 +9,7 @@ import com.appspot.ocr_backend.backend.model.MessagesGetBills;
 import com.appspot.ocr_backend.backend.model.MessagesGetBillsResponse;
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.model.ChartBill;
-import com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent;
+import com.fourtails.usuariolecturista.ottoEvents.BackendObjectsEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
@@ -58,8 +58,11 @@ public class GetUnPaidBillsJob extends Job {
         } else {
             responseOk = false;
             if (response.getError().contains("No Bills found under specified criteria")) {
+                Logger.d(response.getError());
                 retry = false;
                 MainActivity.bus.post(new BackendObjectsEvent(BackendObjectsEvent.Type.UNPAID_BILL, BackendObjectsEvent.Status.NOT_FOUND));
+            } else {
+                Logger.e(response.getError());
             }
         }
 

@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista.ottoEventBus;
+package com.fourtails.usuariolecturista.ottoEvents;
 
 import android.os.Handler;
 import android.os.Looper;

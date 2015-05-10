@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 
-import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.viewpagerindicator.CirclePageIndicator;

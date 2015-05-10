@@ -1,9 +1,10 @@
-package com.fourtails.usuariolecturista.ottoEventBus;
+package com.fourtails.usuariolecturista.ottoEvents;
 
 /**
  * Created by Vazh on 5/5/2015.
  */
-public class RegisterUserEvent extends AbstractEvent {
+public class CreatePrepayJobEvent extends AbstractEvent {
+
     public enum Type {
         COMPLETED,
         STARTED
@@ -11,10 +12,10 @@ public class RegisterUserEvent extends AbstractEvent {
 
     private int _resultCode;
 
-    public RegisterUserEvent(Type type, int resultCode) {
+
+    public CreatePrepayJobEvent(Type type, int resultCode) {
         super(type);
         this._resultCode = resultCode;
-
     }
 
     public int getResultCode() {

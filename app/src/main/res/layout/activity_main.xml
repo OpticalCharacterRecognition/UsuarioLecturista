@@ -51,19 +51,22 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="start"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="profile pic" />
+            android:contentDescription="profile pic"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/imageViewDrawer"
+            android:layout_alignEnd="@+id/imageViewDrawer"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             style="@style/TextViewDrawerMedium"
             android:id="@+id/textViewFacebookName"
-            android:layout_alignLeft="@+id/imageViewFBProfileImage"
-            android:layout_alignStart="@+id/imageViewFBProfileImage"
-            android:layout_below="@+id/imageViewFBProfileImage"
-            android:layout_marginTop="8dp"
             android:textColor="@color/whiteWater"
-            android:text="New Text" />
+            android:text="New Text"
+            android:layout_below="@+id/imageViewFBProfileImage"
+            android:layout_alignRight="@+id/imageViewFBProfileImage"
+            android:layout_alignEnd="@+id/imageViewFBProfileImage"
+            android:layout_marginTop="5dp" />
 
         <ListView
             android:id="@+id/list_slidermenu"

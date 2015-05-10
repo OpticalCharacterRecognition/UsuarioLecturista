@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -38,9 +38,11 @@ import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
 import com.fourtails.usuariolecturista.model.ChartReading;
-import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
 import com.melnykov.fab.FloatingActionButton;
 import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
@@ -216,7 +218,6 @@ public class ReadingsFragment extends Fragment {
     private float[] chartValues;
     private float[] chartValuesForAnimation;
 
-    public static boolean ranAtleastOnce = false;
 
     @OnClick(R.id.fabChangeGraph)
     public void changeGraphClicked() {
@@ -285,8 +286,12 @@ public class ReadingsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Set title
-        MainActivity.bus.post(getResources().getString(R.string.toolbarTitleReadings));
-        if (ranAtleastOnce) {
+        if (MainActivity.userHasAPrepay) {
+            MainActivity.bus.post(getResources().getString(R.string.toolbarTitleHistoricReadings));
+        } else {
+            MainActivity.bus.post(getResources().getString(R.string.toolbarTitleReadings));
+        }
+        if (MainActivity.ranAtLeastOnce) {
             checkReadingsFromLocalDB(3);
         }
     }
@@ -300,7 +305,6 @@ public class ReadingsFragment extends Fragment {
     public void checkReadingsFromLocalDB(Integer action) {
         List<ChartReading> readings = getReadingsForThisMonthRange(2);
         if (readings != null) {
-            //Collections.reverse(readings); // The list comes with the latest value first, so for chart purposes we reverse it
             long highestReading = 0;
             long lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
@@ -320,7 +324,8 @@ public class ReadingsFragment extends Fragment {
                 xAxisDays.add(time.format("%d/%m"));
                 lastReadingDate = time.format("%d/%m/%Y");
                 chartValues[j] = i.value;
-                if (i.timeInMillis > MainActivity.oldReadingsLastDateInMillis) {
+                //TODo change firstime to mainactivity
+                if (!MainActivity.isFirstTime && i.timeInMillis > MainActivity.oldReadingsLastDateInMillis) {
                     chartValuesForAnimation[j] = lowestReading; // we want the lowest so we animate from there to the top
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -339,11 +344,13 @@ public class ReadingsFragment extends Fragment {
             // keep in mind that charValuesForAnimation are the same if there is no "new" reading to animate
             updateLineChart(xAxisDaysArray, chartValuesForAnimation, lowestReading, highestReading);
             fabChangeGraph.setEnabled(true);
-            ranAtleastOnce = true;
+            MainActivity.ranAtLeastOnce = true;
         } else {
             progressBar.setVisibility(View.GONE);
             textViewNoReadings.setVisibility(View.VISIBLE);
         }
+        Logger.d("Finished checkReadingsFromLocalDB");
+
     }
 
     /**

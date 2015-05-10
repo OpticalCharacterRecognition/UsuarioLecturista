@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 import com.fourtails.usuariolecturista.MainActivity;
-import com.fourtails.usuariolecturista.ottoEventBus.UploadImageEvent;
+import com.fourtails.usuariolecturista.ottoEvents.UploadImageEvent;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
@@ -59,7 +59,6 @@ public class UploadFileToGCSJob extends Job {
 
     @Override
     public void onRun() throws Throwable {
-        String[] imageName = {""};
         // convert key into class File. from inputStream to file. in an aux class.
         File file = createFileFromInputStream();
 
@@ -75,10 +74,9 @@ public class UploadFileToGCSJob extends Job {
                 .setServiceAccountPrivateKeyFromP12File(file)
                 .build();
 
-        imageName[0] = generateIdentifierForImage();
+        String imageName = generateIdentifierForImage();
 
-
-        String URI = "https://storage.googleapis.com/" + mBucketName + "/" + imageName[0] + ".jpg";
+        String URI = "https://storage.googleapis.com/" + mBucketName + "/" + imageName + ".jpg";
         HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
 
         GenericUrl url = new GenericUrl(URI);
@@ -91,7 +89,7 @@ public class UploadFileToGCSJob extends Job {
         if (response.isSuccessStatusCode()) {
             Logger.i(response.getStatusMessage() + "Uploading image");
             responseOk = true;
-            MainActivity.bus.post(new UploadImageEvent(UploadImageEvent.Type.COMPLETED, 1, imageName[0]));
+            MainActivity.bus.post(new UploadImageEvent(UploadImageEvent.Type.COMPLETED, 1, imageName));
         }
 
     }

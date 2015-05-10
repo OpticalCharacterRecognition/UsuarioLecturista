@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fourtails.usuariolecturista.PrepaidFragment">
+    tools:context="com.fourtails.usuariolecturista.fragments.PrepayCalculatorFragment">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -35,7 +35,7 @@
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     style="@style/TextViewIntroDesc"
-                    android:text="@string/desc_liters" />
+                    android:text="@string/desc_cubic_meters" />
             </LinearLayout>
 
             <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"

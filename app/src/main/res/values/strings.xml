@@ -24,10 +24,19 @@
     <string name="facebook_app_id">1475669572699600</string>
 
 
-    <!-- GOLOCKY STUFF FOR TESTING MODIFY THIS -->
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item>Lecturas</item>
+        <item>Promociones</item>
+        <item>Notificaciones</item>
+        <item>Contacto</item>
+        <item>Ajustes</item>
+    </string-array>
+
+    <!-- Nav Drawer Menu Items for prepay -->
+    <string-array name="nav_drawer_items_prepay">
+        <item>Pre-pago</item>
+        <item>Histórico</item>
         <item>Promociones</item>
         <item>Notificaciones</item>
         <item>Contacto</item>
@@ -44,8 +53,25 @@
         <item>@drawable/ic_settings_grey600_24dp</item>
     </array>
 
+    <array name="nav_drawer_icons_prepay">
+        <item>@drawable/ic_schedule_grey600_24dp</item>
+        <item>@drawable/ic_equalizer_grey600_24dp</item>
+        <item>@drawable/ic_new_releases_grey600_24dp</item>
+        <item>@drawable/ic_notifications_grey600_24dp</item>
+        <item>@drawable/ic_gps_fixed_grey600_24dp</item>
+        <item>@drawable/ic_settings_grey600_24dp</item>
+    </array>
+
+    <!--Prepay Mode-->
+    <string name="toolbarTitlePrepaidMode">Pre-Pago</string>
+    <string name="prepayLabelPrepaidDaysLeft">Dias de pre-pago restantes</string>
+    <string name="prepayLabelCubicMetersLeft">Metros cúbicos restantes</string>
+    <string name="prepayLabelBeginDate">Fecha inicio del pre-pago:</string>
+    <string name="prepayLabelEndDate">Fecha final del pre-pago:</string>
+
     <!-- Readings -->
     <string name="toolbarTitleReadings">Lecturas</string>
+    <string name="toolbarTitleHistoricReadings">Histórico-Lecturas</string>
     <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el día:</string>
     <string name="readingsLabelsTotalAmount">Litros consumidos este periodo:</string>
     <string name="readingsLabelsLimitDate">Fecha Limite:</string>
@@ -53,11 +79,13 @@
 
     <!--Bills-->
     <string name="toolbarTitleBills">Facturas</string>
+    <string name="toolbarTitleHistoricBills">Histórico-Facturas</string>
     <string name="billsLabelsLastBillAmount">Total ultima factura:</string>
     <string name="billsLabelsLastBillStatus">Estado:</string>
     <string name="billsLabelsSomething">3</string>
     <string name="billsLabelsToPay">Total de la factura a pagar:</string>
     <string name="billsLabelsNoBillsToShow">No hay facturas para mostrar</string>
+    <string name="billsLabelsPrepayInvitation">Pre-pague litros y ahorre!!</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -84,6 +112,7 @@
     <string name="number_ten">10</string>
     <string name="keyboard_clear">borrar</string>
     <string name="desc_liters">Litros</string>
+    <string name="desc_cubic_meters">Metros Cúbicos</string>
     <string name="labelPrepaidPriceToPay">Precio a pagar:</string>
 
 

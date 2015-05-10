@@ -1,9 +1,9 @@
-package com.fourtails.usuariolecturista.ottoEventBus;
+package com.fourtails.usuariolecturista.ottoEvents;
 
 /**
  * Created by Vazh on 5/5/2015.
  */
-public class RegisterMeterBackendEvent extends AbstractEvent {
+public class AssignMeterToUserBackendEvent extends AbstractEvent {
     public enum Type {
         COMPLETED,
         STARTED
@@ -11,7 +11,7 @@ public class RegisterMeterBackendEvent extends AbstractEvent {
 
     private int _resultCode;
 
-    public RegisterMeterBackendEvent(Type type, int resultCode) {
+    public AssignMeterToUserBackendEvent(Type type, int resultCode) {
         super(type);
         this._resultCode = resultCode;
     }

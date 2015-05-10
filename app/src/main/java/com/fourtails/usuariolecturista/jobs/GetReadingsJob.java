@@ -11,7 +11,7 @@ import com.appspot.ocr_backend.backend.model.MessagesGetReadingsResponse;
 import com.appspot.ocr_backend.backend.model.MessagesReading;
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.model.ChartReading;
-import com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent;
+import com.fourtails.usuariolecturista.ottoEvents.BackendObjectsEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent.Status;
-import static com.fourtails.usuariolecturista.ottoEventBus.BackendObjectsEvent.Type;
+import static com.fourtails.usuariolecturista.ottoEvents.BackendObjectsEvent.Status;
+import static com.fourtails.usuariolecturista.ottoEvents.BackendObjectsEvent.Type;
 
 /**
  * Get readings async job
@@ -68,7 +68,10 @@ public class GetReadingsJob extends Job {
         } else {
             responseOk = false;
             if (response.getError().contains("no readings found")) {
+                Logger.d(response.getError());
                 retry = true;
+            } else {
+                Logger.e(response.getError());
             }
         }
         // Go back to main activity and call the rest of the backend tasks

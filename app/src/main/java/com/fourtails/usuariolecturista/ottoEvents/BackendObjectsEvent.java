@@ -1,11 +1,11 @@
-package com.fourtails.usuariolecturista.ottoEventBus;
+package com.fourtails.usuariolecturista.ottoEvents;
 
 /**
- * Readings, bills and prepaids to be passed on the otto event bus
+ * Readings, bills and prepays to be passed on the otto event bus
  */
 public class BackendObjectsEvent {
     public enum Type {
-        READING, PAID_BILL, UNPAID_BILL, PAID_PREPAY, UNPAID_PREPAY
+        READING, PAID_BILL, UNPAID_BILL, PREPAY
     }
 
     public enum Status {

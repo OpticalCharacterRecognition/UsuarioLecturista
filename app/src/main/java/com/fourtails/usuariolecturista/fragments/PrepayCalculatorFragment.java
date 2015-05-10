@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista;
+package com.fourtails.usuariolecturista.fragments;
 
 
 import android.animation.Animator;
@@ -17,6 +17,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.R;
+import com.fourtails.usuariolecturista.ottoEvents.PrepayPaymentAttemptEvent;
 import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 import com.melnykov.fab.FloatingActionButton;
 import com.stripe.android.model.Card;
@@ -31,7 +34,7 @@ import butterknife.OnClick;
 /**
  * Prepaid fragment
  */
-public class PrepaidFragment extends Fragment {
+public class PrepayCalculatorFragment extends Fragment {
 
     public final String TAG = "PrepaidFragment";
 
@@ -170,7 +173,7 @@ public class PrepaidFragment extends Fragment {
     Button buttonPrePay;
 
 
-    public PrepaidFragment() {
+    public PrepayCalculatorFragment() {
         // Required empty public constructor
     }
 
@@ -182,7 +185,7 @@ public class PrepaidFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_prepaid, container, false);
+        View view = inflater.inflate(R.layout.fragment_prepay_calculator, container, false);
         ButterKnife.inject(this, view);
 
         fabCalculate.hide();
@@ -333,9 +336,9 @@ public class PrepaidFragment extends Fragment {
             boolean validCard = validateCard();
             if (validCard) {
                 Double payAmount = Double.parseDouble(textViewPrepaidPrice.getText().toString());
-                MainActivity.bus.post(payAmount);
-                if (PrepaidFragment.this.payDialog != null) {
-                    PrepaidFragment.this.payDialog.dismiss();
+                MainActivity.bus.post(new PrepayPaymentAttemptEvent(payAmount, Long.parseLong(litersToBuy.getText().toString())));
+                if (PrepayCalculatorFragment.this.payDialog != null) {
+                    PrepayCalculatorFragment.this.payDialog.dismiss();
                 }
             }
         } else {

@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.fourtails.usuariolecturista.PayOptionsFragment">
+    tools:context="com.fourtails.usuariolecturista.fragments.PayOptionsFragment">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"

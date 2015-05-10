@@ -3,10 +3,10 @@ package com.fourtails.usuariolecturista.jobs;
 import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesPayBill;
 import com.appspot.ocr_backend.backend.model.MessagesPayBillResponse;
-import com.fourtails.usuariolecturista.BillsFragment;
 import com.fourtails.usuariolecturista.MainActivity;
+import com.fourtails.usuariolecturista.fragments.BillsFragment;
 import com.fourtails.usuariolecturista.model.ChartBill;
-import com.fourtails.usuariolecturista.ottoEventBus.MakePaymentOnBackendEvent;
+import com.fourtails.usuariolecturista.ottoEvents.MakePaymentOnBackendEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
@@ -15,7 +15,7 @@ import com.path.android.jobqueue.Params;
 
 import java.util.List;
 
-import static com.fourtails.usuariolecturista.ottoEventBus.MakePaymentOnBackendEvent.Type;
+import static com.fourtails.usuariolecturista.ottoEvents.MakePaymentOnBackendEvent.Type;
 
 /**
  * MakePaymentOnBackendJob async job
@@ -45,9 +45,14 @@ public class MakePaymentOnBackendJob extends Job {
         messagesPayBill.setBillKey(bill.urlSafeKey);
 
         MessagesPayBillResponse response = service.bill().pay(messagesPayBill).execute();
-        Logger.json(response.toPrettyString());
-        MainActivity.bus.post(new MakePaymentOnBackendEvent(Type.COMPLETED, 1));
-        responseOk = true;
+        if (response.getOk()) {
+            Logger.json(response.toPrettyString());
+            MainActivity.bus.post(new MakePaymentOnBackendEvent(Type.COMPLETED, 1));
+            responseOk = true;
+        } else {
+            Logger.e(response.getError());
+        }
+
     }
 
     @Override

@@ -3,9 +3,8 @@ package com.fourtails.usuariolecturista.jobs;
 import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesCreateUser;
 import com.appspot.ocr_backend.backend.model.MessagesCreateUserResponse;
-import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.ServiceChooserActivity;
-import com.fourtails.usuariolecturista.ottoEventBus.RegisterUserEvent;
+import com.fourtails.usuariolecturista.ottoEvents.RegisterUserEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
@@ -13,7 +12,7 @@ import com.parse.ParseInstallation;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
-import static com.fourtails.usuariolecturista.ottoEventBus.RegisterUserEvent.Type;
+import static com.fourtails.usuariolecturista.ottoEvents.RegisterUserEvent.Type;
 
 
 /**
@@ -63,13 +62,15 @@ public class RegisterUserJob extends Job {
 
         if (response.getOk()) {
             Logger.json(response.toPrettyString());
-            MainActivity.bus.post(new RegisterUserEvent(Type.COMPLETED, 1));
+            ServiceChooserActivity.bus.post(new RegisterUserEvent(Type.COMPLETED, 1));
             responseOk = true;
         } else {
             if (response.getError().contains("User email already in platform")) {
-                Logger.i("BACKEND, Good-AlreadyExists-registerUserBackend");
+                Logger.d(response.getError());
                 ServiceChooserActivity.bus.post(new RegisterUserEvent(Type.COMPLETED, 1));
                 retry = false;
+            } else {
+                Logger.e(response.getError());
             }
         }
     }

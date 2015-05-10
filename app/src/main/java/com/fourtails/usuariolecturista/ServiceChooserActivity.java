@@ -22,8 +22,9 @@ import com.facebook.Response;
 import com.facebook.model.GraphUser;
 import com.fourtails.usuariolecturista.jobs.RegisterUserJob;
 import com.fourtails.usuariolecturista.model.RegisteredUser;
-import com.fourtails.usuariolecturista.ottoEventBus.AndroidBus;
-import com.fourtails.usuariolecturista.ottoEventBus.RegisterUserEvent;
+import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEvents.RefreshMainActivityFromPrepayEvent;
+import com.fourtails.usuariolecturista.ottoEvents.RegisterUserEvent;
 import com.melnykov.fab.FloatingActionButton;
 import com.orhanobut.logger.Logger;
 import com.parse.ParseFacebookUtils;
@@ -228,6 +229,13 @@ public class ServiceChooserActivity extends Activity {
                 .from(RegisteredUser.class)
                 .where("Email = ?", emailAsUsername)
                 .executeSingle();
+    }
+
+    @Subscribe
+    public void refreshMainActivityFromPrepay(RefreshMainActivityFromPrepayEvent event) {
+        if (event.getResultCode() == 1) {
+            startActivityWithSharedElementTransition();
+        }
     }
 
 

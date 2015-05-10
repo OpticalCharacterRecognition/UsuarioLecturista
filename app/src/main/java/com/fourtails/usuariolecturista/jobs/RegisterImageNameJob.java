@@ -4,14 +4,14 @@ import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesNewImageForProcessing;
 import com.appspot.ocr_backend.backend.model.MessagesNewImageForProcessingResponse;
 import com.fourtails.usuariolecturista.MainActivity;
-import com.fourtails.usuariolecturista.ottoEventBus.RegisterImageNameEvent;
+import com.fourtails.usuariolecturista.ottoEvents.RegisterImageNameEvent;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
-import static com.fourtails.usuariolecturista.ottoEventBus.RegisterImageNameEvent.Type;
+import static com.fourtails.usuariolecturista.ottoEvents.RegisterImageNameEvent.Type;
 
 /**
  * register image in backend async job
@@ -50,6 +50,8 @@ public class RegisterImageNameJob extends Job {
             Logger.json(response.toPrettyString());
             responseOk = true;
             MainActivity.bus.post(new RegisterImageNameEvent(Type.COMPLETED, 1));
+        } else {
+            Logger.e(response.getError());
         }
     }
 

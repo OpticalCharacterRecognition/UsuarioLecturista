@@ -1,4 +1,4 @@
-package com.fourtails.usuariolecturista.ottoEventBus;
+package com.fourtails.usuariolecturista.ottoEvents;
 
 /**
  * Base abstract class for any otto event

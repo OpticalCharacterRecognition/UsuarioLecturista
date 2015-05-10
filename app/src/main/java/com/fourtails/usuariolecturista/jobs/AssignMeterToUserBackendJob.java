@@ -4,8 +4,8 @@ import com.appspot.ocr_backend.backend.Backend;
 import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUser;
 import com.appspot.ocr_backend.backend.model.MessagesAssignMeterToUserResponse;
 import com.fourtails.usuariolecturista.MeterRegistrationActivity;
-import com.fourtails.usuariolecturista.ottoEventBus.AssignMeterToUserBackendEvent;
-import com.fourtails.usuariolecturista.ottoEventBus.AssignMeterToUserBackendEvent.Type;
+import com.fourtails.usuariolecturista.ottoEvents.AssignMeterToUserBackendEvent;
+import com.fourtails.usuariolecturista.ottoEvents.AssignMeterToUserBackendEvent.Type;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.orhanobut.logger.Logger;
@@ -51,6 +51,8 @@ public class AssignMeterToUserBackendJob extends Job {
         if (response.getOk()) {
             Logger.json(response.toPrettyString());
             MeterRegistrationActivity.bus.post(new AssignMeterToUserBackendEvent(Type.COMPLETED, 1));
+        } else {
+            Logger.e(response.getError());
         }
     }
 
