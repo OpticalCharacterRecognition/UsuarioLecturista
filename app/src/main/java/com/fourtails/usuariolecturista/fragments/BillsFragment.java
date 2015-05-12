@@ -257,6 +257,13 @@ public class BillsFragment extends Fragment {
         billsBus = new AndroidBus();
         billsBus.register(this);
 
+        if (!MainActivity.userHasAPrepay) {
+            fabPay.setVisibility(View.VISIBLE);
+            fabPay.hide();
+        } else {
+            fabPay.setVisibility(View.GONE);
+        }
+
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
         textViewNoBills.setVisibility(View.GONE);
@@ -384,6 +391,7 @@ public class BillsFragment extends Fragment {
         String statusTranslate;
         selectedBill = lastBillAmount;
         if (prepayModeEnabled && allowUserToPrepay) {
+            fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_schedule_white_24dp));
             fabPay.show();
             animateInvitationText();
             statusTranslate = "Pagada";

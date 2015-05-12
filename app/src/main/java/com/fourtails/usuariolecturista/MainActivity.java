@@ -51,8 +51,10 @@ import com.fourtails.usuariolecturista.fragments.PromotionsFragment;
 import com.fourtails.usuariolecturista.fragments.ReadingsFragment;
 import com.fourtails.usuariolecturista.fragments.SettingsFragment;
 import com.fourtails.usuariolecturista.jobs.CheckBalanceJob;
+import com.fourtails.usuariolecturista.jobs.CreateNewBillJob;
 import com.fourtails.usuariolecturista.jobs.CreatePrepayJob;
 import com.fourtails.usuariolecturista.jobs.GetPaidBillsJob;
+import com.fourtails.usuariolecturista.jobs.GetPrepayFactorJob;
 import com.fourtails.usuariolecturista.jobs.GetPrepaysJob;
 import com.fourtails.usuariolecturista.jobs.GetReadingsJob;
 import com.fourtails.usuariolecturista.jobs.GetUnPaidBillsJob;
@@ -68,7 +70,9 @@ import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
 import com.fourtails.usuariolecturista.ottoEvents.BackendObjectsEvent;
 import com.fourtails.usuariolecturista.ottoEvents.BillPaymentAttemptEvent;
 import com.fourtails.usuariolecturista.ottoEvents.CheckBalanceEvent;
+import com.fourtails.usuariolecturista.ottoEvents.CreateNewBillEvent;
 import com.fourtails.usuariolecturista.ottoEvents.CreatePrepayJobEvent;
+import com.fourtails.usuariolecturista.ottoEvents.GetPrepayFactorEvent;
 import com.fourtails.usuariolecturista.ottoEvents.MakePaymentOnBackendEvent;
 import com.fourtails.usuariolecturista.ottoEvents.PrepayPaymentAttemptEvent;
 import com.fourtails.usuariolecturista.ottoEvents.RefreshMainActivityFromPrepayEvent;
@@ -168,6 +172,8 @@ public class MainActivity extends ActionBarActivity {
 
     public static boolean loadOnlyPrepayFirst = false;
 
+    public static double prepayFactor = 0;
+
     JobManager jobManager;
 
     @SuppressWarnings("ConstantConditions")
@@ -228,6 +234,7 @@ public class MainActivity extends ActionBarActivity {
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
         updateMeterBalance(savedInstanceState);
+        getPrepayFactor();
     }
 
     /**
@@ -511,6 +518,22 @@ public class MainActivity extends ActionBarActivity {
     @Subscribe
     public void imageCaptured(byte[] image) {
         uploadFileToGCS(image);
+    }
+
+    /**
+     * Maybe we dont want this here, we have to rethink this
+     *
+     * @param event standar event
+     */
+    @Subscribe
+    public void createNewBill(CreateNewBillEvent event) {
+        if (event.getResultCode() == 1) {
+            if (event.getType() == CreateNewBillEvent.Type.STARTED) {
+                jobManager.addJobInBackground(new CreateNewBillJob(mAccountNumber));
+            } else {
+                Toast.makeText(this, "Nueva factura creada", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -932,6 +955,22 @@ public class MainActivity extends ActionBarActivity {
             }
         }, 500);
 
+    }
+
+    /**
+     * To be used on cubic meters to money convertion
+     */
+    public void getPrepayFactor() {
+        jobManager.addJobInBackground(new GetPrepayFactorJob(1));
+    }
+
+    @Subscribe
+    public void getPrepayFactorResponse(GetPrepayFactorEvent event) {
+        if (event.getResultCode() == 1) {
+            prepayFactor = event.getFactor();
+        } else {
+            prepayFactor = 0;
+        }
     }
 
 

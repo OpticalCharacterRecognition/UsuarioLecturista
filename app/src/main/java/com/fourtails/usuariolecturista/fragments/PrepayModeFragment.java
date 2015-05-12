@@ -1,6 +1,7 @@
 package com.fourtails.usuariolecturista.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.activeandroid.query.Select;
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
+import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
 import com.fourtails.usuariolecturista.model.ChartPrepay;
 import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
 import com.squareup.otto.Bus;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Prepaid Mode fragment will be shown instead of readings fragment
@@ -45,6 +48,12 @@ public class PrepayModeFragment extends Fragment {
 
 //    @InjectView(R.id.progressBarPrepaidLoading)
 //    ProgressBar progressBarPrepaidLoading;
+
+    @OnClick(R.id.fabScanPrepay)
+    public void scanButtonClicked() {
+        Intent cameraActivity = new Intent(getActivity(), CameraScreenActivity.class);
+        MainActivity.bus.post(cameraActivity);
+    }
 
     public static Bus bus;
 

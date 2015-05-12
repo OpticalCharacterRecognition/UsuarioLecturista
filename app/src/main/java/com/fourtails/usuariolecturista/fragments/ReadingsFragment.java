@@ -188,7 +188,6 @@ public class ReadingsFragment extends Fragment {
 
     @OnClick(R.id.fabScan)
     public void scanButtonClicked() {
-//        Intent ocrCaptureActivity = new Intent(getActivity(), CaptureActivity.class);
         Intent cameraActivity = new Intent(getActivity(), CameraScreenActivity.class);
         MainActivity.bus.post(cameraActivity);
     }
@@ -246,7 +245,13 @@ public class ReadingsFragment extends Fragment {
 
         readingsBus = new AndroidBus();
         readingsBus.register(this);
-        fabScan.hide();
+
+        if (!MainActivity.userHasAPrepay) {
+            fabScan.setVisibility(View.VISIBLE);
+            fabScan.hide();
+        } else {
+            fabScan.setVisibility(View.GONE);
+        }
 
         linechartCardView.setCardBackgroundColor(getResources().getColor(R.color.colorJmasBlueReadings));
 

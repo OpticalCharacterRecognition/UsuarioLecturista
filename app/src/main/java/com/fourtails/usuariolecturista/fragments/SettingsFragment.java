@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
+import com.fourtails.usuariolecturista.ottoEvents.CreateNewBillEvent;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -23,6 +24,11 @@ public class SettingsFragment extends Fragment {
     @OnClick(R.id.logout_button)
     public void logoutButtonClicked() {
         MainActivity.bus.post(true);
+    }
+
+    @OnClick(R.id.createBillButton)
+    public void createBillButtonClicked() {
+        MainActivity.bus.post(new CreateNewBillEvent(CreateNewBillEvent.Type.STARTED, 1));
     }
 
     public SettingsFragment() {

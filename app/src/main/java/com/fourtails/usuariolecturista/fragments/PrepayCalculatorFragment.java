@@ -38,9 +38,6 @@ public class PrepayCalculatorFragment extends Fragment {
 
     public final String TAG = "PrepaidFragment";
 
-    // TODO: get this from the backend
-    public static double litersToPesoConvertionRatio = 1.0;
-
     /**
      * Dialog views *
      */
@@ -118,18 +115,20 @@ public class PrepayCalculatorFragment extends Fragment {
     @OnClick(R.id.keyboardButton_backspace)
     public void keyboardBackspaceClicked() {
         // delete one character
-        String passwordStr = litersToBuy.getText().toString();
-        if (passwordStr.length() > 0) {
-            String newPasswordStr = new StringBuilder(passwordStr)
-                    .deleteCharAt(passwordStr.length() - 1).toString();
-            litersToBuy.setText(newPasswordStr);
-            if (newPasswordStr.length() == 0) {
+        String cubicMeterString = litersToBuy.getText().toString();
+        if (cubicMeterString.length() > 0) {
+            String tempString = new StringBuilder(cubicMeterString)
+                    .deleteCharAt(cubicMeterString.length() - 1).toString();
+            litersToBuy.setText(tempString);
+            if (tempString.length() == 0) {
                 hideFab();
                 hidePayButton();
+                textViewPrepaidPrice.setText(null);
             }
         } else {
             hideFab();
             hidePayButton();
+            textViewPrepaidPrice.setText(null);
         }
     }
 
@@ -139,6 +138,7 @@ public class PrepayCalculatorFragment extends Fragment {
         hideFab();
         hidePayButton();
         litersToBuy.setText(null);
+        textViewPrepaidPrice.setText(null);
     }
 
     public void keyboardClicked(int key) {
@@ -154,11 +154,11 @@ public class PrepayCalculatorFragment extends Fragment {
 
     @OnClick(R.id.fabCalculate)
     public void calculateClicked() {
-        if (litersToBuy.getText().length() > 0) {
+        if (litersToBuy.getText().length() > 0 && MainActivity.prepayFactor > 0) {
             int liters = Integer.parseInt(litersToBuy.getText().toString());
             if (liters > 0) {
                 showPayButton();
-                double peso = liters * litersToPesoConvertionRatio;
+                double peso = liters * MainActivity.prepayFactor;
                 textViewPrepaidPrice.setText(String.valueOf(peso));
             }
         }
