@@ -3,11 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <LinearLayout
         android:id="@+id/camera_preview"
-        android:name="com.fourtails.usuariolecturista.camera.CameraFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
+    <ImageView
+        android:layout_width="225dp"
+        android:layout_height="37.5dp"
+        android:id="@+id/imageViewOverlay2"
+        android:src="@drawable/backtrans2"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabHelpPicture"

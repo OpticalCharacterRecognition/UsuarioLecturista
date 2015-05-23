@@ -2,6 +2,8 @@ package com.fourtails.usuariolecturista.jobs;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.ottoEvents.UploadImageEvent;
@@ -20,6 +22,7 @@ import com.orhanobut.logger.Logger;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,7 +41,7 @@ public class UploadFileToGCSJob extends Job {
 
     Context mContext;
     String mBucketName;
-    byte[] mImage;
+    Bitmap mImageBitmap;
 
     /**
      * Global instance of the JSON factory.
@@ -46,9 +49,9 @@ public class UploadFileToGCSJob extends Job {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
 
-    public UploadFileToGCSJob(byte[] image, Context context, String bucketName) {
-        super(new Params(Priority.MID).requireNetwork().groupBy("upload-file"));
-        mImage = image;
+    public UploadFileToGCSJob(Bitmap image, Context context, String bucketName) {
+        super(new Params(Priority.LOW).requireNetwork().groupBy("upload-file"));
+        mImageBitmap = image;
         mContext = context;
         mBucketName = bucketName;
     }
@@ -81,7 +84,9 @@ public class UploadFileToGCSJob extends Job {
 
         GenericUrl url = new GenericUrl(URI);
 
-        HttpContent contentSend = new ByteArrayContent("image/jpeg", mImage);
+        byte[] mImageBytes = bitmapToByteArray(mImageBitmap);
+
+        HttpContent contentSend = new ByteArrayContent("image/jpeg", mImageBytes);
 
         HttpRequest putRequest = requestFactory.buildPutRequest(url, contentSend);
 
@@ -92,6 +97,20 @@ public class UploadFileToGCSJob extends Job {
             MainActivity.bus.post(new UploadImageEvent(UploadImageEvent.Type.COMPLETED, 1, imageName));
         }
 
+    }
+
+    /**
+     * Bitmap to array method
+     *
+     * @param bitmap bitmap to convert
+     * @return byte array
+     */
+    public static byte[] bitmapToByteArray(Bitmap bitmap) {
+        Log.d("IMAGE", "Compressing bmp");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        Log.d("IMAGE", "Finished compressing bmp");
+        return baos.toByteArray();
     }
 
     /**

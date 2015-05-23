@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -515,8 +516,13 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * Comes from DisplayActivity and will try to upload the received Bitmap to the google cloud
+     *
+     * @param image bmp
+     */
     @Subscribe
-    public void imageCaptured(byte[] image) {
+    public void imageCaptured(Bitmap image) {
         uploadFileToGCS(image);
     }
 
@@ -816,7 +822,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void uploadFileToGCS(byte[] image) {
+    public void uploadFileToGCS(Bitmap image) {
         showImageLoadingCrouton();
         Logger.i("Initiating Image upload");
         jobManager.addJobInBackground(new UploadFileToGCSJob(image, context, BUCKET_NAME));

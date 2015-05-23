@@ -102,10 +102,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".camera.CameraScreenActivity"
-            android:theme="@style/AppTheme.BaseJmas" />
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".camera.DisplayActivity"
+            android:name=".camera.CameraDisplayActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.BaseJmas" />
 
         <activity
