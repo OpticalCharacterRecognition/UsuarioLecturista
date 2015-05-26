@@ -54,12 +54,6 @@ public class CameraScreenActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Crouton.cancelAllCroutons();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_full_screen);

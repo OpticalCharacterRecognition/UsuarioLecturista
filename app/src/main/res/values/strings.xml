@@ -202,5 +202,7 @@
     <string name="creditCardErrorCCV">El código CCV es invalido</string>
     <string name="creditCardError">Los detalles de la tarjeta son inválidos</string>
     <string name="TACMustAgreedMessage">Tiene que estar de acuerdo con los términos y condiciones</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_send">Enviar</string>
 
 </resources>

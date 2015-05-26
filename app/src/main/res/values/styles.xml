@@ -110,6 +110,14 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="RobotoButtonCancel">
+        <item name="typeface">roboto_medium</item>
+        <item name="android:textColor">@color/grey_900</item>
+        <item name="android:background">@drawable/custom_button_cancel</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
     <style name="RobotoCheckBox">
         <item name="typeface">roboto_medium</item>
         <item name="android:textColor">@color/blackWater</item>

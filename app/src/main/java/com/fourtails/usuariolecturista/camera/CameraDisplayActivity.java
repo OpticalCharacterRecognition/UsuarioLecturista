@@ -30,7 +30,7 @@ public class CameraDisplayActivity extends Activity {
     @InjectView(R.id.imageViewDisplayConfirmPreview)
     ImageView imageViewDisplayConfirm;
 
-    @OnClick(R.id.fabAccept)
+    @OnClick(R.id.buttonSave)
     public void acceptClicked() {
         if (isBitmapFinished && rotatedBitmap != null) {
             MainActivity.bus.post(rotatedBitmap);
@@ -39,7 +39,7 @@ public class CameraDisplayActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.fabCancel)
+    @OnClick(R.id.buttonCancel)
     public void cancelClicked() {
         finish();
     }
