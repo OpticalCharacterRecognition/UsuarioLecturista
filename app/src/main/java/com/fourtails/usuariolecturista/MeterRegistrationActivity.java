@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fourtails.usuariolecturista.jobs.AssignMeterToUserBackendJob;
 import com.fourtails.usuariolecturista.jobs.CheckIfUserHasMeterJob;
@@ -148,6 +149,9 @@ public class MeterRegistrationActivity extends ActionBarActivity {
             Logger.i("BACKEND-registerMeter, Good-registerMeterBackend");
             meter.save(); // we only save if successful
             assignMeterToUserBackend(meter.accountNumber);
+        } else if (event.getResultCode() == 2) {
+            Toast.makeText(this, "El medidor ya esta registrado en otra cuenta", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
     }
 

@@ -217,6 +217,9 @@ public class ReadingsFragment extends Fragment {
     private float[] chartValues;
     private float[] chartValuesForAnimation;
 
+    List<ChartReading> mReadings;
+
+    Time time;
 
     @OnClick(R.id.fabChangeGraph)
     public void changeGraphClicked() {
@@ -308,17 +311,17 @@ public class ReadingsFragment extends Fragment {
      */
     @Subscribe
     public void checkReadingsFromLocalDB(Integer action) {
-        List<ChartReading> readings = getReadingsForThisMonthRange(2);
-        if (readings != null) {
+        mReadings = getReadingsForThisMonthRange(2);
+        time = new Time();
+        if (mReadings != null) {
             long highestReading = 0;
             long lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
-            chartValues = new float[readings.size()];
-            chartValuesForAnimation = new float[readings.size()];
+            chartValues = new float[mReadings.size()];
+            chartValuesForAnimation = new float[mReadings.size()];
             String lastReadingDate = "";
             int j = 0;
-            Time time = new Time();
-            for (ChartReading i : readings) {
+            for (ChartReading i : mReadings) {
                 if (i.value > highestReading) {
                     highestReading = i.value;
                 }
@@ -329,7 +332,6 @@ public class ReadingsFragment extends Fragment {
                 xAxisDays.add(time.format("%d/%m"));
                 lastReadingDate = time.format("%d/%m/%Y");
                 chartValues[j] = i.value;
-                //TODo change firstime to mainactivity
                 if (!MainActivity.isFirstTime && i.timeInMillis > MainActivity.oldReadingsLastDateInMillis) {
                     chartValuesForAnimation[j] = lowestReading; // we want the lowest so we animate from there to the top
                     mHandler.postDelayed(new Runnable() {
@@ -364,7 +366,7 @@ public class ReadingsFragment extends Fragment {
      */
     private void updateUi(long totalForThisPeriod, String lastReadingDate) {
         crossfade();
-        textViewTotalLitersForThisPeriod.setText(String.valueOf(totalForThisPeriod) + " lts");
+        textViewTotalLitersForThisPeriod.setText(String.valueOf(totalForThisPeriod) + " m3");
         textViewLastReadingDate.setText(lastReadingDate);
         mLineChart.setVisibility(View.VISIBLE);
     }
@@ -499,7 +501,9 @@ public class ReadingsFragment extends Fragment {
                     .rotation(360)
                     .setInterpolator(enterInterpolator);
         }
-
+        time.set(mReadings.get(entryIndex).timeInMillis);
+        String selectedReadingDate = time.format("%d/%m/%Y");
+        textViewLastReadingDate.setText(selectedReadingDate);
         mLineChart.showTooltip(mLineTooltip);
     }
 
@@ -549,6 +553,9 @@ public class ReadingsFragment extends Fragment {
      * Hides the chart then after 500ms makes a transition
      */
     private void hideChartThenMakeTransition() {
+        if (mLineTooltip != null) {
+            dismissLineTooltip(-1, -1, null);
+        }
         mLineChart.dismiss(getAnimation(false).setEndAction(mMakeTransition));
     }
 

@@ -18,12 +18,15 @@ public class CheckBalanceEvent extends AbstractEvent {
 
     Bundle _savedInstanceState;
 
+    private boolean _isFirstTime;
 
-    public CheckBalanceEvent(Type type, int resultCode, long balance, Bundle savedInstanceState) {
+
+    public CheckBalanceEvent(Enum type, int _resultCode, long _balance, Bundle _savedInstanceState, boolean _isFirstTime) {
         super(type);
-        this._resultCode = resultCode;
-        this._balance = balance;
-        this._savedInstanceState = savedInstanceState;
+        this._resultCode = _resultCode;
+        this._balance = _balance;
+        this._savedInstanceState = _savedInstanceState;
+        this._isFirstTime = _isFirstTime;
     }
 
     public int getResultCode() {
@@ -36,5 +39,9 @@ public class CheckBalanceEvent extends AbstractEvent {
 
     public Bundle getSavedInstanceState() {
         return _savedInstanceState;
+    }
+
+    public boolean isFirstTime() {
+        return _isFirstTime;
     }
 }

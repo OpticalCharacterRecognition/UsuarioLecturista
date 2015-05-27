@@ -72,20 +72,23 @@
     <!-- Readings -->
     <string name="toolbarTitleReadings">Lecturas</string>
     <string name="toolbarTitleHistoricReadings">Histórico-Lecturas</string>
-    <string name="readingsLabelsLastReadingDay">Ultima lectura realizada el día:</string>
-    <string name="readingsLabelsTotalAmount">Litros consumidos este periodo:</string>
-    <string name="readingsLabelsLimitDate">Fecha Limite:</string>
+    <string name="readingsLabelsLastReadingDay">Lectura realizada el día:</string>
+    <string name="readingsLabelsTotalAmount">Metros cúbicos este periodo:</string>
+    <string name="readingsLabelsLimitDate">Fecha limite de pago:</string>
     <string name="readingsLabelsNoReadingsToShow">No hay lecturas para mostrar</string>
 
     <!--Bills-->
     <string name="toolbarTitleBills">Facturas</string>
     <string name="toolbarTitleHistoricBills">Histórico-Facturas</string>
-    <string name="billsLabelsLastBillAmount">Total ultima factura:</string>
+    <string name="billsLabelsLastBillAmount">Total factura:</string>
     <string name="billsLabelsLastBillStatus">Estado:</string>
     <string name="billsLabelsSomething">3</string>
     <string name="billsLabelsToPay">Total de la factura a pagar:</string>
     <string name="billsLabelsNoBillsToShow">No hay facturas para mostrar</string>
     <string name="billsLabelsPrepayInvitation">Pre-pague litros y ahorre!!</string>
+    <string name="billsLabelsPayInvitation">Paga tu factura!!</string>
+    <string name="billsLabelsButtonNewBill">Nueva factura</string>
+    <string name="billsLabelsDate">Fecha:</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>

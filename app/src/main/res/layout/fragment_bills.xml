@@ -67,13 +67,13 @@
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textView"
                 style="@style/TextViewMainPageLabel"
-                android:text="@string/readingsLabelsLimitDate"
+                android:text="@string/billsLabelsDate"
                 android:textIsSelectable="false" />
 
             <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/textViewBillingDateBills"
                 style="@style/TextViewMainPage"
-                android:text="26 de Abril 2015"
+                android:text=""
                 android:textIsSelectable="true" />
 
             <!--<com.devspark.robototextview.widget.RobotoTextView-->
@@ -144,6 +144,21 @@
         android:layout_above="@+id/fabChangeGraphBills"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="48dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/RobotoButton"
+        android:text="@string/billsLabelsButtonNewBill"
+        android:id="@+id/buttonNewBill"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/whiteWater"
+        android:layout_alignBottom="@+id/cardViewBillsBottom"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-70dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

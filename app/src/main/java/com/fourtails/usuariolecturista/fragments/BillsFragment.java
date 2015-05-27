@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.res.Resources;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -42,6 +44,7 @@ import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.model.ChartBill;
 import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
+import com.fourtails.usuariolecturista.ottoEvents.CreateNewBillEvent;
 import com.melnykov.fab.FloatingActionButton;
 import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
@@ -58,6 +61,7 @@ import butterknife.OnClick;
 import static com.fourtails.usuariolecturista.MainActivity.allowUserToPrepay;
 import static com.fourtails.usuariolecturista.MainActivity.bus;
 import static com.fourtails.usuariolecturista.MainActivity.prepayModeEnabled;
+import static com.fourtails.usuariolecturista.MainActivity.userHasAPrepay;
 
 
 /**
@@ -132,7 +136,6 @@ public class BillsFragment extends Fragment {
 
     private Handler mHandler;
 
-
     /**
      * This will run the update after 50ms, it fires after a dismiss on the chart and will attempt
      * the transition
@@ -147,7 +150,6 @@ public class BillsFragment extends Fragment {
             }, 50);
         }
     };
-
 
     /**
      * fires after the drawing of the last chart
@@ -187,6 +189,9 @@ public class BillsFragment extends Fragment {
     @InjectView(R.id.textViewNoBillsMsg)
     TextView textViewNoBills;
 
+    @InjectView(R.id.textViewBillingDateBills)
+    TextView textViewBillingDateBills;
+
     @InjectView(R.id.textViewSelectedBills)
     TextView textViewSelectedBill;
 
@@ -196,13 +201,18 @@ public class BillsFragment extends Fragment {
     @InjectView(R.id.textViewPrepayInvitation)
     TextView textViewPrepayInvitation;
 
+    @InjectView(R.id.buttonNewBill)
+    Button buttonNewBill;
+
     String selectedBillStatus;
 
     private float[] chartValues;
 
-    private List<ChartBill> orderedBills;
+    private List<ChartBill> mBills;
 
     public static int selectedBillIndex;
+
+    Time time;
 
     @OnClick(R.id.fabPay)
     public void payButtonClicked() {
@@ -216,7 +226,7 @@ public class BillsFragment extends Fragment {
                         android.R.transition.move);  // Enter Transition
             }
         } else {
-            if (orderedBills.get(selectedBillIndex).status.equalsIgnoreCase("Unpaid")) {
+            if (mBills.get(selectedBillIndex).status.equalsIgnoreCase("Unpaid")) {
                 Fragment payOptionsFragment = new PayOptionsFragment();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     makeAnimationBetweenFragments(
@@ -231,7 +241,6 @@ public class BillsFragment extends Fragment {
         }
     }
 
-
     @OnClick(R.id.fabChangeGraphBills)
     public void changeGraphClicked() {
         if (!isAnimationRunning) {
@@ -241,11 +250,17 @@ public class BillsFragment extends Fragment {
         }
     }
 
+    @OnClick(R.id.buttonNewBill)
+    public void newBillClicked() {
+        if (mLineTooltip != null) {
+            dismissLineTooltip(-1, null);
+        }
+        MainActivity.bus.post(new CreateNewBillEvent(CreateNewBillEvent.Type.STARTED, 1));
+    }
 
     public BillsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -257,12 +272,18 @@ public class BillsFragment extends Fragment {
         billsBus = new AndroidBus();
         billsBus.register(this);
 
-        if (!MainActivity.userHasAPrepay) {
+        if (MainActivity.userHasAPrepay) { // User has a prepay (negative balance)
+            fabPay.setVisibility(View.GONE);
+        } else {
             fabPay.setVisibility(View.VISIBLE);
             fabPay.hide();
-        } else {
-            fabPay.setVisibility(View.GONE);
         }
+
+//        if (MainActivity.showNewBillButton && !userHasAPrepay) {
+//            buttonNewBill.setVisibility(View.VISIBLE);
+//        } else {
+//            buttonNewBill.setVisibility(View.GONE);
+//        }
 
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
@@ -315,6 +336,8 @@ public class BillsFragment extends Fragment {
         }
         if (prepayModeEnabled) {
             fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_schedule_white_24dp));
+        } else {
+            fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_payment_white_24dp));
         }
     }
 
@@ -337,18 +360,18 @@ public class BillsFragment extends Fragment {
      * TODO: get the unpaid bills in a different array
      */
     public void checkBillsFromLocalDB() {
-        List<ChartBill> bills = getBillsForThisMonthRange(2);
-        if (bills != null) {
-            orderedBills = bills;
+        mBills = getBillsForThisMonthRange(2);
+        time = new Time();
+        if (mBills != null) {
             double highestReading = 0;
             double lowestReading = Integer.MAX_VALUE;
             List<String> xAxisDays = new ArrayList<>();
-            chartValues = new float[bills.size()];
+            chartValues = new float[mBills.size()];
             String lastBillStatus = "";
             double lastBillAmount = 0.0;
+            String lastReadingDate = "";
             int j = 0;
-            Time time = new Time();
-            for (ChartBill i : bills) {
+            for (ChartBill i : mBills) {
                 if (i.amount > highestReading) {
                     highestReading = i.amount;
                 }
@@ -357,6 +380,7 @@ public class BillsFragment extends Fragment {
                 }
                 time.set(i.timeInMillis);
                 xAxisDays.add(time.format("%d/%m"));
+                lastReadingDate = time.format("%d/%m/%Y");
                 selectedBillIndex = j;
                 chartValues[j++] = (float) i.amount;
                 lastBillStatus = i.status;
@@ -365,7 +389,7 @@ public class BillsFragment extends Fragment {
 
             String[] xAxisDaysArray = xAxisDays.toArray(new String[xAxisDays.size()]);
 
-            updateUi(lastBillAmount, lastBillStatus);
+            updateUi(lastBillAmount, lastBillStatus, lastReadingDate);
 
             try {
                 updateLineChart(xAxisDaysArray, chartValues, lowestReading, highestReading);
@@ -383,36 +407,49 @@ public class BillsFragment extends Fragment {
     /**
      * Update the textViews
      *
-     * @param lastBillAmount last bill
-     * @param lastBillStatus last status
+     * @param lastBillAmount  last bill
+     * @param lastBillStatus  last status
+     * @param lastReadingDate
      */
-    private void updateUi(double lastBillAmount, String lastBillStatus) {
+    private void updateUi(double lastBillAmount, String lastBillStatus, String lastReadingDate) {
         textViewSelectedBill.setText("$" + String.valueOf(lastBillAmount));
+        textViewBillingDateBills.setText(lastReadingDate);
         String statusTranslate;
         selectedBill = lastBillAmount;
         if (prepayModeEnabled && allowUserToPrepay) {
+            buttonNewBill.setVisibility(View.GONE);
             fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_schedule_white_24dp));
             fabPay.show();
-            animateInvitationText();
+            animateInvitationTextFadeIn(getString(R.string.billsLabelsPrepayInvitation));
             statusTranslate = "Pagada";
         } else {
+            fabPay.setImageDrawable(getResources().getDrawable(R.drawable.ic_payment_white_24dp));
             if (lastBillStatus.equalsIgnoreCase("Paid")) {
                 statusTranslate = "Pagada";
+                animateInvitationTextFadeOut();
                 fabPay.hide();
             } else if (lastBillStatus.equalsIgnoreCase("UnPaid")) {
                 statusTranslate = "No Pagada";
+                animateInvitationTextFadeIn(getString(R.string.billsLabelsPayInvitation));
                 fabPay.show();
             } else {
                 statusTranslate = "Desconocido";
+                animateInvitationTextFadeOut();
                 fabPay.hide();
+            }
+            if (MainActivity.showNewBillButton && !userHasAPrepay) {
+                buttonNewBill.setVisibility(View.VISIBLE);
+            } else {
+                buttonNewBill.setVisibility(View.GONE);
             }
         }
         textViewBillsStatus.setText(statusTranslate);
         mLineChart.setVisibility(View.VISIBLE);
     }
 
-    public void animateInvitationText() {
+    public void animateInvitationTextFadeIn(String textToShow) {
         textViewPrepayInvitation.setAlpha(0f);
+        textViewPrepayInvitation.setText(textToShow);
         textViewPrepayInvitation.setVisibility(View.VISIBLE);
         textViewPrepayInvitation.animate()
                 .alpha(1f)
@@ -420,6 +457,20 @@ public class BillsFragment extends Fragment {
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                    }
+                });
+    }
+
+
+    public void animateInvitationTextFadeOut() {
+        textViewPrepayInvitation.setAlpha(1f);
+        textViewPrepayInvitation.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        textViewPrepayInvitation.setVisibility(View.GONE);
                     }
                 });
     }
@@ -446,6 +497,9 @@ public class BillsFragment extends Fragment {
      */
     private void hideChartThenMakeTransition() {
         try {
+            if (mLineTooltip != null) {
+                dismissLineTooltip(-1, null);
+            }
             mLineChart.dismiss(getAnimation(false).setEndAction(mMakeTransition));
         } catch (Exception e) {
             Logger.e(e, "Something went wrong trying to hide the chart");
@@ -505,74 +559,90 @@ public class BillsFragment extends Fragment {
     @SuppressLint("NewApi")
     private void showLineTooltip(int entryIndex, Rect rect) {
 
-        selectedBillIndex = entryIndex;
+        try {
+            selectedBillIndex = entryIndex;
 
-        mLineTooltip = (TextView) getActivity().getLayoutInflater().inflate(R.layout.circular_tooltip, null);
-        mLineTooltip.setText(Integer.toString((int) chartValues[entryIndex]));
+            mLineTooltip = (TextView) getActivity().getLayoutInflater().inflate(R.layout.circular_tooltip, null);
+            mLineTooltip.setText(Integer.toString((int) chartValues[entryIndex]));
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) Tools.fromDpToPx(35), (int) Tools.fromDpToPx(35));
-        layoutParams.leftMargin = rect.centerX() - layoutParams.width / 2;
-        layoutParams.topMargin = rect.centerY() - layoutParams.height / 2;
-        mLineTooltip.setLayoutParams(layoutParams);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) Tools.fromDpToPx(35), (int) Tools.fromDpToPx(35));
+            layoutParams.leftMargin = rect.centerX() - layoutParams.width / 2;
+            layoutParams.topMargin = rect.centerY() - layoutParams.height / 2;
+            mLineTooltip.setLayoutParams(layoutParams);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            mLineTooltip.setPivotX(layoutParams.width / 2);
-            mLineTooltip.setPivotY(layoutParams.height / 2);
-            mLineTooltip.setAlpha(0);
-            mLineTooltip.setScaleX(0);
-            mLineTooltip.setScaleY(0);
-            mLineTooltip.animate()
-                    .setDuration(150)
-                    .alpha(1)
-                    .scaleX(1).scaleY(1)
-                    .rotation(360)
-                    .setInterpolator(enterInterpolator);
-        }
-
-        selectedBill = chartValues[entryIndex];
-        selectedBillStatus = orderedBills.get(entryIndex).status;
-        // Prepay logic
-        if (prepayModeEnabled) {
-            selectedBillStatus = "Pagada";
-        } else {
-            if (selectedBillStatus.equalsIgnoreCase("Paid")) {
-                selectedBillStatus = "Pagada";
-                fabPay.hide();
-            } else if (selectedBillStatus.equalsIgnoreCase("UnPaid")) {
-                selectedBillStatus = "No Pagada";
-                fabPay.show();
-            } else {
-                selectedBillStatus = "Desconocido";
-                fabPay.hide();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                mLineTooltip.setPivotX(layoutParams.width / 2);
+                mLineTooltip.setPivotY(layoutParams.height / 2);
+                mLineTooltip.setAlpha(0);
+                mLineTooltip.setScaleX(0);
+                mLineTooltip.setScaleY(0);
+                mLineTooltip.animate()
+                        .setDuration(150)
+                        .alpha(1)
+                        .scaleX(1).scaleY(1)
+                        .rotation(360)
+                        .setInterpolator(enterInterpolator);
             }
+
+            selectedBill = chartValues[entryIndex];
+            selectedBillStatus = mBills.get(entryIndex).status;
+            time.set(mBills.get(entryIndex).timeInMillis);
+            String selectedDate = time.format("%d/%m/%Y");
+            // Prepay logic
+            if (prepayModeEnabled) {
+                selectedBillStatus = "Pagada";
+            } else {
+                if (selectedBillStatus.equalsIgnoreCase("Paid")) {
+                    selectedBillStatus = "Pagada";
+                    animateInvitationTextFadeOut();
+                    fabPay.hide();
+                } else if (selectedBillStatus.equalsIgnoreCase("UnPaid")) {
+                    selectedBillStatus = "No Pagada";
+                    animateInvitationTextFadeIn(getString(R.string.billsLabelsPayInvitation));
+                    fabPay.show();
+                } else {
+                    selectedBillStatus = "Desconocido";
+                    animateInvitationTextFadeOut();
+                    fabPay.hide();
+                }
+            }
+            textViewBillsStatus.setText(selectedBillStatus);
+            textViewSelectedBill.setText("$" + String.valueOf(selectedBill));
+            textViewBillingDateBills.setText(selectedDate);
+            mLineChart.showTooltip(mLineTooltip);
+        } catch (Exception e) {
+            Logger.e("why is this crash happening?");
+            e.printStackTrace();
         }
-        textViewBillsStatus.setText(selectedBillStatus);
-        textViewSelectedBill.setText("$" + String.valueOf(selectedBill));
-        mLineChart.showTooltip(mLineTooltip);
     }
 
     @SuppressLint("NewApi")
     private void dismissLineTooltip(final int entryIndex, final Rect rect) {
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            mLineTooltip.animate()
-                    .setDuration(100)
-                    .scaleX(0).scaleY(0)
-                    .alpha(0)
-                    .setInterpolator(exitInterpolator).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    mLineChart.removeView(mLineTooltip);
-                    mLineTooltip = null;
-                    if (entryIndex != -1)
-                        showLineTooltip(entryIndex, rect);
-                }
-            });
-        } else {
-            mLineChart.dismissTooltip(mLineTooltip);
-            mLineTooltip = null;
-            if (entryIndex != -1)
-                showLineTooltip(entryIndex, rect);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                mLineTooltip.animate()
+                        .setDuration(100)
+                        .scaleX(0).scaleY(0)
+                        .alpha(0)
+                        .setInterpolator(exitInterpolator).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLineChart.removeView(mLineTooltip);
+                        mLineTooltip = null;
+                        if (entryIndex != -1)
+                            showLineTooltip(entryIndex, rect);
+                    }
+                });
+            } else {
+                mLineChart.dismissTooltip(mLineTooltip);
+                mLineTooltip = null;
+                if (entryIndex != -1)
+                    showLineTooltip(entryIndex, rect);
+            }
+        } catch (Exception e) {
+            Logger.e("why is this crash happening?");
+            e.printStackTrace();
         }
     }
 
@@ -591,47 +661,52 @@ public class BillsFragment extends Fragment {
 
     private void updateLineChart(String[] xAxisDaysArray, float[] chartValues, double lowestReading, double highestReading) {
 
-        double tempSpacing = ((highestReading - lowestReading) / xAxisDaysArray.length);
-        int spacing = (int) Math.ceil(tempSpacing);
-        if (spacing == 0) {
-            spacing = 1;
-        }
-        mLineChart.reset();
-
-        // this will change the dots color making the "Unpaid" ones in red
-        LineSet dataSet = new LineSet();
-
-        Point point;
-        for (int i = 0; i < xAxisDaysArray.length; i++) {
-            point = new Point(xAxisDaysArray[i], chartValues[i]);
-            if (orderedBills.get(i).status.equalsIgnoreCase("Unpaid")) {
-                point.setColor(this.getResources().getColor(R.color.red_300));
-            } else {
-                point.setColor(this.getResources().getColor(R.color.colorJmasBlueReadings));
+        try {
+            double tempSpacing = ((highestReading - lowestReading) / xAxisDaysArray.length);
+            int spacing = (int) Math.ceil(tempSpacing);
+            if (spacing == 0) {
+                spacing = 1;
             }
-            dataSet.addPoint(point);
+            mLineChart.reset();
+
+            // this will change the dots color making the "Unpaid" ones in red
+            LineSet dataSet = new LineSet();
+
+            Point point;
+            for (int i = 0; i < xAxisDaysArray.length; i++) {
+                point = new Point(xAxisDaysArray[i], chartValues[i]);
+                if (mBills.get(i).status.equalsIgnoreCase("Unpaid")) {
+                    point.setColor(this.getResources().getColor(R.color.red_300));
+                } else {
+                    point.setColor(this.getResources().getColor(R.color.colorJmasBlueReadings));
+                }
+                dataSet.addPoint(point);
+            }
+            dataSet.setDotsRadius(Tools.fromDpToPx(5))
+                    .setDotsStrokeThickness(Tools.fromDpToPx(2))
+                    .setDotsStrokeColor(this.getResources().getColor(R.color.line))
+                    .setThickness(Tools.fromDpToPx(3))
+                    .setColor(this.getResources().getColor(R.color.whiteWater))
+                    .setDashed(new float[]{10, 10});
+            mLineChart.addData(dataSet);
+
+
+            mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
+                    .setLabelsFormat(new DecimalFormat("'$ '##"))
+                    .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
+                    .setXAxis(false)
+                    .setXLabels(XController.LabelPosition.OUTSIDE)
+                    .setYAxis(false)
+                    .setYLabels(YController.LabelPosition.OUTSIDE)
+                    .setAxisBorderValues((int) lowestReading, (int) highestReading, spacing)
+                    .show(getAnimation(true).setEndAction(null))
+            ;
+
+            mLineChart.animateSet(0, new DashAnimation());
+        } catch (Resources.NotFoundException e) {
+            Logger.e("why is this crash happening?");
+            e.printStackTrace();
         }
-        dataSet.setDotsRadius(Tools.fromDpToPx(5))
-                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-                .setDotsStrokeColor(this.getResources().getColor(R.color.line))
-                .setThickness(Tools.fromDpToPx(3))
-                .setColor(this.getResources().getColor(R.color.whiteWater))
-                .setDashed(new float[]{10, 10});
-        mLineChart.addData(dataSet);
-
-
-        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
-                .setLabelsFormat(new DecimalFormat("'$ '##"))
-                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
-                .setXAxis(false)
-                .setXLabels(XController.LabelPosition.OUTSIDE)
-                .setYAxis(false)
-                .setYLabels(YController.LabelPosition.OUTSIDE)
-                .setAxisBorderValues((int) lowestReading, (int) highestReading, spacing)
-                .show(getAnimation(true).setEndAction(null))
-        ;
-
-        mLineChart.animateSet(0, new DashAnimation());
     }
 
     private void addPoint() {

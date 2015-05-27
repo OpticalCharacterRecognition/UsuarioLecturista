@@ -25,7 +25,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,13 +36,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
-import com.conekta.Charge;
-import com.conekta.Token;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
-import com.fourtails.usuariolecturista.conekta.ConektaAndroid;
-import com.fourtails.usuariolecturista.conekta.ConektaCallback;
 import com.fourtails.usuariolecturista.fragments.BillsFragment;
 import com.fourtails.usuariolecturista.fragments.ContactFragment;
 import com.fourtails.usuariolecturista.fragments.NotificationsFragment;
@@ -60,6 +55,7 @@ import com.fourtails.usuariolecturista.jobs.GetPrepaysJob;
 import com.fourtails.usuariolecturista.jobs.GetReadingsJob;
 import com.fourtails.usuariolecturista.jobs.GetUnPaidBillsJob;
 import com.fourtails.usuariolecturista.jobs.MakePaymentOnBackendJob;
+import com.fourtails.usuariolecturista.jobs.MakePaymentWithConektaJob;
 import com.fourtails.usuariolecturista.jobs.RegisterImageNameJob;
 import com.fourtails.usuariolecturista.jobs.UploadFileToGCSJob;
 import com.fourtails.usuariolecturista.model.CreditCard;
@@ -75,6 +71,7 @@ import com.fourtails.usuariolecturista.ottoEvents.CreateNewBillEvent;
 import com.fourtails.usuariolecturista.ottoEvents.CreatePrepayJobEvent;
 import com.fourtails.usuariolecturista.ottoEvents.GetPrepayFactorEvent;
 import com.fourtails.usuariolecturista.ottoEvents.MakePaymentOnBackendEvent;
+import com.fourtails.usuariolecturista.ottoEvents.MakePaymentWithConektaEvent;
 import com.fourtails.usuariolecturista.ottoEvents.PrepayPaymentAttemptEvent;
 import com.fourtails.usuariolecturista.ottoEvents.RefreshMainActivityFromPrepayEvent;
 import com.fourtails.usuariolecturista.ottoEvents.UploadImageEvent;
@@ -86,9 +83,6 @@ import com.path.android.jobqueue.JobManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -175,6 +169,9 @@ public class MainActivity extends ActionBarActivity {
 
     public static double prepayFactor = 0;
 
+    public static boolean showNewBillButton = false;
+
+
     JobManager jobManager;
 
     @SuppressWarnings("ConstantConditions")
@@ -246,7 +243,7 @@ public class MainActivity extends ActionBarActivity {
     public void updateMeterBalance(Bundle savedInstanceState) {
         asyncJobRunning = true;
         mUserEmail = checkForSavedUser().email;
-        jobManager.addJobInBackground(new CheckBalanceJob(mUserEmail, savedInstanceState));
+        jobManager.addJobInBackground(new CheckBalanceJob(mUserEmail, savedInstanceState, true));
     }
 
     @Subscribe
@@ -265,8 +262,10 @@ public class MainActivity extends ActionBarActivity {
                 allowUserToPrepay = false;
                 loadOnlyPrepayFirst = false;
             }
-            finishDrawingTheDrawer(event.getSavedInstanceState());
-            initiateJobs();
+            if (event.isFirstTime()) {
+                finishDrawingTheDrawer(event.getSavedInstanceState());
+                initiateJobs();
+            }
         }
     }
 
@@ -478,16 +477,22 @@ public class MainActivity extends ActionBarActivity {
                 PrepayModeFragment.bus.post(1);
             }
         } else {
-            if (backendObject.type == Type.READING) {
-                // Readings finished
+            if (backendObject.type == Type.READING) { // Readings finished
+
                 jobManager.addJobInBackground(new GetPaidBillsJob(mAccountNumber));
-            } else if (backendObject.type == Type.PAID_BILL) {
-                // Paid bills finished
+
+            } else if (backendObject.type == Type.PAID_BILL) { // Paid bills finished
+
                 jobManager.addJobInBackground(new GetUnPaidBillsJob(mAccountNumber));
+
             } else if (backendObject.type == Type.UNPAID_BILL && backendObject.status == Status.NORMAL) {
                 // Unpaid Bills finished and there is unpaid bills
+
                 prepayModeEnabled = false;
-                if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
+                showNewBillButton = false; //because we can only have one bill (might change)
+
+                // will only refresh the bills, gets called when a payment is made
+                if (refreshBillsOnly) {
                     BillsFragment.billsBus.post(1);
                     refreshBillsOnly = false;
                 } else {
@@ -497,11 +502,17 @@ public class MainActivity extends ActionBarActivity {
                         Logger.e(e, "did the fragment died because user took to long?");
                     }
                 }
+
             } else if (backendObject.type == Type.UNPAID_BILL && backendObject.status == Status.NOT_FOUND) {
                 // no unpaid bills found so we enable the prepaid mode
+
                 prepayModeEnabled = true;
+                showNewBillButton = true;
+
                 jobManager.addJobInBackground(new GetPrepaysJob(mAccountNumber));
-                if (refreshBillsOnly) { // will only refresh the bills, gets called when a payment is made
+
+                // will only refresh the bills, gets called when a payment is made
+                if (refreshBillsOnly) {
                     BillsFragment.billsBus.post(1);
                     refreshBillsOnly = false;
                 } else {
@@ -535,28 +546,17 @@ public class MainActivity extends ActionBarActivity {
     public void createNewBill(CreateNewBillEvent event) {
         if (event.getResultCode() == 1) {
             if (event.getType() == CreateNewBillEvent.Type.STARTED) {
+
                 jobManager.addJobInBackground(new CreateNewBillJob(mAccountNumber));
-            } else {
+
+            } else if (event.getType() == CreateNewBillEvent.Type.COMPLETED) {
+
                 Toast.makeText(this, "Nueva factura creada", Toast.LENGTH_SHORT).show();
+
+                refreshBillsOnly = true;
+                jobManager.addJobInBackground(new GetPaidBillsJob(mAccountNumber));
             }
         }
-    }
-
-
-    /**
-     * DatabaseSave
-     * Bus event called by AddCreditCardFragment that takes the credit card and then pops the
-     * BackStack, this prevents the back button from going to the AddCreditCardFragment again
-     *
-     * @param creditCard CC that is going to be saved on the database
-     */
-    @Subscribe
-    public void saveCreditCardAndGoBackToLists(CreditCard creditCard) {
-        creditCard.save();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        fragmentManager.popBackStack();
-        Log.d(TAG, "fragment poped");
     }
 
 
@@ -649,62 +649,31 @@ public class MainActivity extends ActionBarActivity {
 
         fragmentManager.popBackStack();
         int finalAmount = (int) (event.getAmount() * 100);
+
         paymentWithConekta(finalAmount, false, event.getPrepay());
     }
 
     public void paymentWithConekta(int payAmount, final boolean isBillPayment, final long m3forPrepay) {
 
-        ConektaAndroid conekta = new ConektaAndroid("key_eyD5sHqgVCzppFn6f35BzQ", this);
-        try {
-            progressDialog = ProgressDialog.show(MainActivity.this, getString(R.string.DialogTitlePaying), getString(R.string.DialogContentPleaseWait), true);
+        progressDialog = ProgressDialog.show(MainActivity.this, getString(R.string.DialogTitlePaying), getString(R.string.DialogContentPleaseWait), true);
+        jobManager.addJobInBackground(new MakePaymentWithConektaJob(this, payAmount, m3forPrepay, mUserEmail, isBillPayment));
 
-            JSONObject pay = new JSONObject(
-                    "{" +
-                            "'currency':'MXN'" + "," +
-                            "'amount':" + payAmount + "," +
-                            "'description':'Android Pay'" + "," +
-                            "'reference_id':'9999-quantum_wolf'" + "," +
-                            //"'card':'" + tokenId + "'" + "," +
-                            "'card':'tok_test_visa_4242'" + "," +
-                            "'details':" +
-                            "{" +
-                            "'email':" + "'" + mUserEmail + "'" +
-                            "}" +
-                            "}");
+    }
 
-            conekta.payThing(pay, new ConektaCallback() {
-                @Override
-                public void failure(Exception error) {
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
-                    // TODO: Output the error in your app
-                    String result = null;
-                    if (error instanceof com.conekta.Error)
-                        result = ((com.conekta.Error) error).message_to_purchaser;
-                    else
-                        result = error.getMessage();
-                    Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+    @Subscribe
+    public void paymentWithConektaResponse(MakePaymentWithConektaEvent event) {
+        progressDialog.dismiss();
+        if (event.getResultCode() == 1) {
+            if (event.getType() == MakePaymentWithConektaEvent.Type.COMPLETED) {
+                Toast.makeText(this, "Pago Aceptado", Toast.LENGTH_SHORT).show();
+                if (event.getIsBill()) {
+                    makeBillPaymentOnBackend();
+                } else {
+                    makePrepayPaymentOnBackend(event.getM3());
                 }
-
-                @Override
-                public void success(Token token) {
-
-                }
-
-                @Override
-                public void success(Charge token) {
-                    if (isBillPayment) {
-                        makeBillPaymentOnBackend();
-                    } else {
-                        makePrepayPaymentOnBackend(m3forPrepay);
-                    }
-                    Toast.makeText(getApplicationContext(), "Pago Aceptado", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+            }
+        } else if (event.getResultCode() == 99) {
+            Toast.makeText(this, event.getError(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -794,6 +763,7 @@ public class MainActivity extends ActionBarActivity {
             progressDialog.dismiss();
         }
         if (event.getResultCode() == 1) {
+            jobManager.addJobInBackground(new CheckBalanceJob(mUserEmail, null, false));
             refreshBillsOnly = true;
             jobManager.addJobInBackground(new GetPaidBillsJob(mAccountNumber));
             Toast.makeText(getApplicationContext(), "Pago Registrado", Toast.LENGTH_SHORT).show();

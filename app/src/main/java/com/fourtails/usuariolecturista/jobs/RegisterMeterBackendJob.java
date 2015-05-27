@@ -49,6 +49,9 @@ public class RegisterMeterBackendJob extends Job {
         if (response.getOk()) {
             Logger.json(response.toPrettyString());
             MeterRegistrationActivity.bus.post(new RegisterMeterBackendEvent(Type.COMPLETED, 1));
+        } else if (response.getError().contains("Meter account number already in platform")) {
+            MeterRegistrationActivity.bus.post(new RegisterMeterBackendEvent(Type.COMPLETED, 2));
+            Logger.e(response.getError());
         } else {
             Logger.e(response.getError());
         }

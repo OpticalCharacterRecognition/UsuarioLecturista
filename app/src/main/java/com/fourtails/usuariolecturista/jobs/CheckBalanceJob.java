@@ -24,12 +24,14 @@ public class CheckBalanceJob extends Job {
     boolean retry = true;
     String emailAsUserIdFromActivity;
     Bundle savedInstanceState;
+    boolean mIsFirstTime;
 
 
-    public CheckBalanceJob(String emailAsUserIdFromActivity, Bundle savedInstanceState) {
+    public CheckBalanceJob(String emailAsUserIdFromActivity, Bundle savedInstanceState, boolean isFirstTime) {
         super(new Params(Priority.HIGH).requireNetwork().groupBy("check-balance"));
         this.emailAsUserIdFromActivity = emailAsUserIdFromActivity;
         this.savedInstanceState = savedInstanceState;
+        this.mIsFirstTime = isFirstTime;
     }
 
     @Override
@@ -57,7 +59,7 @@ public class CheckBalanceJob extends Job {
             Logger.json(response.toPrettyString());
             meter.balance = response.getMeters().get(0).getBalance();
             meter.save();
-            MainActivity.bus.post(new CheckBalanceEvent(CheckBalanceEvent.Type.COMPLETED, 1, meter.balance, savedInstanceState));
+            MainActivity.bus.post(new CheckBalanceEvent(CheckBalanceEvent.Type.COMPLETED, 1, meter.balance, savedInstanceState, mIsFirstTime));
         } else {
             Logger.e(response.getError());
         }
@@ -70,7 +72,7 @@ public class CheckBalanceJob extends Job {
     @Override
     protected void onCancel() {
         Logger.d("CheckBalanceJob canceled");
-        MainActivity.bus.post(new CheckBalanceEvent(CheckBalanceEvent.Type.COMPLETED, 99, 99999999, null));
+        MainActivity.bus.post(new CheckBalanceEvent(CheckBalanceEvent.Type.COMPLETED, 99, 99999999, null, mIsFirstTime));
 
         responseOk = false;
     }
