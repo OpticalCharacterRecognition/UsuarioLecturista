@@ -126,7 +126,7 @@
         android:layout_marginRight="20dp" />
 
     <com.devspark.robototextview.widget.RobotoTextView
-        android:id="@+id/textViewPrepayInvitation"
+        android:id="@+id/textViewButtonInvitationBills"
         style="@style/TextViewMainPageLabel"
         android:text="@string/billsLabelsPrepayInvitation"
         android:layout_alignWithParentIfMissing="false"

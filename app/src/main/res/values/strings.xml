@@ -76,6 +76,8 @@
     <string name="readingsLabelsTotalAmount">Metros cúbicos este periodo:</string>
     <string name="readingsLabelsLimitDate">Fecha limite de pago:</string>
     <string name="readingsLabelsNoReadingsToShow">No hay lecturas para mostrar</string>
+    <string name="readingsLabelsCameraInvitation">Tome una nueva lectura!!</string>
+
 
     <!--Bills-->
     <string name="toolbarTitleBills">Facturas</string>

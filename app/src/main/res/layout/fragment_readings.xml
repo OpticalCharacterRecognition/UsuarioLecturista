@@ -109,6 +109,18 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/textViewButtonInvitationReadings"
+        style="@style/TextViewMainPageLabel"
+        android:text="@string/readingsLabelsCameraInvitation"
+        android:layout_alignWithParentIfMissing="false"
+        android:visibility="invisible"
+        android:layout_alignTop="@+id/fabScan"
+        android:layout_toLeftOf="@+id/fabScan"
+        android:layout_toStartOf="@+id/fabScan"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp" />
+
     <!--Scan button-->
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabScan"

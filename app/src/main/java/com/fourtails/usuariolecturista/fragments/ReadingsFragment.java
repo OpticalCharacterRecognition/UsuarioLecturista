@@ -131,20 +131,6 @@ public class ReadingsFragment extends Fragment {
     private Handler mHandler;
 
 
-//    /**
-//     * This will run the update after 500ms, it fires after a dismiss on the chart
-//     */
-//    private final Runnable mExitEndAction = new Runnable() {
-//        @Override
-//        public void run() {
-//            mHandler.postDelayed(new Runnable() {
-//                public void run() {
-//                    updateChart();
-//                }
-//            }, 500);
-//        }
-//    };
-
     /**
      * This will run the update after 50ms, it fires after a dismiss on the chart and will attempt
      * the transition
@@ -159,21 +145,6 @@ public class ReadingsFragment extends Fragment {
             }, 50);
         }
     };
-
-
-//    /**
-//     * fires after the drawing of the last chart
-//     */
-//    private final Runnable mAnimatePoint = new Runnable() {
-//        @Override
-//        public void run() {
-//            mHandler.postDelayed(new Runnable() {
-//                public void run() {
-//                    updatePoint();
-//                }
-//            }, 500);
-//        }
-//    };
 
     private boolean isAnimationRunning = false;
 
@@ -213,6 +184,9 @@ public class ReadingsFragment extends Fragment {
     @InjectView(R.id.textViewLastReadingDate)
     TextView textViewLastReadingDate;
 
+    @InjectView(R.id.textViewButtonInvitationReadings)
+    TextView textViewButtonInvitationReadings;
+
 
     private float[] chartValues;
     private float[] chartValuesForAnimation;
@@ -245,6 +219,8 @@ public class ReadingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_readings, container, false);
 
         ButterKnife.inject(this, view);
+
+        textViewButtonInvitationReadings.setVisibility(View.INVISIBLE);
 
         readingsBus = new AndroidBus();
         readingsBus.register(this);
@@ -284,6 +260,7 @@ public class ReadingsFragment extends Fragment {
             @Override
             public void run() {
                 fabScan.show();
+                animateInvitationTextFadeIn();
             }
         }, 500);
 
@@ -605,41 +582,6 @@ public class ReadingsFragment extends Fragment {
     }
 
 
-    //    /**
-//     * This will be executed by mExitEndAction because we first need to show a dismiss animation
-//     */
-//    private void updateChart() {
-//        mLineChart.reset();
-//        float[] newlineValues = {0, 25f, 26f, 39f, 42f, 30f, 30f};
-//        String[] newLabels = {"1", "7", "13", "19", "25", "30", "5"};
-//        LineSet dataSet = new LineSet(newLabels, newlineValues);
-//
-//        dataSet.setColor(this.getResources().getColor(R.color.line))
-//                .setThickness(Tools.fromDpToPx(3))
-//                .setSmooth(true)
-//                .setDashed(true)
-//                .setDotsColor(this.getResources().getColor(R.color.colorPrimaryJmas))
-//                .setDotsRadius(Tools.fromDpToPx(5))
-//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                .setDotsStrokeColor(this.getResources().getColor(R.color.line));
-//        mLineChart.addData(dataSet);
-//
-//        mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
-//                .setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
-//                .setXAxis(false)
-//                .setXLabels(XController.LabelPosition.OUTSIDE)
-//                .setYAxis(false)
-//                .setYLabels(YController.LabelPosition.OUTSIDE)
-//                .setAxisBorderValues(LINE_MIN, LINE_MAX, 20) // "20" is the spacing and must be a divisor of distance between minValue and maxValue
-//                .show(getAnimation(true).setEndAction(mAnimatePoint));
-//        mLineChart.animateSet(0, new DashAnimation());
-//
-//        //updatePoint();
-//
-//    }
-//
-//
-
     /**
      * Updates the chart to show a "significant" way that there has been a new reading
      */
@@ -653,6 +595,19 @@ public class ReadingsFragment extends Fragment {
             Logger.e(e, "Error trying to update the chart last point");
         }
 
+    }
+
+    public void animateInvitationTextFadeIn() {
+        textViewButtonInvitationReadings.setAlpha(0f);
+        textViewButtonInvitationReadings.setVisibility(View.VISIBLE);
+        textViewButtonInvitationReadings.animate()
+                .alpha(1f)
+                .setDuration(1000)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                    }
+                });
     }
 
     private Animation getAnimation(boolean newAnim) {

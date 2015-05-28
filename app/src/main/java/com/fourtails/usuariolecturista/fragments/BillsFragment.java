@@ -57,6 +57,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.keyboardsurfer.android.widget.crouton.Configuration;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import static com.fourtails.usuariolecturista.MainActivity.allowUserToPrepay;
 import static com.fourtails.usuariolecturista.MainActivity.bus;
@@ -198,7 +200,7 @@ public class BillsFragment extends Fragment {
     @InjectView(R.id.textViewBillsStatus)
     TextView textViewBillsStatus;
 
-    @InjectView(R.id.textViewPrepayInvitation)
+    @InjectView(R.id.textViewButtonInvitationBills)
     TextView textViewPrepayInvitation;
 
     @InjectView(R.id.buttonNewBill)
@@ -255,6 +257,13 @@ public class BillsFragment extends Fragment {
         if (mLineTooltip != null) {
             dismissLineTooltip(-1, null);
         }
+        buttonNewBill.setEnabled(false);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                buttonNewBill.setEnabled(true);
+            }
+        }, 2000);
         MainActivity.bus.post(new CreateNewBillEvent(CreateNewBillEvent.Type.STARTED, 1));
     }
 
@@ -278,12 +287,6 @@ public class BillsFragment extends Fragment {
             fabPay.setVisibility(View.VISIBLE);
             fabPay.hide();
         }
-
-//        if (MainActivity.showNewBillButton && !userHasAPrepay) {
-//            buttonNewBill.setVisibility(View.VISIBLE);
-//        } else {
-//            buttonNewBill.setVisibility(View.GONE);
-//        }
 
         lineChartCardViewBills.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryJmas600));
 
@@ -439,6 +442,7 @@ public class BillsFragment extends Fragment {
             }
             if (MainActivity.showNewBillButton && !userHasAPrepay) {
                 buttonNewBill.setVisibility(View.VISIBLE);
+                showDebtCrouton();
             } else {
                 buttonNewBill.setVisibility(View.GONE);
             }
@@ -714,6 +718,26 @@ public class BillsFragment extends Fragment {
         mLineChart.updateValues(0, thing);
         mLineChart.notifyDataUpdate();
 
+    }
+
+    /**
+     * Shows am infinite crouton to show image is being upload to the server
+     */
+    private void showDebtCrouton() {
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.crouton_normal_custom_view, null);
+
+        TextView textView = (TextView) view.findViewById(R.id.textViewNormalCustomCrouton);
+
+        textView.setText("Tiene adeudo en su cuenta, por favor cree una nueva factura para pagar");
+
+        Configuration configuration = new Configuration.Builder()
+                .setDuration(Configuration.DURATION_LONG)
+                .build();
+        Crouton crouton;
+        crouton = Crouton.make(getActivity(), view, mLineChart).setConfiguration(configuration);
+        crouton.show();
     }
 
     private Animation getAnimation(boolean newAnim) {

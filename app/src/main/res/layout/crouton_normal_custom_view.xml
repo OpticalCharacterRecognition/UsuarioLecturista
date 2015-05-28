@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorJmasBlueReadings"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    tools:ignore="Overdraw">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/textViewNormalCustomCrouton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/whiteWater"
+        app:typeface="roboto_bold" />
+
+</LinearLayout>
