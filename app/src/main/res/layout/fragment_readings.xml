@@ -35,20 +35,6 @@
             android:padding="5dp" />
     </android.support.v7.widget.CardView>
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fabChangeGraph"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/cardViewReadings"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/ic_local_atm_white_24dp"
-        fab:fab_colorNormal="@color/colorPrimaryJmas"
-        fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
-        android:transitionName="@string/transitionJmas"
-        android:layout_marginBottom="-40dp" />
-
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -122,6 +108,20 @@
         android:layout_marginRight="10dp" />
 
     <!--Scan button-->
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fabChangeGraph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cardViewReadings"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_local_atm_white_24dp"
+        fab:fab_colorNormal="@color/colorPrimaryJmas"
+        fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
+        android:transitionName="@string/transitionJmas"
+        android:layout_marginBottom="-40dp" />
+
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabScan"
         android:layout_width="wrap_content"

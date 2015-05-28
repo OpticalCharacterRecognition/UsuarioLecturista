@@ -226,6 +226,8 @@ public class BillsFragment extends Fragment {
                         getResources().getString(R.string.transitionFirstCardView),
                         android.R.transition.fade, // Exit Transition
                         android.R.transition.move);  // Enter Transition
+            } else {
+                bus.post(prepaidFragment); // Non lollipop
             }
         } else {
             if (mBills.get(selectedBillIndex).status.equalsIgnoreCase("Unpaid")) {
@@ -237,7 +239,7 @@ public class BillsFragment extends Fragment {
                             android.R.transition.fade, // Exit Transition
                             android.R.transition.move);  // Enter Transition
                 } else {
-                    bus.post(payOptionsFragment);
+                    bus.post(payOptionsFragment); // Non lollipop
                 }
             }
         }

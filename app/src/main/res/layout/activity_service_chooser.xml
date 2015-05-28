@@ -68,7 +68,6 @@
             app:fab_colorNormal="@color/colorPrimaryGas"
             app:fab_colorPressed="@color/colorPrimaryDarkerGas"
             android:src="@drawable/ecogas"
-            android:scaleType="centerCrop"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp" />
 
@@ -78,8 +77,7 @@
             android:id="@+id/imageViewCfeIcon"
             app:fab_colorNormal="@color/colorPrimaryCfe"
             app:fab_colorPressed="@color/colorPrimaryDarkerCfe"
-            android:src="@drawable/cfe"
-            android:scaleType="centerCrop" />
+            android:src="@drawable/cfe" />
     </LinearLayout>
 
 

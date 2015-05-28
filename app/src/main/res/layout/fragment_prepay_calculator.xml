@@ -21,12 +21,13 @@
             android:layout_height="fill_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
 
                 <com.devspark.robototextview.widget.RobotoEditText
                     android:id="@+id/editTextPrepaidInput"
@@ -42,15 +43,12 @@
                 android:id="@+id/t9Grid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/whiteWater"
-                android:divider="@android:color/darker_gray"
                 android:orientation="vertical"
-                android:showDividers="middle|beginning|end">
+                android:showDividers="none">
 
                 <TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
                     android:gravity="center"
                     android:showDividers="middle">
 
@@ -76,7 +74,6 @@
                 <TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
                     android:gravity="center"
                     android:showDividers="middle">
 
@@ -102,7 +99,6 @@
                 <TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
                     android:gravity="center"
                     android:showDividers="middle">
 
@@ -128,7 +124,6 @@
                 <TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
                     android:gravity="center"
                     android:showDividers="middle">
 
@@ -157,17 +152,6 @@
             </TableLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fabCalculate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardViewPrepaid"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-20dp"
-        android:src="@drawable/ic_swap_vert_white_24dp"
-        fab:fab_colorNormal="@color/colorJmasBlueReadings"
-        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker" />
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -204,14 +188,25 @@
 
     </android.support.v7.widget.CardView>
 
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fabCalculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cardViewPrepaid"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-20dp"
+        android:src="@drawable/ic_swap_vert_white_24dp"
+        fab:fab_colorNormal="@color/colorJmasBlueReadings"
+        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker" />
+
     <Button
         android:id="@+id/buttonPrePay"
         android:text="@string/labelButtonPayFragmentPay"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cardViewMoney"
         android:textColor="@color/whiteWater"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>

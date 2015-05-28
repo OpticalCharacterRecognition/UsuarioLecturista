@@ -260,7 +260,9 @@ public class ReadingsFragment extends Fragment {
             @Override
             public void run() {
                 fabScan.show();
-                animateInvitationTextFadeIn();
+                if (!MainActivity.userHasAPrepay) {
+                    animateInvitationTextFadeIn();
+                }
             }
         }, 500);
 

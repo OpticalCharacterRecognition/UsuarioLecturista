@@ -28,20 +28,6 @@
             android:padding="5dp" />
     </android.support.v7.widget.CardView>
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fabChangeGraphBills"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/cardViewBills"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/ic_straighten_white_24dp"
-        fab:fab_colorNormal="@color/colorJmasBlueReadings"
-        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker"
-        android:transitionName="@string/transitionReadingsToBills"
-        android:layout_marginBottom="-40dp" />
-
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardViewBillsBottom"
@@ -137,6 +123,20 @@
         android:layout_marginRight="10dp"
         android:visibility="invisible" />
 
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fabChangeGraphBills"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cardViewBills"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_straighten_white_24dp"
+        fab:fab_colorNormal="@color/colorJmasBlueReadings"
+        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker"
+        android:transitionName="@string/transitionReadingsToBills"
+        android:layout_marginBottom="-40dp" />
+
     <com.devspark.robototextview.widget.RobotoTextView
         style="@style/TextViewIntroDesc"
         android:text="@string/billsLabelsNoBillsToShow"
@@ -155,7 +155,7 @@
         android:textColor="@color/whiteWater"
         android:layout_alignBottom="@+id/cardViewBillsBottom"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-70dp"
+        android:layout_marginBottom="-60dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:visibility="gone" />
