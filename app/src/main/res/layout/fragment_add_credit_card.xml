@@ -103,7 +103,7 @@
 
     </RelativeLayout>
 
-    <com.devspark.robototextview.widget.RobotoCheckBox
+    <CheckBox
         style="@style/RobotoCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

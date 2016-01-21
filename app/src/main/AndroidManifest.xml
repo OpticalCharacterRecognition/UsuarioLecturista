@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.fourtails.usuariolecturista">
+<manifest package="com.fourtails.usuariolecturista"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -18,10 +17,10 @@
       to match your app's package name + ".permission.C2D_MESSAGE".
     -->
     <permission
-        android:protectionLevel="signature"
-        android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE"/>
-    <uses-permission android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE"/>
+        android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
 
+    <uses-permission android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE"/>
 
     <uses-feature android:name="android.hardware.camera.autofocus"/>
     <uses-feature
@@ -58,8 +57,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main_drawer"
-            android:theme="@style/AppTheme.BaseJmas"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.BaseJmas"/>
         <activity
             android:name=".IntroActivity"
             android:label="Usuario Lecturista"
@@ -98,8 +97,8 @@
         <activity
             android:name=".MeterRegistrationActivity"
             android:label="@string/title_activity_meter_registration"
-            android:theme="@style/AppTheme.BaseJmas"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.BaseJmas"/>
         <activity
             android:name=".camera.CameraScreenActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
@@ -108,7 +107,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.BaseJmas"/>
-
         <activity
             android:name=".utilities.TestActivity"
             android:label="@string/title_activity_test"
@@ -123,7 +121,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.fourtails.usuariolecturista.utilities.CustomPushBroadcastReceiver"
+            android:name=".utilities.CustomPushBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE"/>
@@ -138,9 +136,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
-                <!--
-                  IMPORTANT: Change "com.parse.starter" to match your app's package name.
-                -->
+                <!--                   IMPORTANT: Change "com.parse.starter" to match your app's package name. -->
                 <category android:name="com.fourtails.usuariolecturista"/>
             </intent-filter>
         </receiver>
@@ -151,10 +147,15 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/parse_client_key"/>
-
         <meta-data
             android:name="com.parse.push.notification_icon"
             android:resource="@drawable/push_icon_white"/>
+
+        <activity
+            android:name=".BarcodeActivity"
+            android:label="@string/title_activity_barcode"
+            android:theme="@style/AppTheme.BaseJmas">
+        </activity>
     </application>
 
 </manifest>

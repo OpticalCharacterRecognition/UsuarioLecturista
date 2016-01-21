@@ -209,5 +209,6 @@
     <string name="TACMustAgreedMessage">Tiene que estar de acuerdo con los términos y condiciones</string>
     <string name="button_cancel">Cancelar</string>
     <string name="button_send">Enviar</string>
+    <string name="title_activity_barcode">Codigo OXXO</string>
 
 </resources>

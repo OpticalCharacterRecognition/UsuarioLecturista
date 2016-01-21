@@ -2,6 +2,7 @@ package com.fourtails.usuariolecturista.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourtails.usuariolecturista.BarcodeActivity;
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
 import com.fourtails.usuariolecturista.ottoEvents.BillPaymentAttemptEvent;
@@ -61,6 +63,12 @@ public class PayOptionsFragment extends Fragment {
     @OnClick(R.id.buttonCreditCard)
     public void creditCardClicked() {
         inflateCreditCardDialog();
+    }
+
+    @OnClick(R.id.buttonOxxoGenerate)
+    public void generateOxxoCodeBarClicked() {
+        Intent intent = new Intent(getActivity(), BarcodeActivity.class);
+        MainActivity.bus.post(intent);
     }
 
 
