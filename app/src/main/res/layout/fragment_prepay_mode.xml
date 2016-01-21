@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
     <!--<ProgressBar-->
@@ -14,16 +14,16 @@
 
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewReadingsPrepaid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        card_view:cardCornerRadius="4dp">
+                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cardViewReadingsPrepaid"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_marginTop="10dp"
+                                        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,10 +31,10 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 style="@style/TextViewMainPageLabel"
                 android:text="@string/prepayLabelCubicMetersLeft"
-                android:textIsSelectable="false" />
+                android:textIsSelectable="false"/>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -53,9 +53,9 @@
                     android:layout_toLeftOf="@+id/textViewPrepaidMeters"
                     android:layout_toStartOf="@+id/textViewPrepaidMeters"
                     android:indeterminate="false"
-                    android:progress="80" />
+                    android:progress="80"/>
 
-                <com.devspark.robototextview.widget.RobotoTextView
+                <TextView
                     android:id="@+id/textViewPrepaidMeters"
                     style="@style/TextViewMainPageLabel"
                     android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignTop="@+id/progressBarPrepaid"
                     android:text="2"
-                    android:textIsSelectable="false" />
+                    android:textIsSelectable="false"/>
 
             </RelativeLayout>
 
@@ -74,19 +74,19 @@
 
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewReadingsBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/cardViewReadingsPrepaid"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:transitionName="@string/transitionFirstCardView"
-        card_view:cardCornerRadius="4dp">
+                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cardViewReadingsBottom"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_below="@+id/cardViewReadingsPrepaid"
+                                        android:layout_marginBottom="50dp"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_marginTop="10dp"
+                                        android:transitionName="@string/transitionFirstCardView"
+                                        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -95,24 +95,24 @@
             android:orientation="vertical">
 
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 style="@style/TextViewMainPageLabel"
                 android:text="@string/prepayLabelBeginDate"
-                android:textIsSelectable="false" />
+                android:textIsSelectable="false"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textViewPrepaidBeginDate"
                 style="@style/TextViewMainPage"
                 android:textIsSelectable="false"
-                android:text="" />
+                android:text=""/>
 
-            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--<TextView-->
             <!--style="@style/TextViewMainPageLabel"-->
             <!--android:layout_marginTop="10dp"-->
             <!--android:text="@string/prepayLabelEndDate"-->
             <!--android:textIsSelectable="false" />-->
 
-            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--<TextView-->
             <!--android:id="@+id/textViewPrepaidEndDate"-->
             <!--style="@style/TextViewMainPage"-->
             <!--android:text="5/5/2015"-->
@@ -133,9 +133,9 @@
         android:layout_marginRight="20dp"
         android:src="@drawable/ic_camera_alt_white_24dp"
         fab:fab_colorNormal="@color/colorPrimaryJmas"
-        fab:fab_colorPressed="@color/colorPrimaryDarkerJmas" />
+        fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"/>
 
-    <!--<com.devspark.robototextview.widget.RobotoTextView-->
+    <!--<TextView-->
     <!--android:id="@+id/textViewNoReadingsMsg"-->
     <!--style="@style/TextViewIntroDesc"-->
     <!--android:layout_alignTop="@+id/progressBarReadings"-->

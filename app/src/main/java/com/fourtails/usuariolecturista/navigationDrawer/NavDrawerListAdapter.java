@@ -67,7 +67,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
         // check whether it set visible or not
         if (navDrawerItems.get(position).getCounterVisibility()) {
             textCount.setText(navDrawerItems.get(position).getCount());
-        }else{
+        } else {
             // hide the counter view
             textCount.setVisibility(View.GONE);
         }

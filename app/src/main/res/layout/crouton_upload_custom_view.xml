@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryJmas"
-    android:gravity="center_vertical|center_horizontal"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    tools:ignore="Overdraw">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@color/colorPrimaryJmas"
+              android:gravity="center_vertical|center_horizontal"
+              android:orientation="horizontal"
+              android:padding="10dp"
+              tools:ignore="Overdraw">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/textViewCustomCrouton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:text="@string/crouton_txt_uploading_image"
         android:textColor="@color/whiteWater"
-        app:typeface="roboto_bold" />
+        app:typeface="roboto_bold"/>
 
     <ImageView
         android:id="@+id/uploadAnimationContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/animation_upload" />
+        android:src="@drawable/animation_upload"/>
 
 </LinearLayout>

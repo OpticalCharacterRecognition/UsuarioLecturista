@@ -15,6 +15,6 @@
  limitations under the License.
  -->
 <resources>
-  <declare-styleable name="ViewfinderView">
-  </declare-styleable>
+    <declare-styleable name="ViewfinderView">
+    </declare-styleable>
 </resources>

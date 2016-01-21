@@ -17,8 +17,8 @@ import com.melnykov.fab.FloatingActionButton;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -31,10 +31,10 @@ public class CameraScreenActivity extends Activity {
 
     public static Bus cameraBus;
 
-    @InjectView(R.id.camera_preview)
+    @Bind(R.id.camera_preview)
     LinearLayout cameraPreview;
 
-    @InjectView(R.id.fabHelpPicture)
+    @Bind(R.id.fabHelpPicture)
     FloatingActionButton fabHelpPicture;
 
     @OnClick(R.id.fabHelpPicture)
@@ -57,7 +57,7 @@ public class CameraScreenActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_full_screen);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
 
         cameraBus = new AndroidBus();

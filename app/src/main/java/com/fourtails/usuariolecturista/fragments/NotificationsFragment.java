@@ -21,8 +21,8 @@ import com.fourtails.usuariolecturista.utilities.SwipeDismissRecyclerViewTouchLi
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 
 /**
@@ -34,7 +34,7 @@ public class NotificationsFragment extends Fragment {
     private static final int ITEMS_COUNT = 4;
     private List<String> mItems;
 
-    @InjectView(R.id.recyclerView)
+    @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter<CustomViewHolder> mAdapter;
@@ -48,7 +48,7 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         initData();
         initRecyclerView();
         return view;
@@ -170,6 +170,11 @@ public class NotificationsFragment extends Fragment {
 
         @Override
         public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
         }
     }
 }

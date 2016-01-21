@@ -1,14 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
     <ImageView
         android:layout_width="225dp"
@@ -17,7 +17,7 @@
         android:src="@drawable/backtrans2"
         android:layout_gravity="center"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabHelpPicture"
@@ -30,7 +30,7 @@
         android:layout_marginTop="55dp"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/fabTakePicture"
-        android:layout_alignStart="@+id/fabTakePicture" />
+        android:layout_alignStart="@+id/fabTakePicture"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabTakePicture"
@@ -44,7 +44,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="100dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"/>
 
 
 </RelativeLayout>

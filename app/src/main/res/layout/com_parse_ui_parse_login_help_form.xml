@@ -4,7 +4,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/login_help_instructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,7 +12,7 @@
         android:gravity="center"
         android:text="@string/com_parse_ui_login_help_instructions" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         style="@style/RobotoEditTextLogin"
         android:id="@+id/login_help_email_input"
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
         android:hint="@string/com_parse_ui_login_help_email_input_hint"
         android:inputType="textEmailAddress" />
 
-    <com.devspark.robototextview.widget.RobotoButton
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/login_help_submit"

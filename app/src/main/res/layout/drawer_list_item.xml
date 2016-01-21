@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navDrawerContainer"
-    android:layout_width="wrap_content"
-    android:layout_height="56dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/navDrawerContainer"
+              android:layout_width="wrap_content"
+              android:layout_height="56dp"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:paddingTop="10dp"
+              android:paddingBottom="10dp">
 
     <ImageView
         android:id="@+id/imageButtonDrawerIcon"
@@ -17,16 +17,16 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="36dp"
         android:background="@null"
-        android:src="@drawable/ic_notifications_black_48dp" />
+        android:src="@drawable/ic_notifications_black_48dp"/>
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/textViewDrawer"
         style="@style/TextViewDrawerMedium"
-        android:text="Home" />
+        android:text="Home"/>
 
     <!--We might want to add counters to the menu in the future, we leave this commented-->
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/counter"
         app:typeface="roboto_bold"
         android:textSize="20sp"
@@ -38,6 +38,6 @@
         android:layout_height="24dp"
         android:autoText="false"
         android:layout_marginLeft="36dp"
-        android:gravity="center" />
+        android:gravity="center"/>
 
 </LinearLayout>

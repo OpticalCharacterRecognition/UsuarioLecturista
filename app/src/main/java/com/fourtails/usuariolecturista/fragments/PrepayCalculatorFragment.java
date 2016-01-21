@@ -26,8 +26,8 @@ import com.stripe.android.model.Card;
 
 import java.util.Calendar;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 
@@ -59,7 +59,7 @@ public class PrepayCalculatorFragment extends Fragment {
      */
 
 
-    @InjectView(R.id.editTextPrepaidInput)
+    @Bind(R.id.editTextPrepaidInput)
     public EditText litersToBuy;
 
     @OnClick(R.id.keyboardButton_0)
@@ -146,10 +146,10 @@ public class PrepayCalculatorFragment extends Fragment {
         showFab();
     }
 
-    @InjectView(R.id.textViewPrepaidPrice)
+    @Bind(R.id.textViewPrepaidPrice)
     TextView textViewPrepaidPrice;
 
-    @InjectView(R.id.fabCalculate)
+    @Bind(R.id.fabCalculate)
     FloatingActionButton fabCalculate;
 
     @OnClick(R.id.fabCalculate)
@@ -169,7 +169,7 @@ public class PrepayCalculatorFragment extends Fragment {
         inflateCreditCardDialog();
     }
 
-    @InjectView(R.id.buttonPrePay)
+    @Bind(R.id.buttonPrePay)
     Button buttonPrePay;
 
 
@@ -186,7 +186,7 @@ public class PrepayCalculatorFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_prepay_calculator, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         fabCalculate.hide();
         fabCalculate.setVisibility(View.INVISIBLE);

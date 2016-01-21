@@ -23,8 +23,8 @@ import com.stripe.android.model.Card;
 
 import java.util.Calendar;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class PayOptionsFragment extends Fragment {
@@ -51,10 +51,10 @@ public class PayOptionsFragment extends Fragment {
      * **************************
      */
 
-    @InjectView(R.id.buttonCreditCard)
+    @Bind(R.id.buttonCreditCard)
     Button buttonAddCreditCard;
 
-    @InjectView(R.id.textViewTotalBillToPay)
+    @Bind(R.id.textViewTotalBillToPay)
     TextView textViewTotalBillToPay;
 
 
@@ -78,7 +78,7 @@ public class PayOptionsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pay_options, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         textViewTotalBillToPay.setText(String.valueOf(BillsFragment.selectedBill));
 

@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.fourtails.usuariolecturista.contactSlidingFragments.CustomerSupport"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.fourtails.usuariolecturista.contactSlidingFragments.CustomerSupport"
+              android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -19,23 +19,23 @@
             android:id="@+id/imageView3"
             android:src="@drawable/ic_call_grey600_48dp"
             android:layout_marginRight="40dp"
-            android:layout_marginLeft="20dp" />
+            android:layout_marginLeft="20dp"/>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             style="@style/TextViewNotificationsLabel"
             android:text="(614)439-44-00"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/imageView3"
             android:layout_toEndOf="@+id/imageView3"
-            android:id="@+id/imageView4" />
+            android:id="@+id/imageView4"/>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             style="@style/TextViewNotificationsContent"
             android:text="Atencion todos los dias"
             android:layout_below="@+id/imageView4"
             android:layout_toRightOf="@+id/imageView3"
             android:layout_toEndOf="@+id/imageView3"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -50,24 +50,24 @@
             android:id="@+id/imageView5"
             android:src="@drawable/ic_location_on_grey600_48dp"
             android:layout_marginRight="40dp"
-            android:layout_marginLeft="20dp" />
+            android:layout_marginLeft="20dp"/>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             style="@style/TextViewNotificationsLabel"
             android:text="Sitio Web"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/imageView5"
             android:layout_toEndOf="@+id/imageView5"
-            android:id="@+id/imageView6" />
+            android:id="@+id/imageView6"/>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             style="@style/TextViewNotificationsContent"
             android:text="http://www.jmaschih.gob.mx/"
             android:textColor="@color/blue_fb"
             android:layout_below="@+id/imageView6"
             android:layout_toRightOf="@+id/imageView5"
             android:layout_toEndOf="@+id/imageView5"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
     </RelativeLayout>
 
 </LinearLayout>

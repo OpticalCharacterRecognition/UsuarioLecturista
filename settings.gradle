@@ -1,8 +1,3 @@
 include ':app'
-include ':ParseLoginUI'
-include ':viewPagerLibrary'
 include ':chartLibrary'
 include ':backend'
-
-// Facebook SDK
-include 'facebook-sdk:facebook'

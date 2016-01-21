@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
     <ProgressBar
@@ -11,7 +11,7 @@
         android:id="@+id/progressBarReadings"
         android:layout_above="@+id/fabChangeGraph"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="44dp" />
+        android:layout_marginBottom="44dp"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardViewReadings"
@@ -21,35 +21,35 @@
         android:visibility="invisible">
 
         <com.db.chart.view.LineChartView xmlns:chart="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/lineChartReadings"
-            android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:layout_margin="10dp"
-            android:layout_weight=".30"
-            android:background="@color/colorJmasBlueReadings"
-            chart:chart_axisBorderSpacing="0dp"
-            chart:chart_axisColor="@color/axis"
-            chart:chart_labelColor="@color/label"
-            chart:chart_typeface="Roboto-Regular.ttf"
-            android:visibility="invisible"
-            android:padding="5dp" />
+                                         android:id="@+id/lineChartReadings"
+                                         android:layout_width="match_parent"
+                                         android:layout_height="175dp"
+                                         android:layout_margin="10dp"
+                                         android:layout_weight=".30"
+                                         android:background="@color/colorJmasBlueReadings"
+                                         chart:chart_axisBorderSpacing="0dp"
+                                         chart:chart_axisColor="@color/axis"
+                                         chart:chart_labelColor="@color/label"
+                                         chart:chart_typeface="Roboto-Regular.ttf"
+                                         android:visibility="invisible"
+                                         android:padding="5dp"/>
     </android.support.v7.widget.CardView>
 
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewReadingsBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/cardViewReadings"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:transitionName="@string/transitionFirstCardView"
-        card_view:cardCornerRadius="4dp">
+                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cardViewReadingsBottom"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_below="@+id/cardViewReadings"
+                                        android:layout_marginBottom="50dp"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_marginTop="10dp"
+                                        android:transitionName="@string/transitionFirstCardView"
+                                        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -58,44 +58,44 @@
             android:orientation="vertical">
 
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textView"
                 style="@style/TextViewMainPageLabel"
                 android:text="@string/readingsLabelsLimitDate"
-                android:textIsSelectable="false" />
+                android:textIsSelectable="false"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textViewBillingDate"
                 style="@style/TextViewMainPage"
                 android:text="28 de Mayo 2015"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textView3"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/readingsLabelsTotalAmount" />
+                android:text="@string/readingsLabelsTotalAmount"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textViewTotalReadingsForThisPeriod"
                 style="@style/TextViewMainPage"
-                android:text="" />
+                android:text=""/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textView2"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/readingsLabelsLastReadingDay" />
+                android:text="@string/readingsLabelsLastReadingDay"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textViewLastReadingDate"
                 style="@style/TextViewMainPage"
-                android:text="" />
+                android:text=""/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/textViewButtonInvitationReadings"
         style="@style/TextViewMainPageLabel"
         android:text="@string/readingsLabelsCameraInvitation"
@@ -105,7 +105,7 @@
         android:layout_toLeftOf="@+id/fabScan"
         android:layout_toStartOf="@+id/fabScan"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"/>
 
     <!--Scan button-->
     <com.melnykov.fab.FloatingActionButton
@@ -120,7 +120,7 @@
         fab:fab_colorNormal="@color/colorPrimaryJmas"
         fab:fab_colorPressed="@color/colorPrimaryDarkerJmas"
         android:transitionName="@string/transitionJmas"
-        android:layout_marginBottom="-40dp" />
+        android:layout_marginBottom="-40dp"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fabScan"
@@ -133,14 +133,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="25dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"/>
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         style="@style/TextViewIntroDesc"
         android:text="@string/readingsLabelsNoReadingsToShow"
         android:layout_alignTop="@+id/progressBarReadings"
         android:layout_centerHorizontal="true"
-        android:id="@+id/textViewNoReadingsMsg" />
+        android:id="@+id/textViewNoReadingsMsg"/>
 
 
 </RelativeLayout>

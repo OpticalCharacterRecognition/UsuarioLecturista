@@ -36,9 +36,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.fourtails.usuariolecturista.fragments.BillsFragment;
 import com.fourtails.usuariolecturista.fragments.ContactFragment;
 import com.fourtails.usuariolecturista.fragments.NotificationsFragment;
@@ -84,10 +84,13 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import static com.fourtails.usuariolecturista.ottoEvents.BackendObjectsEvent.Status;
@@ -102,16 +105,16 @@ public class MainActivity extends ActionBarActivity {
 
     public static Bus bus;
 
-    @InjectView(R.id.drawer_layout)
+    @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @InjectView(R.id.list_slidermenu)
+    @Bind(R.id.list_slidermenu)
     ListView mDrawerList;
-    @InjectView(R.id.linearLayoutDrawer)
+    @Bind(R.id.linearLayoutDrawer)
     RelativeLayout mDrawerRelativeLayout;
 
-    @InjectView(R.id.imageViewFBProfileImage)
+    @Bind(R.id.imageViewFBProfileImage)
     ImageView imageViewFacebookProfilePic;
-    @InjectView(R.id.textViewFacebookName)
+    @Bind(R.id.textViewFacebookName)
     TextView textViewFacebookName;
 
     private SharedPreferences prefs;
@@ -139,7 +142,7 @@ public class MainActivity extends ActionBarActivity {
     private String mAccountNumber;
 
 
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
 
     ProgressDialog progressDialog;
@@ -184,7 +187,7 @@ public class MainActivity extends ActionBarActivity {
         bus = new AndroidBus();
         bus.register(this);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         ranAtLeastOnce = false;
 
@@ -196,7 +199,7 @@ public class MainActivity extends ActionBarActivity {
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
 
-        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+//        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
 
         // Account Number
         Meter meter = checkForSavedMeter();
@@ -888,17 +891,24 @@ public class MainActivity extends ActionBarActivity {
         final ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
             if (ParseFacebookUtils.isLinked(parseUser)) {
-                if (ParseFacebookUtils.getSession().isOpened()) {
-                    Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
-                        @Override
-                        public void onCompleted(GraphUser user, Response response) {
-                            if (user != null) {
-                                loadImageInBackground(user.getId());
+                GraphRequest request = GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject user, GraphResponse response) {
+                                try {
+
+                                    loadImageInBackground(user.get("id").toString());
                                 textViewFacebookName.setText(parseUser.get("name").toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }).executeAsync();
-                }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,age_range,gender");
+                request.setParameters(parameters);
+                request.executeAsync();
             } else {
                 textViewFacebookName.setText(parseUser.get("name").toString());
                 Picasso.with(this)

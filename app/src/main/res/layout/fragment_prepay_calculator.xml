@@ -1,20 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.fourtails.usuariolecturista.fragments.PrepayCalculatorFragment">
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.fourtails.usuariolecturista.fragments.PrepayCalculatorFragment">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewPrepaid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:transitionName="@string/transitionFirstCardView"
-        card_view:cardCornerRadius="4dp">
+                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cardViewPrepaid"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_marginTop="10dp"
+                                        android:transitionName="@string/transitionFirstCardView"
+                                        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -29,22 +29,22 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 
-                <com.devspark.robototextview.widget.RobotoEditText
+                <EditText
                     android:id="@+id/editTextPrepaidInput"
                     style="@style/TextViewIntroDesc"
-                    android:textIsSelectable="false" />
+                    android:textIsSelectable="false"/>
 
-                <com.devspark.robototextview.widget.RobotoTextView
+                <TextView
                     style="@style/TextViewIntroDesc"
-                    android:text="@string/desc_cubic_meters" />
+                    android:text="@string/desc_cubic_meters"/>
             </LinearLayout>
 
             <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/t9Grid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:showDividers="none">
+                         android:id="@+id/t9Grid"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="vertical"
+                         android:showDividers="none">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -52,23 +52,23 @@
                     android:gravity="center"
                     android:showDividers="middle">
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_1"
                         style="@style/keyboardButton"
                         android:text="@string/number_one"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_2"
                         style="@style/keyboardButton"
                         android:text="@string/number_two"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_3"
                         style="@style/keyboardButton"
                         android:text="@string/number_three"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
                 </TableRow>
 
                 <TableRow
@@ -77,23 +77,23 @@
                     android:gravity="center"
                     android:showDividers="middle">
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_4"
                         style="@style/keyboardButton"
                         android:text="@string/number_four"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_5"
                         style="@style/keyboardButton"
                         android:text="@string/number_five"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_6"
                         style="@style/keyboardButton"
                         android:text="@string/number_six"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
                 </TableRow>
 
                 <TableRow
@@ -102,23 +102,23 @@
                     android:gravity="center"
                     android:showDividers="middle">
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_7"
                         style="@style/keyboardButton"
                         android:text="@string/number_seven"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_8"
                         style="@style/keyboardButton"
                         android:text="@string/number_eight"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_9"
                         style="@style/keyboardButton"
                         android:text="@string/number_nine"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
                 </TableRow>
 
                 <TableRow
@@ -133,20 +133,20 @@
                         style="@style/keyboardButton"
                         android:contentDescription="clear"
                         android:src="@drawable/ic_clear_white_24dp"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
-                    <com.devspark.robototextview.widget.RobotoTextView
+                    <TextView
                         android:id="@+id/keyboardButton_0"
                         style="@style/keyboardButton"
                         android:text="@string/number_zero"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
 
                     <ImageView
                         android:id="@+id/keyboardButton_backspace"
                         style="@style/keyboardButton"
                         android:contentDescription="backspace"
                         android:src="@drawable/ic_backspace_white_24dp"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"/>
                 </TableRow>
 
             </TableLayout>
@@ -154,17 +154,17 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewMoney"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/fabCalculate"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="-20dp"
-        card_view:cardCornerRadius="4dp">
+                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cardViewMoney"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_below="@+id/fabCalculate"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_marginTop="-20dp"
+                                        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -173,16 +173,16 @@
             android:orientation="vertical">
 
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textView"
                 style="@style/TextViewMainPageLabel"
                 android:text="@string/labelPrepaidPriceToPay"
-                android:textIsSelectable="false" />
+                android:textIsSelectable="false"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textViewPrepaidPrice"
                 style="@style/TextViewMainPage"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 
@@ -197,7 +197,7 @@
         android:layout_marginTop="-20dp"
         android:src="@drawable/ic_swap_vert_white_24dp"
         fab:fab_colorNormal="@color/colorJmasBlueReadings"
-        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker" />
+        fab:fab_colorPressed="@color/colorJmasBlueReadingsDarker"/>
 
     <Button
         android:id="@+id/buttonPrePay"
@@ -207,6 +207,6 @@
         android:layout_below="@+id/cardViewMoney"
         android:textColor="@color/whiteWater"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

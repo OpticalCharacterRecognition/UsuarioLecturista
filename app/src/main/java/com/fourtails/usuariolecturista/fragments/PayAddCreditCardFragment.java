@@ -17,28 +17,28 @@ import com.fourtails.usuariolecturista.utilities.DatePickerFragmentCreditCard;
 
 import java.util.Calendar;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class PayAddCreditCardFragment extends Fragment {
 
-    @InjectView(R.id.editTextCreditCardExpirationDate)
+    @Bind(R.id.editTextCreditCardExpirationDate)
     TextView textViewCreditCardExpirationDate;
 
-//    @InjectView(R.id.spinnerCreditCardSelector)
+//    @Bind(R.id.spinnerCreditCardSelector)
 //    Spinner spinnerCreditCardSelector;
 
-    @InjectView(R.id.editTextCreditCardNumber)
+    @Bind(R.id.editTextCreditCardNumber)
     EditText editTextCreditCardNumber;
 
-    @InjectView(R.id.editTextCreditCardName)
+    @Bind(R.id.editTextCreditCardName)
     EditText editTextCreditCardName;
 
-    @InjectView(R.id.editTextCCV)
+    @Bind(R.id.editTextCCV)
     EditText editTextCCV;
 
-    @InjectView(R.id.checkBoxAgreedTAC)
+    @Bind(R.id.checkBoxAgreedTAC)
     CheckBox checkBoxAgreedTAC;
 
 
@@ -66,7 +66,7 @@ public class PayAddCreditCardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_credit_card, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         return view;
     }
 

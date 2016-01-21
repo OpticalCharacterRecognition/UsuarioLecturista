@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.fourtails.usuariolecturista.introFragments.IntroWelcomeFragment"
-    android:orientation="vertical"
-    android:gravity="center_vertical|center_horizontal"
-    android:padding="10dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.fourtails.usuariolecturista.introFragments.IntroWelcomeFragment"
+              android:orientation="vertical"
+              android:gravity="center_vertical|center_horizontal"
+              android:padding="10dp">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -14,12 +14,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView11"
         android:src="@drawable/login1"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"/>
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         style="@style/TextViewIntroTitle"
         android:text="@string/intro_meter_title"
         android:layout_marginBottom="20dp"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"/>
 
 </LinearLayout>

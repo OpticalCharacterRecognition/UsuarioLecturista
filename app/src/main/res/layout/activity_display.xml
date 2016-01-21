@@ -1,14 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp">
 
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/imageViewDisplayConfirmPreview"
-        android:layout_above="@+id/linearLayout" />
+        android:layout_above="@+id/linearLayout"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -25,7 +25,7 @@
             android:id="@+id/buttonCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_cancel" />
+            android:text="@string/button_cancel"/>
 
         <Button
             android:id="@+id/buttonSave"
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_send"
-            android:layout_marginLeft="40dp" />
+            android:layout_marginLeft="40dp"/>
     </LinearLayout>
 
 

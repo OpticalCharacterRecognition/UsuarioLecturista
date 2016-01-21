@@ -24,8 +24,8 @@ import com.path.android.jobqueue.JobManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 
@@ -57,7 +57,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         registerMeter();
     }
 
-    @InjectView(R.id.editTextMeterNumber)
+    @Bind(R.id.editTextMeterNumber)
     EditText meterNumber;
 
     @Override
@@ -65,7 +65,7 @@ public class MeterRegistrationActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         running = true;
         setContentView(R.layout.activity_meter_registration);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         bus = new AndroidBus();
         bus.register(this);

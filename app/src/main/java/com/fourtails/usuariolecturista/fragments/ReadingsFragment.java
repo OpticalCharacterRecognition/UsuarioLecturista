@@ -53,8 +53,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -148,13 +148,13 @@ public class ReadingsFragment extends Fragment {
 
     private boolean isAnimationRunning = false;
 
-    @InjectView(R.id.lineChartReadings)
+    @Bind(R.id.lineChartReadings)
     LineChartView mLineChart;
 
     /**
      * Injected views and clickListeners ********************************************************
      */
-    @InjectView(R.id.fabScan)
+    @Bind(R.id.fabScan)
     FloatingActionButton fabScan;
 
     @OnClick(R.id.fabScan)
@@ -163,28 +163,28 @@ public class ReadingsFragment extends Fragment {
         MainActivity.bus.post(cameraActivity);
     }
 
-    @InjectView(R.id.fabChangeGraph)
+    @Bind(R.id.fabChangeGraph)
     FloatingActionButton fabChangeGraph;
 
-    @InjectView(R.id.cardViewReadings)
+    @Bind(R.id.cardViewReadings)
     CardView linechartCardView;
 
-    @InjectView(R.id.cardViewReadingsBottom)
+    @Bind(R.id.cardViewReadingsBottom)
     CardView sharedCardView;
 
-    @InjectView(R.id.progressBarReadings)
+    @Bind(R.id.progressBarReadings)
     ProgressBar progressBar;
 
-    @InjectView(R.id.textViewNoReadingsMsg)
+    @Bind(R.id.textViewNoReadingsMsg)
     TextView textViewNoReadings;
 
-    @InjectView(R.id.textViewTotalReadingsForThisPeriod)
+    @Bind(R.id.textViewTotalReadingsForThisPeriod)
     TextView textViewTotalLitersForThisPeriod;
 
-    @InjectView(R.id.textViewLastReadingDate)
+    @Bind(R.id.textViewLastReadingDate)
     TextView textViewLastReadingDate;
 
-    @InjectView(R.id.textViewButtonInvitationReadings)
+    @Bind(R.id.textViewButtonInvitationReadings)
     TextView textViewButtonInvitationReadings;
 
 
@@ -218,7 +218,7 @@ public class ReadingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_readings, container, false);
 
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         textViewButtonInvitationReadings.setVisibility(View.INVISIBLE);
 

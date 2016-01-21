@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="horizontal"
-    android:gravity="center_vertical|center_horizontal">
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="horizontal"
+              android:gravity="center_vertical|center_horizontal">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,5 +14,5 @@
         android:textSize="20sp"
         android:textColor="@color/white_locky"
         android:gravity="center_vertical|center_horizontal"
-        android:paddingRight="40dp" />
+        android:paddingRight="40dp"/>
 </LinearLayout>

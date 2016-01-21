@@ -6,14 +6,14 @@
     android:id="@+id/parse_login"
     android:visibility="gone">
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/login_username_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/RobotoEditTextLogin"
         android:hint="@string/com_parse_ui_username_input_hint" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/login_password_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/com_parse_ui_large_vertical_spacing">
 
-        <com.devspark.robototextview.widget.RobotoButton
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/parse_login_button"
@@ -37,7 +37,7 @@
             android:layout_weight="0.5"
             android:text="@string/com_parse_ui_parse_login_button_label" />
 
-        <com.devspark.robototextview.widget.RobotoButton
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/parse_signup_button"

@@ -159,7 +159,7 @@
     <string name="camera_sorry">Lo sentimos, no es posible accesar a la cámara en este momento</string>
     <string name="camera_message_uploading">Subiendo imagen al servidor…</string>
     <string name="camera_message_upload_finished">Imagen transferida con éxito.</string>
-    <string name="crouton_txt_uploading_image">subiendo imagen...</string>
+    <string name="crouton_txt_uploading_image">subiendo imagen…</string>
 
 
     <string-array name="drop_down_credit_card_type">

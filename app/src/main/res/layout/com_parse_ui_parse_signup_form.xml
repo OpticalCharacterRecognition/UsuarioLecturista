@@ -4,14 +4,14 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/signup_username_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/RobotoEditTextLogin"
         android:hint="@string/com_parse_ui_username_input_hint" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/signup_password_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:inputType="textPassword"
         android:selectAllOnFocus="true" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/signup_confirm_password_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:inputType="textPassword"
         android:selectAllOnFocus="true" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/signup_email_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:hint="@string/com_parse_ui_email_input_hint"
         android:inputType="textEmailAddress" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <EditText
         android:id="@+id/signup_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         android:hint="@string/com_parse_ui_name_input_hint"
         android:inputType="textPersonName" />
 
-    <com.devspark.robototextview.widget.RobotoButton
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/create_account"

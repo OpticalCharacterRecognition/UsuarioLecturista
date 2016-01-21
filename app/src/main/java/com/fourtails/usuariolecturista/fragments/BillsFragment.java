@@ -54,8 +54,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import de.keyboardsurfer.android.widget.crouton.Configuration;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -169,41 +169,41 @@ public class BillsFragment extends Fragment {
 
     private boolean isAnimationRunning = false;
 
-    @InjectView(R.id.lineChartBills)
+    @Bind(R.id.lineChartBills)
     LineChartView mLineChart;
 
     /**
      * Injected views and clickListeners ********************************************************
      */
 
-    @InjectView(R.id.fabPay)
+    @Bind(R.id.fabPay)
     FloatingActionButton fabPay;
 
-    @InjectView(R.id.fabChangeGraphBills)
+    @Bind(R.id.fabChangeGraphBills)
     FloatingActionButton fabChangeGraphBills;
 
-    @InjectView(R.id.cardViewBills)
+    @Bind(R.id.cardViewBills)
     CardView lineChartCardViewBills;
 
-    @InjectView(R.id.cardViewBillsBottom)
+    @Bind(R.id.cardViewBillsBottom)
     CardView sharedCardView;
 
-    @InjectView(R.id.textViewNoBillsMsg)
+    @Bind(R.id.textViewNoBillsMsg)
     TextView textViewNoBills;
 
-    @InjectView(R.id.textViewBillingDateBills)
+    @Bind(R.id.textViewBillingDateBills)
     TextView textViewBillingDateBills;
 
-    @InjectView(R.id.textViewSelectedBills)
+    @Bind(R.id.textViewSelectedBills)
     TextView textViewSelectedBill;
 
-    @InjectView(R.id.textViewBillsStatus)
+    @Bind(R.id.textViewBillsStatus)
     TextView textViewBillsStatus;
 
-    @InjectView(R.id.textViewButtonInvitationBills)
+    @Bind(R.id.textViewButtonInvitationBills)
     TextView textViewPrepayInvitation;
 
-    @InjectView(R.id.buttonNewBill)
+    @Bind(R.id.buttonNewBill)
     Button buttonNewBill;
 
     String selectedBillStatus;
@@ -278,7 +278,7 @@ public class BillsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bills, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         billsBus = new AndroidBus();
         billsBus.register(this);

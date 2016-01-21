@@ -17,9 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.activeandroid.query.Select;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.fourtails.usuariolecturista.jobs.RegisterUserJob;
 import com.fourtails.usuariolecturista.model.RegisteredUser;
 import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
@@ -34,8 +34,11 @@ import com.path.android.jobqueue.JobManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -67,19 +70,19 @@ public class ServiceChooserActivity extends Activity {
     public boolean isFabButtonShowing = false;
 
 
-    @InjectView(R.id.imageViewJmasIcon)
+    @Bind(R.id.imageViewJmasIcon)
     FloatingActionButton fabJmasIcon;
 
-    @InjectView(R.id.imageViewGasIcon)
+    @Bind(R.id.imageViewGasIcon)
     FloatingActionButton fabGasIcon;
 
-    @InjectView(R.id.imageViewCfeIcon)
+    @Bind(R.id.imageViewCfeIcon)
     FloatingActionButton fabCfeIcon;
 
-    @InjectView(R.id.progressBar)
+    @Bind(R.id.progressBar)
     ProgressBar progressBar;
 
-    @InjectView(R.id.textViewIntroTitle)
+    @Bind(R.id.textViewIntroTitle)
     TextView introTitle;
 
 
@@ -117,14 +120,14 @@ public class ServiceChooserActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_service_chooser);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         bus = new AndroidBus();
         bus.register(this);
 
         jobManager = FirstApplication.getInstance().getJobManager();
 
-        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
+//        ParseFacebookUtils.initialize(String.valueOf(R.string.facebook_app_id));
 
         running = true;
 
@@ -154,20 +157,32 @@ public class ServiceChooserActivity extends Activity {
         installationId = ParseInstallation.getCurrentInstallation().getInstallationId();
         Logger.d("InstallationId ::" + installationId);
         if (ParseFacebookUtils.isLinked(parseUser)) {
-            if (ParseFacebookUtils.getSession().isOpened()) {
-                Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
-                    @Override
-                    public void onCompleted(GraphUser user, Response response) {
-                        if (user != null) {
-                            accountType = "Facebook";
-                            age = 30L; //user.getBirthday() test this
-                            email = user.getName() + "@test.com";
-                            name = user.getName();
-                            registerUserBackend();
+            GraphRequest request = GraphRequest.newMeRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject user, GraphResponse response) {
+                            try {
+                                if (user != null) {
+                                    accountType = "Facebook";
+                                    age = 30L; //user.getBirthday() test this
+                                    name = user.get("name").toString();
+                                    email = user.get("email").toString();
+                                    registerUserBackend();
+                                }
+                            } catch (JSONException e) {
+                                if (e.getMessage().equalsIgnoreCase("No value for email")) {
+                                    email = name + "@test.com";
+                                    registerUserBackend();
+                                }
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).executeAsync();
-            }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,age_range,gender");
+            request.setParameters(parameters);
+            request.executeAsync();
         } else { // todo: some of this is dummy data, must change it
             accountType = "G+";
             age = 30L;

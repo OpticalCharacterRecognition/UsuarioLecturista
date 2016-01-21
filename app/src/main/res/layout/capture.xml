@@ -15,14 +15,14 @@
  limitations under the License.
  -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
     <SurfaceView
         android:id="@+id/preview_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"/>
 
     <!--<include-->
     <!--android:id="@+id/toolbar"-->
@@ -32,7 +32,7 @@
         android:id="@+id/viewfinder_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#0000" />
+        android:background="#0000"/>
 
     <LinearLayout
         android:id="@+id/result_view"
@@ -65,7 +65,7 @@
                     android:adjustViewBounds="true"
                     android:maxHeight="160dip"
                     android:maxWidth="160dip"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -80,14 +80,14 @@
                         android:text="OCR"
                         android:textColor="@color/result_minor_text"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/source_language_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/result_minor_text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"/>
 
                 </LinearLayout>
 
@@ -104,7 +104,7 @@
                         android:text="Translation"
                         android:textColor="@color/translation_text"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/translation_language_text_view"
@@ -112,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:text="[Target language]"
                         android:textColor="@color/translation_text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"/>
 
                 </LinearLayout>
 
@@ -135,7 +135,7 @@
                         android:paddingLeft="12dip"
                         android:textColor="@color/result_text"
                         android:textColorLink="@color/result_text"
-                        android:textSize="22sp" />
+                        android:textSize="22sp"/>
 
                     <TextView
                         android:id="@+id/translation_text_view"
@@ -146,7 +146,7 @@
                         android:paddingLeft="12dip"
                         android:textColor="@color/translation_text"
                         android:textColorLink="@color/translation_text"
-                        android:textSize="22sp" />
+                        android:textSize="22sp"/>
 
                     <LinearLayout
                         android:id="@+id/indeterminate_progress_indicator_view"
@@ -159,7 +159,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="12dip"
-                            android:paddingTop="10dip" />
+                            android:paddingTop="10dip"/>
                     </LinearLayout>
 
 
@@ -186,7 +186,7 @@
             android:clickable="true"
             android:text=""
             android:textColor="@color/status_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
         <com.fourtails.usuariolecturista.ocr.camera.ShutterButton
             android:id="@+id/shutter_button"
@@ -200,7 +200,7 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:scaleType="center"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/status_view_bottom"
@@ -212,7 +212,7 @@
             android:clickable="true"
             android:text=""
             android:textColor="@color/status_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
         <!--<LinearLayout-->
         <!--android:layout_width="wrap_content"-->
@@ -266,7 +266,7 @@
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/status_view_bottom"
             android:layout_toRightOf="@+id/status_view_bottom"
-            android:text="Settings" />
+            android:text="Settings"/>
 
         <ImageView
             android:layout_width="600dp"
@@ -275,7 +275,7 @@
             android:scaleType="fitXY"
             android:layout_above="@+id/buttonSettings"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"/>
 
         <TextView
             android:layout_width="40dp"
@@ -285,7 +285,7 @@
             android:layout_alignTop="@+id/seekBar1"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="0" />
+            android:text="0"/>
 
         <SeekBar
             android:layout_width="fill_parent"
@@ -299,7 +299,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/textViewSeek1"
-            android:layout_toStartOf="@+id/textViewSeek1" />
+            android:layout_toStartOf="@+id/textViewSeek1"/>
 
         <TextView
             android:layout_width="40dp"
@@ -309,7 +309,7 @@
             android:text="0"
             android:layout_above="@+id/textViewSeek1"
             android:layout_toRightOf="@+id/seekBar1"
-            android:layout_toEndOf="@+id/seekBar1" />
+            android:layout_toEndOf="@+id/seekBar1"/>
 
         <SeekBar
             android:layout_width="fill_parent"
@@ -321,7 +321,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/textViewSeek1"
-            android:layout_toStartOf="@+id/textViewSeek1" />
+            android:layout_toStartOf="@+id/textViewSeek1"/>
 
         <SeekBar
             android:layout_width="fill_parent"
@@ -334,7 +334,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/textViewSeek1"
-            android:layout_toStartOf="@+id/textViewSeek1" />
+            android:layout_toStartOf="@+id/textViewSeek1"/>
 
         <TextView
             android:layout_width="40dp"
@@ -344,7 +344,7 @@
             android:layout_below="@+id/textViewSeek1"
             android:layout_alignLeft="@+id/textViewSeek1"
             android:layout_alignStart="@+id/textViewSeek1"
-            android:text="-130" />
+            android:text="-130"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -353,7 +353,7 @@
             android:id="@+id/textViewMethod"
             android:layout_below="@+id/textViewSeek2"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/whiteWater" />
+            android:textColor="@color/whiteWater"/>
 
         <Switch
             android:layout_width="wrap_content"
@@ -362,7 +362,7 @@
             android:id="@+id/switch1"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"/>
 
         <!--
         <ToggleButton android:id="@+id/torch_button"

@@ -19,18 +19,18 @@ import com.fourtails.usuariolecturista.contactSlidingFragments.BranchesFragment;
 import com.fourtails.usuariolecturista.contactSlidingFragments.CustomerSupport;
 import com.fourtails.usuariolecturista.contactSlidingFragments.PaymentCenters;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * This will be a tabbed view containing multiple contact info
  */
 public class ContactFragment extends Fragment {
 
-    @InjectView(R.id.tabs)
+    @Bind(R.id.tabs)
     PagerSlidingTabStrip tabs;
 
-    @InjectView(R.id.pager)
+    @Bind(R.id.pager)
     ViewPager pager;
 
     private MyPagerAdapter adapter;
@@ -47,7 +47,7 @@ public class ContactFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         adapter = new MyPagerAdapter(getActivity().getSupportFragmentManager());
         pager.setAdapter(adapter);

@@ -22,8 +22,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -31,22 +31,22 @@ import butterknife.OnClick;
  */
 public class PrepayModeFragment extends Fragment {
 
-//    @InjectView(R.id.textViewPrepaidDays)
+//    @Bind(R.id.textViewPrepaidDays)
 //    TextView textViewPrepaidDays;
 
-    @InjectView(R.id.textViewPrepaidMeters)
+    @Bind(R.id.textViewPrepaidMeters)
     TextView textViewPrepaidMeters;
 
-    @InjectView(R.id.textViewPrepaidBeginDate)
+    @Bind(R.id.textViewPrepaidBeginDate)
     TextView textViewPrepaidBeginDate;
 
-//    @InjectView(R.id.textViewPrepaidEndDate)
+//    @Bind(R.id.textViewPrepaidEndDate)
 //    TextView textViewPrepaidEndDate;
 
-    @InjectView(R.id.progressBarPrepaid)
+    @Bind(R.id.progressBarPrepaid)
     ProgressBar progressBarPrepaid;
 
-//    @InjectView(R.id.progressBarPrepaidLoading)
+//    @Bind(R.id.progressBarPrepaidLoading)
 //    ProgressBar progressBarPrepaidLoading;
 
     @OnClick(R.id.fabScanPrepay)
@@ -67,7 +67,7 @@ public class PrepayModeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_prepay_mode, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         bus = new AndroidBus();
         bus.register(this);

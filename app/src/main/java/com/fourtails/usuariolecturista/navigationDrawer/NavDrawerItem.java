@@ -28,6 +28,7 @@ public class NavDrawerItem {
 
     /**
      * Constructor with counter
+     *
      * @param title
      * @param icon
      * @param isCounterVisible

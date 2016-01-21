@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.devspark.robototextview.widget.RobotoTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/TextViewMainPage"
-    android:textIsSelectable="false"
-    android:padding="5dip"
-    android:gravity="left" />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          style="@style/TextViewMainPage"
+          android:textIsSelectable="false"
+          android:padding="5dip"
+          android:gravity="left"/>

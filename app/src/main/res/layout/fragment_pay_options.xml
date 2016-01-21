@@ -1,24 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context="com.fourtails.usuariolecturista.fragments.PayOptionsFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              tools:context="com.fourtails.usuariolecturista.fragments.PayOptionsFragment">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardViewReadingsBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp"
-        android:layout_below="@+id/cardViewReadings"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:transitionName="@string/transitionFirstCardView">
+                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cardViewReadingsBottom"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        card_view:cardCornerRadius="4dp"
+                                        android:layout_below="@+id/cardViewReadings"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:transitionName="@string/transitionFirstCardView">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -27,38 +27,38 @@
             android:orientation="vertical">
 
 
-            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--<TextView-->
             <!--android:id="@+id/textView"-->
             <!--style="@style/TextViewMainPageLabel"-->
             <!--android:text="@string/readingsLabelsLimitDate"-->
             <!--android:textIsSelectable="false" />-->
 
-            <!--<com.devspark.robototextview.widget.RobotoTextView-->
+            <!--<TextView-->
             <!--android:id="@+id/textViewBillingDate"-->
             <!--style="@style/TextViewMainPage"-->
             <!--android:text="26 de Abril 2015"-->
             <!--android:textIsSelectable="true" />-->
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textView3"
                 style="@style/TextViewMainPageLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/billsLabelsToPay" />
+                android:text="@string/billsLabelsToPay"/>
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/textViewTotalBillToPay"
                 style="@style/TextViewMainPage"
-                android:text="" />
+                android:text=""/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         style="@style/TextViewMainPageLabel"
         android:text="@string/labelPaymentOptionDesc"
         android:id="@+id/textView6"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp"/>
 
     <Button
         android:layout_width="200dp"
@@ -66,14 +66,14 @@
         android:textColor="@color/whiteWater"
         android:text="@string/textCreditCard"
         android:id="@+id/buttonCreditCard"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"/>
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         style="@style/TextViewMainPageLabel"
         android:id="@+id/textView5"
         android:layout_gravity="center_horizontal"
         android:text="@string/labelPayInOxxo"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"/>
 
     <Button
         android:layout_width="200dp"
@@ -82,6 +82,6 @@
         android:textColor="@color/whiteWater"
         android:id="@+id/buttonOxxoGenerate"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

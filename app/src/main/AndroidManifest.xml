@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fourtails.usuariolecturista">
+          package="com.fourtails.usuariolecturista">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
     <!--
       IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
@@ -19,15 +19,15 @@
     -->
     <permission
         android:protectionLevel="signature"
-        android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE" />
+        android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="com.fourtails.usuariolecturista.permission.C2D_MESSAGE"/>
 
 
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
     <uses-feature
         android:name="android.hardware.camera.flash"
-        android:required="false" />
-    <uses-feature android:name="android.hardware.camera" />
+        android:required="false"/>
+    <uses-feature android:name="android.hardware.camera"/>
 
     <application
         android:name=".FirstApplication"
@@ -37,21 +37,21 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id"/>
         <meta-data
             android:name="AA_DB_NAME"
-            android:value="lecturista.db" />
+            android:value="lecturista.db"/>
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="1" />
+            android:value="1"/>
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.fourtails.usuariolecturista.model.CreditCard,com.fourtails.usuariolecturista.model.Meter,com.fourtails.usuariolecturista.model.RegisteredUser,com.fourtails.usuariolecturista.model.ChartReading,com.fourtails.usuariolecturista.model.ChartBill,com.fourtails.usuariolecturista.model.ChartPrepay" />
+            android:value="com.fourtails.usuariolecturista.model.CreditCard,com.fourtails.usuariolecturista.model.Meter,com.fourtails.usuariolecturista.model.RegisteredUser,com.fourtails.usuariolecturista.model.ChartReading,com.fourtails.usuariolecturista.model.ChartBill,com.fourtails.usuariolecturista.model.ChartPrepay"/>
 
         <activity
             android:name=".ServiceChooserActivity"
             android:label="@string/title_activity_intermediate"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
 
@@ -59,27 +59,27 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main_drawer"
             android:theme="@style/AppTheme.BaseJmas"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".IntroActivity"
             android:label="Usuario Lecturista"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".DispatchActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
-            android:name="com.facebook.LoginActivity"
+            android:name="com.facebook.FacebookActivity"
             android:label="@string/title_activity_login"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.parse.ui.ParseLoginActivity"
             android:label="@string/app_name"
@@ -87,67 +87,74 @@
             android:screenOrientation="portrait">
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
-                android:value="true" />
+                android:value="true"/>
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_EMAIL_AS_USERNAME"
-                android:value="true" />
+                android:value="true"/>
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.FACEBOOK_LOGIN_ENABLED"
-                android:value="true" />
+                android:value="true"/>
         </activity>
         <activity
             android:name=".MeterRegistrationActivity"
             android:label="@string/title_activity_meter_registration"
             android:theme="@style/AppTheme.BaseJmas"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".camera.CameraScreenActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
             android:name=".camera.CameraDisplayActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.BaseJmas" />
+            android:theme="@style/AppTheme.BaseJmas"/>
 
         <activity
             android:name=".utilities.TestActivity"
             android:label="@string/title_activity_test"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
-        <service android:name="com.parse.PushService" />
+        <service android:name="com.parse.PushService"/>
 
         <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.fourtails.usuariolecturista.utilities.CustomPushBroadcastReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
+                <action android:name="com.parse.push.intent.RECEIVE"/>
+                <action android:name="com.parse.push.intent.DELETE"/>
+                <action android:name="com.parse.push.intent.OPEN"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
                 <!--
                   IMPORTANT: Change "com.parse.starter" to match your app's package name.
                 -->
-                <category android:name="com.fourtails.usuariolecturista" />
+                <category android:name="com.fourtails.usuariolecturista"/>
             </intent-filter>
         </receiver>
 
         <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="@string/parse_app_id"/>
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="@string/parse_client_key"/>
+
+        <meta-data
             android:name="com.parse.push.notification_icon"
-            android:resource="@drawable/push_icon_white" />
+            android:resource="@drawable/push_icon_white"/>
     </application>
 
 </manifest>

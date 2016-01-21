@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ParseLoginUI/ParseLoginUI.iml" filepath="$PROJECT_DIR$/ParseLoginUI/ParseLoginUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/UsuarioLecturista.iml" filepath="$PROJECT_DIR$/UsuarioLecturista.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/backend.iml" filepath="$PROJECT_DIR$/backend/backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/chartLibrary/chartLibrary.iml" filepath="$PROJECT_DIR$/chartLibrary/chartLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/facebook-sdk/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook-sdk/facebook/facebook.iml" />
-      <module fileurl="file://$PROJECT_DIR$/facebook-sdk/facebook-sdk.iml" filepath="$PROJECT_DIR$/facebook-sdk/facebook-sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/viewPagerLibrary/viewPagerLibrary.iml" filepath="$PROJECT_DIR$/viewPagerLibrary/viewPagerLibrary.iml" />
     </modules>
   </component>
 </project>
-

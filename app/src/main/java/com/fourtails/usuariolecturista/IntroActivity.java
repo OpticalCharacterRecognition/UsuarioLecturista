@@ -3,18 +3,12 @@ package com.fourtails.usuariolecturista;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 
-import com.fourtails.usuariolecturista.ottoEvents.AndroidBus;
+import com.facebook.FacebookSdk;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.PageIndicator;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 
 /**
@@ -30,44 +24,60 @@ public class IntroActivity extends ActionBarActivity {
 
     IntroFragmentAdapter mAdapter;
 
-    @InjectView(R.id.pagerInstructions)
-    ViewPager mPager;
+//    @Bind(R.id.pagerInstructions)
+//    ViewPager mPager;
 
-    PageIndicator mIndicator;
 
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_instructions);
+
+        FacebookSdk.sdkInitialize(this);
+
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         boolean isFirstTime = prefs.getBoolean(PREF_FIRST_TIME, true);
+        mHandler = new Handler();
+
+        // the reason we want this on a handler is because it appears to look better if we
+        // let the transition finish and then animate our chart
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startAnyActivity();
+            }
+        }, 500);
+
+
         // if is the first time then we call for the "tutorial" slides
         if (isFirstTime) {
-            setContentView(R.layout.activity_instructions);
-            introBus = new AndroidBus();
-            introBus.register(this);
-            ButterKnife.inject(this);
+//            setContentView(R.layout.activity_instructions);
+//            introBus = new AndroidBus();
+//            introBus.register(this);
+//            ButterKnife.bind(this);
+//
+//            mAdapter = new IntroFragmentAdapter(getSupportFragmentManager());
+//
+//            mPager.setAdapter(mAdapter);
 
-            mAdapter = new IntroFragmentAdapter(getSupportFragmentManager());
-
-            mPager.setAdapter(mAdapter);
-
-            mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-            mIndicator.setViewPager(mPager);
+//            mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+//            mIndicator.setViewPager(mPager);
         } else { // otherwise we go directly to the Main activity
             Intent intent = new Intent(this, DispatchActivity.class);
-            startAnyActivity(intent);
+            startAnyActivity();
         }
     }
 
     /**
      * Bus event called by fragments to start any activity
-     *
-     * @param intent the activity we want to start
      */
-    @Subscribe
-    public void startAnyActivity(Intent intent) {
+    public void startAnyActivity() {
+        Intent intent = new Intent(this, DispatchActivity.class);
         startActivity(intent);
         finish();
     }

@@ -11,8 +11,8 @@ import android.widget.Toast;
 import com.fourtails.usuariolecturista.MainActivity;
 import com.fourtails.usuariolecturista.R;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -27,7 +27,7 @@ public class CameraDisplayActivity extends Activity {
 
     private boolean isBitmapFinished = false;
 
-    @InjectView(R.id.imageViewDisplayConfirmPreview)
+    @Bind(R.id.imageViewDisplayConfirmPreview)
     ImageView imageViewDisplayConfirm;
 
     @OnClick(R.id.buttonSave)
@@ -52,7 +52,7 @@ public class CameraDisplayActivity extends Activity {
 
         isBitmapFinished = false;
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
 
         if (imageToShow == null) {

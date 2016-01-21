@@ -7,6 +7,7 @@ import com.activeandroid.ActiveAndroid;
 import com.orhanobut.logger.Logger;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
 import com.path.android.jobqueue.JobManager;
@@ -36,8 +37,9 @@ public class FirstApplication extends Application {
         Logger.init("PL");
 
         // Required - Initialize the Parse SDK
-        Parse.initialize(this, getString(R.string.parse_app_id),
-                getString(R.string.parse_client_key));
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this);
+        ParseFacebookUtils.initialize(this);
 
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 
