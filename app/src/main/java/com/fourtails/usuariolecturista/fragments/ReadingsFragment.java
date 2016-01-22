@@ -1,19 +1,25 @@
 package com.fourtails.usuariolecturista.fragments;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.format.Time;
 import android.transition.TransitionInflater;
@@ -67,6 +73,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class ReadingsFragment extends Fragment {
 
     public static final String TAG = "ReadingsFragment";
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 123;
 
     public static Bus readingsBus;
 
@@ -159,9 +166,56 @@ public class ReadingsFragment extends Fragment {
 
     @OnClick(R.id.fabScan)
     public void scanButtonClicked() {
-        Intent cameraActivity = new Intent(getActivity(), CameraScreenActivity.class);
-        MainActivity.bus.post(cameraActivity);
+        checkForCameraPermissions();
     }
+
+    private void checkForCameraPermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.CAMERA)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("Necesitamos la camara para tomar una lectura")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{Manifest.permission.CAMERA},
+                                        MY_PERMISSIONS_REQUEST_CAMERA);
+
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            Intent cameraActivity = new Intent(getActivity(), CameraScreenActivity.class);
+            MainActivity.bus.post(cameraActivity);
+        }
+    }
+
+
 
     @Bind(R.id.fabChangeGraph)
     FloatingActionButton fabChangeGraph;

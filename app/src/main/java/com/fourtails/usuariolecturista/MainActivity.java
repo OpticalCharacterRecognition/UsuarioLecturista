@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -39,6 +41,7 @@ import com.activeandroid.query.Select;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.fourtails.usuariolecturista.camera.CameraScreenActivity;
 import com.fourtails.usuariolecturista.fragments.BillsFragment;
 import com.fourtails.usuariolecturista.fragments.ContactFragment;
 import com.fourtails.usuariolecturista.fragments.NotificationsFragment;
@@ -1032,6 +1035,34 @@ public class MainActivity extends ActionBarActivity {
        /* boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);*/
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case ReadingsFragment.MY_PERMISSIONS_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    Intent cameraActivity = new Intent(this, CameraScreenActivity.class);
+                    startActivity(cameraActivity);
+
+
+                } else {
+                    Toast.makeText(this, "Es necesario contar con la camara para poder hacer lecturas", Toast.LENGTH_LONG).show();
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 }
