@@ -800,6 +800,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void uploadFileToGCS(Bitmap image) {
         showImageLoadingCrouton();
+        new AlertDialog.Builder(this)
+                .setMessage("Se esta subiendo la imagen al servidor, en unos cuantos minutos recibirá una confirmación")
+                .setCancelable(true)
+                .setNegativeButton("Ocultar", null)
+                .show();
         Logger.i("Initiating Image upload");
         jobManager.addJobInBackground(new UploadFileToGCSJob(image, context, BUCKET_NAME));
     }
