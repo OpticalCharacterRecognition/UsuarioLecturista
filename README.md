@@ -3,10 +3,11 @@ UsuarioLecturista
 
 Proyecto para la junta de aguas de el usuario lecturista
 
+# Install
 
-OCR compile instructions:
+## OCR compile instructions:
 
-OCR Test on windows
+### On windows
 
 Need:
 -Android Studio 0.8.9 +
@@ -26,12 +27,12 @@ https://github.com/rmtheis/android-ocr
 Tess-Two library
 https://github.com/rmtheis/tess-two
 
-Instructions:
+### Instructions:
 
-Set the NDK, Android SDK tools and platform tools, Ant/bin directories to the PATH
+Set the NDK, Android SDK tools and platform tools, Ant/bin directories to the **PATH**
 
-download tess library, then:
-
+Download tess library, then:
+```
 git clone git://github.com/rmtheis/tess-two tess
 cd tess
 cd tess-two
@@ -41,9 +42,10 @@ android update project --path .
 android update project --path . --target android-19
 )
 ant release
+```
+Then in windows explorer make a libraries folder in the root of your project then **Copy** tess library to it.
 
-Then in windows explorer make a libraries folder in the root of your project then copy tess library to it.
-Delete 
+**Delete**
 project.properties, build.xml, .classpath, and .project
 
 create build.gradle file in root of tess like this:
@@ -77,28 +79,28 @@ android {
     }
 }
 ```
-edit  settings.gradle in main project
+**Edit**  settings.gradle in main project
 add this line 
-include ':libraries:tess-two'
+`include ':libraries:tess-two'`
 
-sync in gradle
+_sync in gradle_
 
 Then sync the project in Android Studio and add the new tess-two library as module dependency to you main project(after sync tess-two library should appear as a module, you can add it to your project from project settings in android studio)
 
 Go to tess project in command window again and execute:
-ndk-build
 
-sync again run.
+`ndk-build`
 
+_sync again run._
 
-For mac:
+### For mac:
 first to modify the path is 
 
-sudo nano /etc/paths
+`sudo nano /etc/paths`
 
-echo $PATH
+`echo $PATH`
 
-/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/carlos/Developer/ndk/android-ndk-r10c:/Users/carlos/Developer/apache-ant-1.9.4/bin:/Users/carlos/Developer/android-tools/sdk/platform-tools:/Users/carlos/Developer/android-tools/sdk/tools
+`/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/carlos/Developer/ndk/android-ndk-r10c:/Users/carlos/Developer/apache-ant-1.9.4/bin:/Users/carlos/Developer/android-tools/sdk/platform-tools:/Users/carlos/Developer/android-tools/sdk/tools`
 
 
 then try to put the sdk in an accesible place like all these
