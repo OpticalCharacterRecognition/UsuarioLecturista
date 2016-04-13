@@ -145,6 +145,6 @@ Task_payload - The Meter number followed by **"--"** and the Name of the image
     "human":
     "result":"9350"
     "task_name":"308e447f-13d6-465f-805e-90204a117605.jpg"
-    "task_payload":"101-308e447f-13d6-465f-805e-90204a117605.jpg"
+    "task_payload":"101--308e447f-13d6-465f-805e-90204a117605.jpg"
 }
 ```
