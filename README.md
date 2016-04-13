@@ -104,3 +104,47 @@ first to modify the path is
 
 
 then try to put the sdk in an accesible place like all these
+
+#Make a new reading
+On the app go and create a new reading.
+
+On https://console.cloud.google.com/storage/browser/ocr-test-pics/?project=ocr-backend
+Look for the most recent image and copy all the name
+
+e.g.
+**308e447f-13d6-465f-805e-90204a117605.jpg**
+
+Identify the meter of that user on
+
+https://console.cloud.google.com/datastore/entities/query?project=ocr-backend&queryType=kind&kind=User&ns=
+
+e.g. **101**
+
+
+Then go to the backend
+
+https://apis-explorer.appspot.com/apis-explorer/?base=https://ocr-backend.appspot.com/_ah/api#s/backend/v1/backend.reading.set_image_processing_result
+
+###fill the fields
+
+Error - empty
+
+Human - Checked
+
+Result - An Integer of the cubic meters of the reading
+
+Task_name - The Name of the image that we got from the developer console
+	e.g. 308e447f-13d6-465f-805e-90204a117605.jpg
+	
+Task_payload - The Meter number followed by **"--"** and the Name of the image
+ 	e.g. 101-308e447f-13d6-465f-805e-90204a117605.jpg
+ 	
+```
+{
+    "error":""
+    "human":
+    "result":"9350"
+    "task_name":"308e447f-13d6-465f-805e-90204a117605.jpg"
+    "task_payload":"101-308e447f-13d6-465f-805e-90204a117605.jpg"
+}
+```
